@@ -25,7 +25,8 @@ defmodule Noizu.Scaffolding.Mixfile do
 
   defp deps do
     [
-      {:amnesia, git: "https://github.com/meh/amnesia.git", ref: "c8c41f6"}, # Mnesia Wrapper
+      { :amnesia, git: "https://github.com/meh/amnesia.git", ref: "c8c41f6"}, # Mnesia Wrapper
+      { :uuid, "~> 1.1" },
       { :ex_doc, "~> 0.11", only: [:dev] }
     ]
   end
