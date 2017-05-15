@@ -274,7 +274,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
         end # end from_json/2
       end
 
-      def default_identifier(%unquote(entity_module){} = entity, options) do
+      def default_identifier(entity, options) do
         if entity.identifier == nil do
           id = generate_identifier(options)
           %unquote(entity_module){entity| identifier: id}
@@ -391,7 +391,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
       #-------------------------------------------------------------------------
       if (unquote(only.update) && !unquote(override.update)) do
         def update(entity, context, options \\ %{})
-        def update(%unquote(entity_module){} = entity, %CallingContext{} = context, options) do
+        def update(entity, %CallingContext{} = context, options) do
           strategy = if options[:query_strategy], do: options[:query_strategy], else: @query_strategy
 
           if entity.identifier == nil do
@@ -412,7 +412,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
 
       if (unquote(only.update!) && !unquote(override.update!)) do
         def update!(entity, context, options \\ %{})
-        def update!(%unquote(entity_module){} = entity, %CallingContext{} = context, options) do
+        def update!(entity, %CallingContext{} = context, options) do
           Amnesia.Fragment.transaction do
             update(entity, context, options)
           end
@@ -420,13 +420,13 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
       end # end if (unquote(only.update!))
 
       if (unquote(only.post_update_callback) && !unquote(override.post_update_callback)) do
-        def post_update_callback(%unquote(entity_module){} = entity, _context = %CallingContext{}, _options) do
+        def post_update_callback(entity, _context = %CallingContext{}, _options) do
           entity
         end
       end
 
       if (unquote(only.pre_update_callback) && !unquote(override.pre_update_callback)) do
-        def pre_update_callback(%unquote(entity_module){} = entity, _context = %CallingContext{}, _options) do
+        def pre_update_callback(entity, _context = %CallingContext{}, _options) do
           entity
         end
       end
@@ -436,7 +436,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
       #-------------------------------------------------------------------------
       if (unquote(only.delete) && !unquote(override.delete)) do
         def delete(entity, context, options \\ %{})
-        def delete(%unquote(entity_module){} = entity, %CallingContext{} = context, options) do
+        def delete(entity, %CallingContext{} = context, options) do
           strategy = if options[:query_strategy], do: options[:query_strategy], else: @query_strategy
           if entity.identifier == nil do
             raise "Cannot Delete #{inspect unquote(entity_module)} with out identiifer field set."
@@ -454,7 +454,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
 
       if (unquote(only.delete!) && !unquote(override.delete!)) do
         def delete!(entity, context, options \\ %{})
-        def delete!(%unquote(entity_module){} = entity, %CallingContext{} = context, options) do
+        def delete!(entity, %CallingContext{} = context, options) do
           Amnesia.Fragment.transaction do
             delete(entity, context, options)
           end
@@ -462,13 +462,13 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
       end # end if (unquote(only.delete!))
 
       if (unquote(only.post_delete_callback) && !unquote(override.post_delete_callback)) do
-        def post_delete_callback(%unquote(entity_module){} = entity, _context = %CallingContext{}, _options) do
+        def post_delete_callback(entity, _context = %CallingContext{}, _options) do
           entity
         end
       end
 
       if (unquote(only.pre_delete_callback) && !unquote(override.pre_delete_callback)) do
-        def pre_delete_callback(%unquote(entity_module){} = entity, _context = %CallingContext{}, _options) do
+        def pre_delete_callback(entity, _context = %CallingContext{}, _options) do
           entity
         end
       end
@@ -478,7 +478,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
       #-------------------------------------------------------------------------
       if (unquote(only.create) && !unquote(override.create)) do
         def create(entity, context, options \\ %{})
-        def create(entity = %unquote(entity_module){}, context = %CallingContext{}, options) do
+        def create(entity, context = %CallingContext{}, options) do
           strategy = if options[:query_strategy], do: options[:query_strategy], else: @query_strategy
           entity = pre_create_callback(entity, context, options)
           if (entity.identifier == nil) do
@@ -500,7 +500,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
 
       if (unquote(only.create!) && !unquote(override.create!)) do
         def create!(entity, context, options \\ %{})
-        def create!(entity = %unquote(entity_module){}, context = %CallingContext{}, options) do
+        def create!(entity, context = %CallingContext{}, options) do
           Amnesia.Fragment.transaction do
             create(entity, context, options)
           end
@@ -508,7 +508,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
       end # end if (unquote(only.create!))
 
       if (unquote(only.post_create_callback) && !unquote(override.post_create_callback)) do
-        def post_create_callback(%unquote(entity_module){} = entity, _context = %CallingContext{}, _options) do
+        def post_create_callback(entity, _context = %CallingContext{}, _options) do
           entity
         end
       end
