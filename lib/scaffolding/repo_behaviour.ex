@@ -277,7 +277,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
       def default_identifier(entity, options) do
         if entity.identifier == nil do
           id = generate_identifier(options)
-          %unquote(entity_module){entity| identifier: id}
+          Map.put(entity, :identifier, id)
         else
           entity
         end
