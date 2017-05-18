@@ -11,16 +11,16 @@ defprotocol Noizu.ERP do
   def sref(obj)
 
   @doc "Convert to persistence object. Options may be passed to coordinate actions like expanding embedded references."
-  def record(obj, options)
+  def record(obj, options \\ %{})
 
   @doc "Convert to persistence object Options may be passed to coordinate actions like expanding embedded references. (With transaction wrapper if required)"
-  def record!(obj, options)
+  def record!(obj, options \\ %{})
 
   @doc "Convert to scaffolding.struct object. Options may be passed to coordinate actions like expanding embedded references."
-  def entity(obj, options)
+  def entity(obj, options \\ %{})
 
   @doc "Convert to scaffolding.struct object Options may be passed to coordinate actions like expanding embedded references. (With transaction wrapper if required)"
-  def entity!(obj, options)
+  def entity!(obj, options \\ %{})
 end # end defprotocol Noizu.ERP
 
 #-------------------------------------------------------------------------------
