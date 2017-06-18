@@ -33,6 +33,7 @@ defmodule Noizu.Scaffolding.Query.EntityRefFilteringBehaviour do
 
     quote do
       require Amnesia
+      require Amnesia.Helper
       require Amnesia.Fragment
       import unquote(__MODULE__)
       use unquote(mnesia_table)

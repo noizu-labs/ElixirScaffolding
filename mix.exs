@@ -3,7 +3,7 @@ defmodule Noizu.Scaffolding.Mixfile do
 
   def project do
     [app: :noizu_scaffolding,
-     version: "0.0.1",
+     version: "0.0.2",
      elixir: "~> 1.3",
      package: package(),
      deps: deps(),
@@ -25,7 +25,7 @@ defmodule Noizu.Scaffolding.Mixfile do
 
   defp deps do
     [
-      { :amnesia, git: "https://github.com/meh/amnesia.git", ref: "c8c41f6"}, # Mnesia Wrapper
+      { :amnesia, git: "https://github.com/meh/amnesia.git", ref: "87d8b4f"}, # Mnesia Wrapper
       { :uuid, "~> 1.1" },
       { :ex_doc, "~> 0.11", only: [:dev] }
     ]

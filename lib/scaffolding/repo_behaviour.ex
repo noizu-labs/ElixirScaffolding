@@ -137,6 +137,87 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
   """
   @callback entity() :: atom
 
+
+
+  defmodule Helpers do
+
+  end
+
+  defmodule DefaultImplementation do
+    def default_list(mod, %CallingContext{} = context, options) do
+      strategy = options[:query_strategy] || mod.query_strategy()
+      if options[:audit] do
+          mod.audit(:list, :scaffolding, mod.mnesia_table(), context)
+      end
+      strategy.list(context, options)
+        |> Amnesia.Selection.values
+        |> EntityReferenceProtocol.entity(options)
+    end # end list/2
+
+
+    def default_get(mod, identifier, %CallingContext{} = context, options) do
+      strategy = options[:query_strategy] || mod.query_strategy()
+      record = strategy.get(identifier, context, options)
+      if options[:audit] do
+        mod.audit(:get, :scaffolding, EntityReferenceProtocol.ref(record), context)
+      end
+      record
+        |> EntityReferenceProtocol.entity(options)
+    end # end get/3
+
+    def default_update(mod, entity, %CallingContext{} = context, options) do
+      strategy = options[:query_strategy] || mod.query_strategy()
+      if entity.identifier == nil do
+        raise "Cannot Update #{inspect mod.entity_module()} with out identifier field set."
+      end
+      entity = mod.pre_update_callback(entity, context, options)
+
+      ref = entity
+        |> EntityReferenceProtocol.record(options)
+        |> strategy.update(context, options)
+        |> EntityReferenceProtocol.ref()
+      mod.audit(:update!, :scaffolding, ref, context)
+
+      entity
+        |> mod.post_update_callback(context, options)
+    end # end update/3
+
+    def default_delete(mod, entity, %CallingContext{} = context, options) do
+      strategy = options[:query_strategy] || mod.query_strategy()
+      if entity.identifier == nil do
+        raise "Cannot Delete #{inspect mod.entity_module()} with out identiifer field set."
+      end
+      entity = mod.pre_delete_callback(entity, context, options)
+      strategy.delete(entity.identifier, context, options)
+      ref = entity
+        |> mod.post_delete_callback(context, options)
+        |> EntityReferenceProtocol.ref()
+      mod.audit(:delete!, :scaffolding, ref, context)
+      true
+    end # end delete/3
+
+    def default_create(mod, entity, context = %CallingContext{}, options) do
+      strategy = options[:query_strategy] || mod.query_strategy()
+      entity = mod.pre_create_callback(entity, context, options)
+      if (entity.identifier == nil) do
+        raise "Cannot Create #{inspect mod.entity_module()} with out identiifer field set."
+      end
+
+      ref = entity
+        |> EntityReferenceProtocol.record(options)
+        |> strategy.create(context, options)
+        |> EntityReferenceProtocol.ref()
+
+      mod.audit(:create!, :scaffolding, ref, context)
+
+      # No need to return actual record as to_mnesia should not be modifying it in a way that would impact the final structure.
+      entity
+        |> mod.post_create_callback(context, options)
+    end # end create/3
+
+  end # end module
+
+
   defmacro __using__(options) do
     r = Keyword.get(options, :only, [
       :audit, :audit!, :generate_identifier!, :generate_identifier,
@@ -226,9 +307,12 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
 
     quote do
       require Amnesia
+      require Amnesia.Helper
       require Amnesia.Fragment
       require Logger
       import unquote(__MODULE__)
+      import Noizu.Scaffolding.RepoBehaviour.DefaultImplementation
+
       use unquote(mnesia_table)
 
       @behaviour Noizu.Scaffolding.RepoBehaviour
@@ -239,33 +323,40 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
         @query_strategy unquote(query_strategy)
       else
         @query_strategy __MODULE__.DefaultQueryStrategy
+
+        # Define Query Logic, which may be overridden as needed by callers or Repos
+        defmodule DefaultQueryStrategy do
+          @behaviour Noizu.Scaffolding.QueryBehaviour
+          @mnesia_table unquote(mnesia_table)
+
+          def list(%CallingContext{} = _context, _options) do
+            @mnesia_table.where 1 == 1
+          end
+
+          def get(identifier, %CallingContext{} = _context, _options) do
+            @mnesia_table.read(identifier)
+          end
+
+          def update(entity, %CallingContext{} = _context, _options) do
+            @mnesia_table.write(entity)
+          end
+
+          def create(entity, %CallingContext{} = _context, _options) do
+            @mnesia_table.write(entity)
+          end
+
+          def delete(identifier, %CallingContext{} = _context, _options) do
+            @mnesia_table.delete(identifier)
+          end
+        end
       end
 
+      def query_strategy() do
+        @query_strategy
+      end
 
-      # Define Query Logic, which may be overridden as needed by callers or Repos
-      defmodule DefaultQueryStrategy do
-        @behaviour Noizu.Scaffolding.QueryBehaviour
-        @mnesia_table unquote(mnesia_table)
-
-        def list(%CallingContext{} = _context, _options) do
-          @mnesia_table.where 1 == 1
-        end
-
-        def get(identifier, %CallingContext{} = _context, _options) do
-          @mnesia_table.read(identifier)
-        end
-
-        def update(entity, %CallingContext{} = _context, _options) do
-          @mnesia_table.write(entity)
-        end
-
-        def create(entity, %CallingContext{} = _context, _options) do
-          @mnesia_table.write(entity)
-        end
-
-        def delete(identifier, %CallingContext{} = _context, _options) do
-          @mnesia_table.delete(identifier)
-        end
+      def entity_module() do
+        @entity_module
       end
 
       if (unquote(stub)) do
@@ -341,13 +432,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
       if (unquote(only.list) && !unquote(override.list)) do
         def list(context, options \\ %{})
         def list(%CallingContext{} = context, options) do
-          strategy = if options[:query_strategy], do: options[:query_strategy], else: @query_strategy
-          if options[:audit] do
-              audit(:list, :scaffolding, @mnesia_table, context)
-          end
-          strategy.list(context, options)
-            |> Amnesia.Selection.values
-            |> EntityReferenceProtocol.entity(options)
+          default_list(__MODULE__, context, options)
         end # end list/2
       end # end if (unquote(only.list) && !unquote(override.list)) do
 
@@ -366,14 +451,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
       if (unquote(only.get) && !unquote(override.get)) do
         def get(identifier, context, options \\ %{})
         def get(identifier, %CallingContext{} = context, options) do
-          strategy = if options[:query_strategy], do: options[:query_strategy], else: @query_strategy
-          record = strategy.get(identifier, context, options)
-          if options[:audit] do
-            audit(:get, :scaffolding, EntityReferenceProtocol.ref(record), context)
-          end
-
-          record
-            |> EntityReferenceProtocol.entity(options)
+          default_get(__MODULE__, identifier, context, options)
         end # end get/3
       end # emd if (unquote(only.get))
 
@@ -392,21 +470,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
       if (unquote(only.update) && !unquote(override.update)) do
         def update(entity, context, options \\ %{})
         def update(entity, %CallingContext{} = context, options) do
-          strategy = if options[:query_strategy], do: options[:query_strategy], else: @query_strategy
-
-          if entity.identifier == nil do
-            raise "Cannot Update #{inspect unquote(entity_module)} with out identifier field set."
-          end
-          entity = pre_update_callback(entity, context, options)
-
-          ref = entity
-            |> EntityReferenceProtocol.record(options)
-            |> strategy.update(context, options)
-            |> EntityReferenceProtocol.ref()
-          audit(:update!, :scaffolding, ref, context)
-
-          entity
-            |> post_update_callback(context, options)
+          default_update(__MODULE__, entity, context, options)
         end # end update/3
       end # if (unquote(only.update))
 
@@ -437,18 +501,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
       if (unquote(only.delete) && !unquote(override.delete)) do
         def delete(entity, context, options \\ %{})
         def delete(entity, %CallingContext{} = context, options) do
-          strategy = if options[:query_strategy], do: options[:query_strategy], else: @query_strategy
-          if entity.identifier == nil do
-            raise "Cannot Delete #{inspect unquote(entity_module)} with out identiifer field set."
-          end
-          entity = pre_delete_callback(entity, context, options)
-          strategy.delete(entity.identifier, context, options)
-          ref = entity
-            |> post_delete_callback(context, options)
-            |> EntityReferenceProtocol.ref()
-          audit(:delete!, :scaffolding, ref, context)
-
-          true
+          default_delete(__MODULE__, entity, context, options)
         end # end delete/3
       end # end if (unquote(only.delete!))
 
@@ -479,22 +532,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
       if (unquote(only.create) && !unquote(override.create)) do
         def create(entity, context, options \\ %{})
         def create(entity, context = %CallingContext{}, options) do
-          strategy = if options[:query_strategy], do: options[:query_strategy], else: @query_strategy
-          entity = pre_create_callback(entity, context, options)
-          if (entity.identifier == nil) do
-            raise "Cannot Create #{inspect unquote(entity_module)} with out identiifer field set."
-          end
-
-          ref = entity
-            |> EntityReferenceProtocol.record(options)
-            |> strategy.create(context, options)
-            |> EntityReferenceProtocol.ref()
-
-          audit(:create!, :scaffolding, ref, context)
-
-          # No need to return actual record as to_mnesia should not be modifying it in a way that would impact the final structure.
-          entity
-            |> post_create_callback(context, options)
+          default_create(__MODULE__, entity, context, options)
         end # end create/3
       end # end if (unquote(only.create))
 
