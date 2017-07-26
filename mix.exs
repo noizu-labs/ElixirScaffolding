@@ -36,7 +36,7 @@ defmodule Noizu.Scaffolding.Mixfile do
   defp docs do
     [
       source_url_pattern: "https://github.com/noizu/ElixirScaffolding/blob/master/%{path}#L%{line}",
-      extras: []
+      extras: ["README.md"]
     ]
   end # end docs
 
