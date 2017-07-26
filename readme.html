@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.16.2">
+    <title>Noizu Scaffolding – noizu_scaffolding v0.1.0</title>
+    <link rel="stylesheet" href="dist/app-268c9dc719.css" />
+    
+    <script src="dist/sidebar_items-4e26491b78.js"></script>
+  </head>
+  <body data-type="extras">
+    <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
+
+<div class="main">
+<button class="sidebar-toggle">
+  <span class="icon-menu" aria-hidden="true"></span>
+  <span class="sr-only">Toggle Sidebar</span>
+</button>
+<section class="sidebar">
+
+  
+  <a href="api-reference.html" class="sidebar-projectLink">
+    <div class="sidebar-projectDetails">
+      <h1 class="sidebar-projectName">
+        noizu_scaffolding
+      </h1>
+      <h2 class="sidebar-projectVersion">
+        v0.1.0
+      </h2>
+    </div>
+    
+  </a>
+
+  <div class="sidebar-search">
+    <span class="icon-search" aria-hidden="true"></span>
+    <input type="text" class="sidebar-searchInput" placeholder="search" aria-label="Search" autocomplete="off" />
+  </div>
+
+  <ul class="sidebar-listNav">
+    <li><a id="extras-list" href="#full-list">Pages</a></li>
+
+    
+      <li><a id="modules-list" href="#full-list">Modules</a></li>
+    
+
+    
+
+    
+      <li><a id="protocols-list" href="#full-list">Protocols</a></li>
+    
+
+    
+  </ul>
+  <div class="gradient"></div>
+  <ul id="full-list" class="sidebar-fullList"></ul>
+</section>
+
+<section class="content">
+  <div class="content-outer">
+    <div id="content" class="content-inner">
+
+
+<h1>Noizu Scaffolding</h1>
+
+<p>This library provides some general tools to reduce some boiler plate code around working with objects, performing CRUD, auditing changes, performing basic authorization checks, and working with entity references (foreign keys). It includes various concepts previously applied to some of our private projects including blade of eternity, lacrosse alerts, and solace club.</p>
+
+<h2 id="additional-documentation" class="section-heading">
+  <a href="#additional-documentation" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Additional Documentation
+</h2>
+
+
+<ul>
+<li><a href="http://noizu.github.io/ElixirScaffolding">Api Documentation</a></li>
+</ul>
+
+<h2 id="refs" class="section-heading">
+  <a href="#refs" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Refs
+</h2>
+
+
+<p>Refs provide a universal way for database records to reference other internal or external entities. They take the form of a tuple as follows: {:ref, Entity.Module, identifier} where
+Entity.Module is the type of entity we are referencing and provides a method entity(nmid) that is capable of fetching the entity referenced by the listed identifier.</p>
+
+<p>This makes it straight forward for a table to reference various other entity types in a generic way. Additionally the Noizu.ERP (Entity Reference Protocol) provides a straight forward
+mechanism for handling references with out knowing in advance if they have been expanded or their exact type.</p>
+
+<p>The EntityReferenceProtocol (alias Noizu.ERP, as: EntityReferenceProtocol) is defined as follows:</p>
+
+<pre><code class="elixir">  defprotocol Noizu.ERP do
+    @doc &quot;Cast to noizu reference object&quot;
+    def ref(obj)
+
+    @doc &quot;Cast to noizu string reference object&quot;
+    def sref(obj)
+
+    @doc &quot;Convert to persistence object. Options may be passed to coordinate actions like expanding embedded references.&quot;
+    def record(obj, options)
+
+    @doc &quot;Convert to persistence object Options may be passed to coordinate actions like expanding embedded references. (With transaction wrapper if required)&quot;
+    def record!(obj, options)
+
+    @doc &quot;Convert to scaffolding.struct object. Options may be passed to coordinate actions like expanding embedded references.&quot;
+    def entity(obj, options)
+
+    @doc &quot;Convert to scaffolding.struct object Options may be passed to coordinate actions like expanding embedded references. (With transaction wrapper if required)&quot;
+    def entity!(obj, options)
+  end # end defprotocol Noizu.ERP
+</code></pre>
+
+<p>Where the methods ref and sref convert any participating objects into {:ref, Module, id} and &quot;ref.module.id&quot; format respectively;  record and record! expand a reference into whatever format is used for db persistence (where options gives us a hook to dynamically adjust how records are converted to, for example, insert linked records if needed); and finally, where entity/2 and entity!/2 will insure our reference is in entity (struct) format.</p>
+
+<p>It is up to the library user to provide the defimpls needed to handle sref format strings &quot;ref.type.identifier&quot;, along with defimpls for any structs and database classes used.
+Additionally it is up to the library user to ensure that their struct classes implement the Noizu.Scaffolding.EntityBehaviour and that their structs and persistence records provide defimpls of the EntityReferenceProtocl to allow their conversion into ref, sref, record and entity format.</p>
+
+<h2 id="auditengine" class="section-heading">
+  <a href="#auditengine" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  AuditEngine
+</h2>
+
+
+<p>The Noizu.Scaffolding.RepoBehaviour will automatically make auditing calls as records are accessed and modified. This makes it very straight forward (provided an AuditEngine is defined) to generate robust audits of who has modified what and when.</p>
+
+<p>A possible implementation may look like the following mnesia table and defimpl. Note how the mnesia table is setup to allow us to easily search by
+entity, request token, time, or editor.</p>
+
+<pre><code class="elixir">defmodule YourProject.AuditEngine do
+  @behaviour Noizu.Scaffolding.AudingEngineBehaviour
+
+  def audit(event, details, entity, context, note \\ nil) do  
+    %MnesiaDb.AuditHistory{
+      entity: EntityReferenceProtocol.ref(entity),
+      event: event,
+      details: details,
+      time_stamp: DateTime.utc_now(),
+      request_token: context.token,
+      editor: EntityReferenceProtocol.ref(context.caller),
+      reason: context.reason,
+      note: note
+    } |&gt; MnesiaDb.AuditHistory.write
+    :ok
+  end
+
+  def audit!(event, details, entity, context, note \\ nil) do
+    Amnesia.Fragment.transaction do
+      audit(event, details, entity, context, note)
+    end
+  end
+end
+
+
+#-----------------------------------------------------------------------------
+# @AuditHistory
+#-----------------------------------------------------------------------------
+deftable AuditHistory,
+  [:entity, :event, :details, :time_stamp, :request_token, :editor, :reason, :note],
+  type: :bag,
+  index: [:request, :time_stamp, :editor],
+  fragmentation: [number: 5, copying: %{disk!: 1}] do
+  @moduledoc &quot;&quot;&quot;
+  Audit History - Basic structure for an Audit History Table
+  &quot;&quot;&quot;
+  @type t :: %AuditHistory{
+    entity: Types.entity_reference, # The object being modified.
+    event: atom | tuple, # the event being audited, such as create table.
+    details: any, # additional details about entry
+    time_stamp: DateTime.t, # utc.now() of audit entry.
+    request_token: String.t, # unique token that may be used to collate all audit logs related to a specific request.
+    editor: Types.entity_reference, # who made the change.
+    reason: String.t | nil, # calling.context reason (if any) provided when a call was made via api.
+    note: String.t | nil, # internal note about audit entry. Created when entry was created or added by a moderator later on.
+  }
+end # end deftable
+</code></pre>
+
+<h2 id="calling-context" class="section-heading">
+  <a href="#calling-context" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Calling Context
+</h2>
+
+
+<p>The Noizu.Scaffolding.CallingContext structure is used to pass information about API or related requests through out the system so that it is possible to confirm that a given caller is authorized to make changes, log who the caller was, apply global options to the request (such as expanding refs where found), and pass along a request token to allow admins to easily
+collate requests across systems.</p>
+
+<pre><code class="elixir">@type t :: %CallingContext{
+  caller: tuple,
+  token: String.t,
+  reason: String.t,
+  auth: Any,
+  options: Map.t,
+  vsn: float
+}
+</code></pre>
+
+<p>It is left to the user to implement the logic needed to populate a CallingContext with these values. A sample implementation is below.</p>
+
+<pre><code class="elixir">  alias Noizu.Scaffolding.CallingContext, as: CallingContext
+  def default_get_context(conn, params, opts \\ %{})
+  def default_get_context(conn, params, _opts) do
+    token = params[&quot;request-id&quot;] || case (get_resp_header(conn, &quot;x-request-id&quot;)) do
+      [] -&gt; CallingContext.generate_token()
+      [h|_t] -&gt; h
+    end
+    reason = params[&quot;call-reason&quot;] || case (get_req_header(conn, &quot;x-call-reason&quot;)) do
+      [] -&gt; nil
+      [h|_t] -&gt; h
+    end
+
+    expand_refs = nil # TODO - support ability for callers to request specific expansions.
+    expand_all_refs = if params[&quot;expand-all-refs&quot;] == &quot;true&quot; do
+      true
+    else
+      case get_req_header(conn, &quot;x-expand-all-refs&quot;) do
+        [] -&gt; false
+        [h|_t] -&gt; h == &quot;true&quot;
+      end
+    end
+
+    options = %{
+      expand_refs: expand_refs,
+      expand_all_refs: expand_all_refs
+    }
+
+    case Guardian.Plug.current_resource(conn) do
+      auth = %{&quot;identifier&quot; =&gt; user_identifier} -&gt;
+        %CallingContext{
+          caller: {:ref, user_identifier, SolaceBackend.Repos.UserRepo},
+          token: token,
+          reason: reason,
+          auth: auth,
+          options: options
+        }
+      _ -&gt;
+      %CallingContext{
+        caller: unauthenticated_ref(conn),
+        token: token,
+        reason: reason,
+        auth: nil,
+        options: options
+      }
+    end
+  end # end get_context/3
+
+  def get_ip(conn) do
+    case Plug.Conn.get_req_header(conn, &quot;x-forwarded-for&quot;) do
+      [h|_] -&gt; h
+      [] -&gt; conn.remote_ip |&gt; Tuple.to_list |&gt; Enum.join(&quot;.&quot;)
+      nil -&gt;  conn.remote_ip |&gt; Tuple.to_list |&gt; Enum.join(&quot;.&quot;)
+    end
+  end # end get_ip/1
+
+  def unauthenticated_ref(conn) do
+   {:ref, System.UnauthenticatedUser, get_ip(conn)}
+  end # end unauthenticated_ref/1  
+</code></pre>
+
+<h2 id="noizu-mnesia-identifiers-nmids" class="section-heading">
+  <a href="#noizu-mnesia-identifiers-nmids" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Noizu Mnesia Identifiers (NMIDs)
+</h2>
+
+
+<p>Internally we often use what I call NMIDs to allow for the creation of numerical (for look up speed) unique identifiers spread across multiple systems.
+You may use any id generation logic of your choice provided it can implement the Noizu.Scaffolding.NmidBehaviour</p>
+
+<p>The logic I use suffixes generated ids with a number that represents the node and, optionally, the component (long lived process) making the request. With the Mnesia backend used to track per node/component the current sequential id.  </p>
+
+<p>This logic and this library in turn is likely to go through heavy revision as I finalize my BladeOfEternity/NoizuRpg codebase. The current implementation I use is similiar to the following. However a simple <code>UUID.(:hex)</code> may be used if the user is not concerned with indexing/lookup efficiency. Or even a simple mnesia backed sequencer shared between all nodes.</p>
+
+<pre><code class="elixir">defmodule Noizu.Scaffolding.Nmid do
+  @behaviour Noizu.Scaffolding.NmidBehaviour
+  def generate(sed = {node_id, process}, opts \\ nil) do
+    MnesiaDB.NmidGenerator.wait()
+
+    current = case MnesiaDB.NmidGenerator.read(seq) do
+      %MnesiaDB.NmidGenerator{sequence: s} -&gt; s
+      :nil -&gt; 0
+    end
+
+    current = current + 1
+    %MnesiaDB.NmidGenerator{handle: seq, sequence: current}
+      |&gt; MnesiaDB.NmidGenerator.write
+
+    node_id = @unique_per_node_numerical_id
+    component_id = @component_lookup_table[sequencer] || 1
+
+    # calculate nmid,
+    # For example, (current 3, node 2, process 1 would generate 500_302), giving us 99 possible node ids, and 999 possible component ids.
+    ((node_id + (component_id*100)) + current * 100_000)
+  end
+end
+</code></pre>
+
+      <footer class="footer">
+        <p>
+          <span class="line">
+            Built using
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.16.2),
+          </span>
+          <span class="line">
+            designed by
+            <a href="https://twitter.com/dignifiedquire" target="_blank" title="@dignifiedquire">Friedel Ziegelmayer</a>.
+            </span>
+        </p>
+        <button class="night-mode-toggle"><span class="sr-only">Switch theme</span></button>
+      </footer>
+    </div>
+  </div>
+</section>
+</div>
+  <script src="dist/app-4988ddd06b.js"></script>
+  </body>
+</html>
+
