@@ -223,7 +223,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
       if (unquote(only.record!) && !unquote(override.record!)) do
         unquote(default_implementation).record_txn_implementation(__MODULE__, unquote(mnesia_table), unquote(repo_module))
       end
-      if (unquote(only.erp_imp!) && !unquote(override.erp_imp!)) do
+      if (unquote(only.erp_imp) && !unquote(override.erp_imp)) do
         unquote(default_implementation).erp_imp(__MODULE__, unquote(mnesia_table))
       end
     end # end quote
