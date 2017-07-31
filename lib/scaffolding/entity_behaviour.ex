@@ -41,19 +41,19 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
   # Default Implementations
   #-----------------------------------------------------------------------------
   defmodule DefaultImplementation do
-    @macrocallback ref_implementation(module :: Module, table :: Module, sref_prefix :: String.t) :: Macro.t
-    @macrocallback sref_implementation(module :: Module, table :: Module, sref_prefix :: String.t) :: Macro.t
-    @macrocallback entity_implementation(module :: Module, table :: Module, repo :: Module) :: Macro.t
-    @macrocallback entity_txn_implementation(module :: Module, table :: Module, repo :: Module) :: Macro.t
-    @macrocallback record_implementation(module :: Module, table :: Module, repo :: Module) :: Macro.t
-    @macrocallback record_txn_implementation(module :: Module, table :: Module, repo :: Module) :: Macro.t
+    @callback ref_implementation(module :: Module, table :: Module, sref_prefix :: String.t) :: Macro.t
+    @callback sref_implementation(module :: Module, table :: Module, sref_prefix :: String.t) :: Macro.t
+    @callback entity_implementation(module :: Module, table :: Module, repo :: Module) :: Macro.t
+    @callback entity_txn_implementation(module :: Module, table :: Module, repo :: Module) :: Macro.t
+    @callback record_implementation(module :: Module, table :: Module, repo :: Module) :: Macro.t
+    @callback record_txn_implementation(module :: Module, table :: Module, repo :: Module) :: Macro.t
 
     @doc """
       Noizu.ERP Implementation
     """
-    @macrocallback erp_imp(entity :: Module, table :: Module) :: Macro.t
+    @callback erp_imp(entity :: Module, table :: Module) :: Macro.t
 
-    defmacro ref_implementation(module, table, sref_prefix) do
+    def ref_implementation(module, table, sref_prefix) do
       quote do
         def ref(identifier) when is_integer(identifier) do
           {:ref, unquote(module), identifier}
@@ -76,7 +76,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
       end # end quote
     end # end defmacro ref
 
-    defmacro sref_implementation(module, table, sref_prefix) do
+    def sref_implementation(module, table, sref_prefix) do
       quote do
         def sref(identifier) when is_integer(identifier) do
           unquote(sref_prefix) <> identifier
@@ -99,7 +99,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
       end # end quote
     end # end defmacro ref
 
-    defmacro entity_implementation(module, table, repo) do
+    def entity_implementation(module, table, repo) do
       quote do
         def entity(%unquote(module){} = entity, options) when options == %{} or options == nil do
           entity
@@ -113,7 +113,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
       end # end quote
     end # end defmacro ref
 
-    defmacro entity_txn_implementation(module, table, repo) do
+    def entity_txn_implementation(module, table, repo) do
       quote do
         def entity!(%unquote(module){} = entity, options) when options == %{} or options == nil do
           entity
@@ -127,7 +127,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
       end # end quote
     end # end defmacro ref
 
-    defmacro record_implementation(module, table, repo) do
+    def record_implementation(module, table, repo) do
       quote do
         def record(%unquote(module){} = entity, options) when options == %{} or options == nil do
           unquote(module).as_record(entity)
@@ -142,7 +142,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
       end # end quote
     end # end defmacro ref
 
-    defmacro record_txn_implementation(module, table, repo) do
+    def record_txn_implementation(module, table, repo) do
       quote do
         def record!(%unquote(module){} = entity, options) when options == %{} or options == nil do
           unquote(module).as_record(entity)
@@ -157,7 +157,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
       end # end quote
     end # end defmacro ref
 
-    defmacro erp_imp(entity, table) do
+    def erp_imp(entity, table) do
       quote do
         defimpl Noizu.ERP, for: [unquote(entity), unquote(table)] do
           def ref(o), do: unquote(entity).ref(o)
@@ -199,7 +199,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
       # Repo
       if (unquote(repo_module) == :auto) do
         rm = Module.split(__MODULE__) |> Enum.slice(0..-2) |> Module.concat
-        m = (Module.split(__MODULE__) |> Enum.slice(-2..-1) |> Atom.to_string) <> "Repo"
+        m = (Module.split(__MODULE__) |> List.last()) <> "Repo"
         @repo_module Module.concat([rm, m])
       else
         @repo_module(unquote(repo_module))
