@@ -29,4 +29,10 @@ defmodule Noizu.Scaffolding.CallingContext do
     UUID.uuid4(:hex)
   end # end generate_token/0
 
+  def internal do
+    %__MODULE__{
+      caller: :internal,
+      auth: :internal
+    }
+  end
 end # end defmodule Noizu.Scaffolding.CallingContext

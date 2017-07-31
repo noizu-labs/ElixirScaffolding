@@ -137,13 +137,8 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
   """
   @callback entity() :: atom
 
-
-
-  defmodule Helpers do
-
-  end
-
   defmodule DefaultImplementation do
+
     def default_list(mod, %CallingContext{} = context, options) do
       strategy = options[:query_strategy] || mod.query_strategy()
       if options[:audit] do
