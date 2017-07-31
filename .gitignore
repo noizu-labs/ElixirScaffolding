@@ -14,3 +14,6 @@ erl_crash.dump
 /log
 log
 log.nonode@nohost
+
+# work around for occasional mix docs submodule issue
+tmp.git
