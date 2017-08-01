@@ -5,10 +5,10 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.16.2">
-    <title>Noizu.Scaffolding.EntityBehaviour – noizu_scaffolding v1.1.3</title>
+    <title>Noizu.Scaffolding.EntityBehaviour – noizu_scaffolding v1.1.4</title>
     <link rel="stylesheet" href="dist/app-268c9dc719.css" />
     
-    <script src="dist/sidebar_items-0eb00bda75.js"></script>
+    <script src="dist/sidebar_items-03c44d1589.js"></script>
   </head>
   <body data-type="modules">
     <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
@@ -27,7 +27,7 @@
         noizu_scaffolding
       </h1>
       <h2 class="sidebar-projectVersion">
-        v1.1.3
+        v1.1.4
       </h2>
     </div>
     
@@ -63,7 +63,7 @@
 
 
       <h1>
-        <small class="visible-xs">noizu_scaffolding v1.1.3</small>
+        <small class="visible-xs">noizu_scaffolding v1.1.4</small>
         Noizu.Scaffolding.EntityBehaviour <small>behaviour</small>
         
           <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L6" title="View Source" class="view-source" rel="help">
@@ -114,6 +114,12 @@
 </div>
 <div class="summary-row">
   <div class="summary-signature">
+    <a href="#t:entity_reference/0">entity_reference()</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
     <a href="#t:entity_string_reference/0">entity_string_reference()</a>
   </div>
   
@@ -155,44 +161,92 @@
     </h2>
     <div class="summary-row">
   <div class="summary-signature">
-    <a href="#c:entity/2">entity(arg0, options)</a>
+    <a href="#c:as_record/1">as_record(entity_obj)</a>
   </div>
+  
+    <div class="summary-synopsis"><p>Converts entity into record format. Aka extracts any fields used for indexing with the expected database table looking something like
+  <code>
+    %Table{
+      identifier: entity.identifier,
+      ...
+      any_indexable_fields: entity.indexable_field,
+      ...
+      entity: entity
+    }
+</code>
+  The default implementation assumes table structure if simply <code>%Table{identifier: entity.identifier, entity: entity}</code> therefore you will need to
+  overide this implementation if you have any indexable fields. Future versions of the entity behaviour will accept an indexable field option
+  that will insert expected fields and (if indicated) do simple type casting such as transforming DateTime.t fields into utc time stamps or
+  <code>{time_zone, year, month, day, hour, minute, second}</code> tuples for efficient range querying</p>
+</div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#c:entity!/2">entity!(arg0, options)</a>
+    <a href="#c:entity/2">entity(entity_reference, options)</a>
   </div>
+  
+    <div class="summary-synopsis"><p>Returns entity, given an identifier, ref tuple, ref string or other known identifier type.
+  Where an entity is a EntityBehaviour implementing struct</p>
+</div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#c:record/2">record(arg0, options)</a>
+    <a href="#c:entity!/2">entity!(entity_reference, options)</a>
   </div>
+  
+    <div class="summary-synopsis"><p>Returns entity, given an identifier, ref tuple, ref string or other known identifier type. Wrapping call in transaction if required.
+  Where an entity is a EntityBehaviour implementing struct</p>
+</div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#c:record!/2">record!(arg0, options)</a>
+    <a href="#c:record/2">record(entity_reference, options)</a>
   </div>
+  
+    <div class="summary-synopsis"><p>Returns record, given an identifier, ref tuple, ref string or other known identifier type.
+  Where a record is the raw mnesia table entry, as opposed to a EntityBehaviour based struct object</p>
+</div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#c:ref/1">ref(arg0)</a>
+    <a href="#c:record!/2">record!(entity_reference, options)</a>
   </div>
+  
+    <div class="summary-synopsis"><p>Returns record, given an identifier, ref tuple, ref string or other known identifier type. Wrapping call in transaction if required.
+  Where a record is the raw mnesia table entry, as opposed to a EntityBehaviour based struct object</p>
+</div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#c:sref/1">sref(arg0)</a>
+    <a href="#c:ref/1">ref(entity_reference)</a>
   </div>
+  
+    <div class="summary-synopsis"><p>Returns appropriate {:ref|:ext_ref, module, identifier} reference tuple</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#c:sref/1">sref(entity_reference)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Returns appropriate string encoded ref. E.g. ref.user.1234</p>
+</div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature">
     <a href="#c:sref_module/0">sref_module()</a>
   </div>
+  
+    <div class="summary-synopsis"><p>Returns the string used for preparing sref format strings. E.g. a <code>User</code> struct might use the string <code>&quot;user&quot;</code> as it&#39;s sref_module resulting in
+  sref strings like <code>ref.user.1234</code></p>
+</div>
   
 </div>
 
@@ -221,7 +275,7 @@
     </a>
     <span class="signature">details()</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L24" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L25" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -293,6 +347,37 @@
     
   </section>
 </div>
+<div class="detail" id="t:entity_reference/0">
+  
+  <div class="detail-header">
+    <a href="#t:entity_reference/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <span class="signature">entity_reference()</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L24" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+      <div class="specs">
+        
+          <pre><a href="#t:entity_reference/0">entity_reference</a> ::
+  <a href="#t:entity_obj/0">entity_obj</a> |
+  <a href="#t:entity_record/0">entity_record</a> |
+  <a href="#t:entity_tuple_reference/0">entity_tuple_reference</a> |
+  <a href="#t:entity_string_reference/0">entity_string_reference</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
 <div class="detail" id="t:entity_string_reference/0">
   
   <div class="detail-header">
@@ -356,7 +441,7 @@
     </a>
     <span class="signature">error()</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L25" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L26" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -410,7 +495,7 @@
     </a>
     <span class="signature">options()</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L26" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L27" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -444,16 +529,16 @@
             </a>
             Callbacks
           </h1>
-          <div class="detail" id="c:entity/2">
+          <div class="detail" id="c:as_record/1">
   
   <div class="detail-header">
-    <a href="#c:entity/2" class="detail-link" title="Link to this callback">
+    <a href="#c:as_record/1" class="detail-link" title="Link to this callback">
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this callback</span>
     </a>
-    <span class="signature">entity(arg0, options)</span>
+    <span class="signature">as_record(entity_obj)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L30" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L79" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -462,15 +547,56 @@
     
       <div class="specs">
         
-          <pre>entity(<a href="#t:entity_tuple_reference/0">entity_tuple_reference</a> | <a href="#t:entity_obj/0">entity_obj</a>, <a href="#t:options/0">options</a>) ::
-  <a href="#t:entity_obj/0">entity_obj</a> |
-  <a href="#t:error/0">error</a></pre>
+          <pre>as_record(<a href="#t:entity_obj/0">entity_obj</a>) :: <a href="#t:entity_record/0">entity_record</a> | <a href="#t:error/0">error</a></pre>
         
       </div>
     
   </div>
   <section class="docstring">
+    <p>Converts entity into record format. Aka extracts any fields used for indexing with the expected database table looking something like
+  <code>
+    %Table{
+      identifier: entity.identifier,
+      ...
+      any_indexable_fields: entity.indexable_field,
+      ...
+      entity: entity
+    }
+</code>
+  The default implementation assumes table structure if simply <code>%Table{identifier: entity.identifier, entity: entity}</code> therefore you will need to
+  overide this implementation if you have any indexable fields. Future versions of the entity behaviour will accept an indexable field option
+  that will insert expected fields and (if indicated) do simple type casting such as transforming DateTime.t fields into utc time stamps or
+  <code>{time_zone, year, month, day, hour, minute, second}</code> tuples for efficient range querying.</p>
+
+  </section>
+</div>
+<div class="detail" id="c:entity/2">
+  
+  <div class="detail-header">
+    <a href="#c:entity/2" class="detail-link" title="Link to this callback">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this callback</span>
+    </a>
+    <span class="signature">entity(entity_reference, options)</span>
     
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L43" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>entity(<a href="#t:entity_reference/0">entity_reference</a>, <a href="#t:options/0">options</a>) :: <a href="#t:entity_obj/0">entity_obj</a> | <a href="#t:error/0">error</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Returns entity, given an identifier, ref tuple, ref string or other known identifier type.
+  Where an entity is a EntityBehaviour implementing struct.</p>
+
   </section>
 </div>
 <div class="detail" id="c:entity!/2">
@@ -480,9 +606,9 @@
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this callback</span>
     </a>
-    <span class="signature">entity!(arg0, options)</span>
+    <span class="signature">entity!(entity_reference, options)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L31" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L49" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -491,15 +617,15 @@
     
       <div class="specs">
         
-          <pre>entity!(<a href="#t:entity_tuple_reference/0">entity_tuple_reference</a> | <a href="#t:entity_obj/0">entity_obj</a>, <a href="#t:options/0">options</a>) ::
-  <a href="#t:entity_obj/0">entity_obj</a> |
-  <a href="#t:error/0">error</a></pre>
+          <pre>entity!(<a href="#t:entity_reference/0">entity_reference</a>, <a href="#t:options/0">options</a>) :: <a href="#t:entity_obj/0">entity_obj</a> | <a href="#t:error/0">error</a></pre>
         
       </div>
     
   </div>
   <section class="docstring">
-    
+    <p>Returns entity, given an identifier, ref tuple, ref string or other known identifier type. Wrapping call in transaction if required.
+  Where an entity is a EntityBehaviour implementing struct.</p>
+
   </section>
 </div>
 <div class="detail" id="c:record/2">
@@ -509,7 +635,65 @@
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this callback</span>
     </a>
-    <span class="signature">record(arg0, options)</span>
+    <span class="signature">record(entity_reference, options)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L55" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>record(<a href="#t:entity_reference/0">entity_reference</a>, <a href="#t:options/0">options</a>) :: <a href="#t:entity_record/0">entity_record</a> | <a href="#t:error/0">error</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Returns record, given an identifier, ref tuple, ref string or other known identifier type.
+  Where a record is the raw mnesia table entry, as opposed to a EntityBehaviour based struct object.</p>
+
+  </section>
+</div>
+<div class="detail" id="c:record!/2">
+  
+  <div class="detail-header">
+    <a href="#c:record!/2" class="detail-link" title="Link to this callback">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this callback</span>
+    </a>
+    <span class="signature">record!(entity_reference, options)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L61" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>record!(<a href="#t:entity_reference/0">entity_reference</a>, <a href="#t:options/0">options</a>) :: <a href="#t:entity_record/0">entity_record</a> | <a href="#t:error/0">error</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Returns record, given an identifier, ref tuple, ref string or other known identifier type. Wrapping call in transaction if required.
+  Where a record is the raw mnesia table entry, as opposed to a EntityBehaviour based struct object.</p>
+
+  </section>
+</div>
+<div class="detail" id="c:ref/1">
+  
+  <div class="detail-header">
+    <a href="#c:ref/1" class="detail-link" title="Link to this callback">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this callback</span>
+    </a>
+    <span class="signature">ref(entity_reference)</span>
     
       <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L32" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
@@ -520,73 +704,14 @@
     
       <div class="specs">
         
-          <pre>record(<a href="#t:entity_tuple_reference/0">entity_tuple_reference</a> | <a href="#t:entity_obj/0">entity_obj</a>, <a href="#t:options/0">options</a>) ::
-  <a href="#t:entity_record/0">entity_record</a> |
-  <a href="#t:error/0">error</a></pre>
+          <pre>ref(<a href="#t:entity_reference/0">entity_reference</a>) :: <a href="#t:entity_tuple_reference/0">entity_tuple_reference</a> | <a href="#t:error/0">error</a></pre>
         
       </div>
     
   </div>
   <section class="docstring">
-    
-  </section>
-</div>
-<div class="detail" id="c:record!/2">
-  
-  <div class="detail-header">
-    <a href="#c:record!/2" class="detail-link" title="Link to this callback">
-      <span class="icon-link" aria-hidden="true"></span>
-      <span class="sr-only">Link to this callback</span>
-    </a>
-    <span class="signature">record!(arg0, options)</span>
-    
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L33" class="view-source" rel="help" title="View Source">
-       <span class="icon-code" aria-hidden="true"></span>
-       <span class="sr-only">View Source</span>
-     </a>
-    
-    
-    
-      <div class="specs">
-        
-          <pre>record!(<a href="#t:entity_tuple_reference/0">entity_tuple_reference</a> | <a href="#t:entity_obj/0">entity_obj</a>, <a href="#t:options/0">options</a>) ::
-  <a href="#t:entity_record/0">entity_record</a> |
-  <a href="#t:error/0">error</a></pre>
-        
-      </div>
-    
-  </div>
-  <section class="docstring">
-    
-  </section>
-</div>
-<div class="detail" id="c:ref/1">
-  
-  <div class="detail-header">
-    <a href="#c:ref/1" class="detail-link" title="Link to this callback">
-      <span class="icon-link" aria-hidden="true"></span>
-      <span class="sr-only">Link to this callback</span>
-    </a>
-    <span class="signature">ref(arg0)</span>
-    
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L28" class="view-source" rel="help" title="View Source">
-       <span class="icon-code" aria-hidden="true"></span>
-       <span class="sr-only">View Source</span>
-     </a>
-    
-    
-    
-      <div class="specs">
-        
-          <pre>ref(<a href="#t:entity_tuple_reference/0">entity_tuple_reference</a> | <a href="#t:entity_obj/0">entity_obj</a>) ::
-  <a href="#t:entity_tuple_reference/0">entity_tuple_reference</a> |
-  <a href="#t:error/0">error</a></pre>
-        
-      </div>
-    
-  </div>
-  <section class="docstring">
-    
+    <p>Returns appropriate {:ref|:ext_ref, module, identifier} reference tuple</p>
+
   </section>
 </div>
 <div class="detail" id="c:sref/1">
@@ -596,9 +721,9 @@
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this callback</span>
     </a>
-    <span class="signature">sref(arg0)</span>
+    <span class="signature">sref(entity_reference)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L29" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L37" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -607,15 +732,14 @@
     
       <div class="specs">
         
-          <pre>sref(<a href="#t:entity_tuple_reference/0">entity_tuple_reference</a> | <a href="#t:entity_obj/0">entity_obj</a>) ::
-  <a href="#t:entity_string_reference/0">entity_string_reference</a> |
-  <a href="#t:error/0">error</a></pre>
+          <pre>sref(<a href="#t:entity_reference/0">entity_reference</a>) :: <a href="#t:entity_string_reference/0">entity_string_reference</a> | <a href="#t:error/0">error</a></pre>
         
       </div>
     
   </div>
   <section class="docstring">
-    
+    <p>Returns appropriate string encoded ref. E.g. ref.user.1234</p>
+
   </section>
 </div>
 <div class="detail" id="c:sref_module/0">
@@ -627,7 +751,7 @@
     </a>
     <span class="signature">sref_module()</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L34" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L85" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -642,7 +766,9 @@
     
   </div>
   <section class="docstring">
-    
+    <p>Returns the string used for preparing sref format strings. E.g. a <code>User</code> struct might use the string <code>&quot;user&quot;</code> as it&#39;s sref_module resulting in
+  sref strings like <code>ref.user.1234</code>.</p>
+
   </section>
 </div>
 
