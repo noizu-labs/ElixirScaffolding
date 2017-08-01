@@ -4,7 +4,7 @@ Amnesia Style Guide
 The following are the current Noizu conventions and notes for Amnesia databases, repos and entity objects. Feel free to grab this document and modify
 for your own uses to help onboard your fellow developers on how the project works and naming conventions expected by the framework.
 
-This document has been modified from the (original)[https://github.com/noizu/ElixirScaffolding/markdown/sample_conventions_doc.md]
+This document has been modified from the (original)[https://github.com/noizu/ElixirScaffolding/blob/master/markdown/sample_conventions_doc.md]
 
 # Version Control
 We use a NoizuLabs, Inc. Amnesia friendly schema versioning [tool](https://github.com/noizu/MnesiaVersioning).
@@ -40,12 +40,12 @@ Date time entries should be stored as the elixir native `DateTime` type when pos
 E.g.
 
 ```
- %__YOU_APP__.Foo{
+ %__YOUR_APP___.Foo{
    identifier: 1234,
    created_on: date_time_object
  }
 
- %__YOU_APP__.Database.FooTable{
+ %__YOUR_APP___.Database.FooTable{
    identifier: 1234,
    created_on: foo.created_on |> DateTime.to_unix(),
    entity: foo
@@ -60,19 +60,19 @@ Identifier fields should be named :identifier not nmid, nmaid, id, appengine_id,
 
 ## Entity References
 
-The Noizu ElixirScaffolding framework relies heavily on what we call *Entity References.* Entity references are tupples that include an indicator that this tuple is a reference, a module that can obtain an object from it's persistence layer/source and an identifier. A entity reference for a User object for example may look like `{:ref, __YOU_APP__.User, 1234}`, The underlying object may then be obtained using the `Noizu.EntityReferenceProtocol.entity!` method.
+The Noizu ElixirScaffolding framework relies heavily on what we call *Entity References.* Entity references are tupples that include an indicator that this tuple is a reference, a module that can obtain an object from it's persistence layer/source and an identifier. A entity reference for a User object for example may look like `{:ref, __YOUR_APP___.User, 1234}`, The underlying object may then be obtained using the `Noizu.EntityReferenceProtocol.entity!` method.
 
-E.g. `Noizu.EntityReferenceProtocol.entity!({:ref, __YOU_APP__.User, 1234}) -> %User{identifier: 1234, ...}`
+E.g. `Noizu.EntityReferenceProtocol.entity!({:ref, __YOUR_APP___.User, 1234}) -> %User{identifier: 1234, ...}`
 
 ### SREF
 
- For passing data to non tuple supporting environments such as javascript and appengine the Noizu.EntityReferenceProtocol provides a sref implementation that converts refs to string format. `{:ref, __YOU_APP__.User, 1234}` in sref format for example would become `"ref.user.1234"`. Behind the scenes entities provide their sref prefix `user` as a `use` argument when extending the `Noizu.Scaffolding.EntityBehaviour`.
+ For passing data to non tuple supporting environments such as javascript and appengine the Noizu.EntityReferenceProtocol provides a sref implementation that converts refs to string format. `{:ref, __YOUR_APP___.User, 1234}` in sref format for example would become `"ref.user.1234"`. Behind the scenes entities provide their sref prefix `user` as a `use` argument when extending the `Noizu.Scaffolding.EntityBehaviour`.
 
  e.g.
  ```
- defmodule __YOU_APP__.User do
+ defmodule __YOUR_APP___.User do
     use Noizu.Scaffolding.EntityBehaviour,
-      mnesia_table: __YOU_APP__.Database.UserTable,
+      mnesia_table: __YOUR_APP___.Database.UserTable,
       sref_module: "user"    
  end
  ```
@@ -82,8 +82,8 @@ E.g. `Noizu.EntityReferenceProtocol.entity!({:ref, __YOU_APP__.User, 1234}) -> %
 ```
   defimpl Noizu.ERP, for: BitString do
     @module_lookup(%{
-      __YOU_APP__.User.sref_module() => __YOU_APP__.User
-      __YOU_APP__.User.Location.sref_module() => __YOU_APP__.User.Location
+      __YOUR_APP___.User.sref_module() => __YOUR_APP___.User
+      __YOUR_APP___.User.Location.sref_module() => __YOUR_APP___.User.Location
     })
 
     def lookup_module(sref_module) do
