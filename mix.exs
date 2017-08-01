@@ -3,7 +3,7 @@ defmodule Noizu.Scaffolding.Mixfile do
 
   def project do
     [app: :noizu_scaffolding,
-     version: "1.1.2",
+     version: "1.1.3",
      elixir: "~> 1.4",
      package: package(),
      deps: deps(),
@@ -36,7 +36,7 @@ defmodule Noizu.Scaffolding.Mixfile do
   defp docs do
     [
       source_url_pattern: "https://github.com/noizu/ElixirScaffolding/blob/master/%{path}#L%{line}",
-      extras: ["README.md"]
+      extras: ["README.md", "markdown/sample_conventions_doc.md"]
     ]
   end # end docs
 

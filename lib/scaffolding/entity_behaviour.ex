@@ -31,11 +31,11 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
   @callback entity!(entity_tuple_reference | entity_obj, options) :: entity_obj | error
   @callback record(entity_tuple_reference | entity_obj, options) :: entity_record | error
   @callback record!(entity_tuple_reference | entity_obj, options) :: entity_record | error
-
+  @callback sref_module() :: String.t
   #-----------------------------------------------------------------------------
   # Defines
   #-----------------------------------------------------------------------------
-  @methods([:ref, :sref, :entity, :entity!, :record, :record!, :erp_imp])
+  @methods([:ref, :sref, :entity, :entity!, :record, :record!, :erp_imp, :sref_module])
 
   #-----------------------------------------------------------------------------
   # Default Implementations
@@ -190,7 +190,8 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
     # Default Implementation Provider
     default_implementation = Keyword.get(options, :default_implementation, DefaultImplementation)
 
-    sref_prefix = Keyword.get(options, :sref_prefix, "ref.unsupported")
+    sm = Keyword.get(options, :sref_module, "unsupported")
+    sref_prefix = "ref." <> sm <> "."
 
     quote do
       import unquote(__MODULE__)
@@ -203,6 +204,12 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
         @repo_module Module.concat([rm, m])
       else
         @repo_module(unquote(repo_module))
+      end
+
+      if (unquote(only.sref_module) && !unquote(override.sref_module)) do
+        def sref_module() do
+          unquote(sm)
+        end
       end
 
       if (unquote(only.ref) && !unquote(override.ref)) do
