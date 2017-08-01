@@ -21,21 +21,73 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
   @type entity_record :: any
   @type entity_tuple_reference :: {:ref, module, nmid}
   @type entity_string_reference :: String.t
+  @type entity_reference :: entity_obj | entity_record | entity_tuple_reference | entity_string_reference
   @type details :: any
   @type error :: {:error, details}
   @type options :: Map.t | nil
 
-  @callback ref(entity_tuple_reference | entity_obj) :: entity_tuple_reference | error
-  @callback sref(entity_tuple_reference | entity_obj) :: entity_string_reference | error
-  @callback entity(entity_tuple_reference | entity_obj, options) :: entity_obj | error
-  @callback entity!(entity_tuple_reference | entity_obj, options) :: entity_obj | error
-  @callback record(entity_tuple_reference | entity_obj, options) :: entity_record | error
-  @callback record!(entity_tuple_reference | entity_obj, options) :: entity_record | error
+  @doc """
+    Returns appropriate {:ref|:ext_ref, module, identifier} reference tuple
+  """
+  @callback ref(entity_reference) :: entity_tuple_reference | error
+
+  @doc """
+    Returns appropriate string encoded ref. E.g. ref.user.1234
+  """
+  @callback sref(entity_reference) :: entity_string_reference | error
+
+  @doc """
+    Returns entity, given an identifier, ref tuple, ref string or other known identifier type.
+    Where an entity is a EntityBehaviour implementing struct.
+  """
+  @callback entity(entity_reference, options) :: entity_obj | error
+
+  @doc """
+    Returns entity, given an identifier, ref tuple, ref string or other known identifier type. Wrapping call in transaction if required.
+    Where an entity is a EntityBehaviour implementing struct.
+  """
+  @callback entity!(entity_reference, options) :: entity_obj | error
+
+  @doc """
+    Returns record, given an identifier, ref tuple, ref string or other known identifier type.
+    Where a record is the raw mnesia table entry, as opposed to a EntityBehaviour based struct object.
+  """
+  @callback record(entity_reference, options) :: entity_record | error
+
+  @doc """
+    Returns record, given an identifier, ref tuple, ref string or other known identifier type. Wrapping call in transaction if required.
+    Where a record is the raw mnesia table entry, as opposed to a EntityBehaviour based struct object.
+  """
+  @callback record!(entity_reference, options) :: entity_record | error
+
+  @doc """
+    Converts entity into record format. Aka extracts any fields used for indexing with the expected database table looking something like
+    ```
+      %Table{
+        identifier: entity.identifier,
+        ...
+        any_indexable_fields: entity.indexable_field,
+        ...
+        entity: entity
+      }
+    ```
+    The default implementation assumes table structure if simply `%Table{identifier: entity.identifier, entity: entity}` therefore you will need to
+    overide this implementation if you have any indexable fields. Future versions of the entity behaviour will accept an indexable field option
+    that will insert expected fields and (if indicated) do simple type casting such as transforming DateTime.t fields into utc time stamps or
+    `{time_zone, year, month, day, hour, minute, second}` tuples for efficient range querying.
+  """
+  @callback as_record(entity_obj) :: entity_record | error
+
+  @doc """
+    Returns the string used for preparing sref format strings. E.g. a `User` struct might use the string ``"user"`` as it's sref_module resulting in
+    sref strings like `ref.user.1234`.
+  """
   @callback sref_module() :: String.t
+
   #-----------------------------------------------------------------------------
   # Defines
   #-----------------------------------------------------------------------------
-  @methods([:ref, :sref, :entity, :entity!, :record, :record!, :erp_imp, :sref_module])
+  @methods([:ref, :sref, :entity, :entity!, :record, :record!, :erp_imp, :as_record, :sref_module])
 
   #-----------------------------------------------------------------------------
   # Default Implementations
@@ -206,12 +258,24 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
         @repo_module(unquote(repo_module))
       end
 
+      if (unquote(only.as_record) && !unquote(override.as_record)) do
+        def as_record(%__MODULE__{} = this) do
+          %unquote(mnesia_table) {
+            identifier: this.identifier,
+            entity: this
+          }
+        end
+      end
+
       if (unquote(only.sref_module) && !unquote(override.sref_module)) do
         def sref_module() do
           unquote(sm)
         end
       end
 
+      #-------------------------------------------------------------------------
+      # Default Implementation from default_implementation behaviour
+      #-------------------------------------------------------------------------
       if (unquote(only.ref) && !unquote(override.ref)) do
         unquote(default_implementation).ref_implementation(__MODULE__, unquote(mnesia_table), unquote(sref_prefix))
       end
