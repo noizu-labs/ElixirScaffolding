@@ -259,7 +259,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
       end
 
       if (unquote(only.as_record) && !unquote(override.as_record)) do
-        def as_record(%__MODULE__{} = this) do
+        def as_record(this) do
           %unquote(mnesia_table) {
             identifier: this.identifier,
             entity: this
