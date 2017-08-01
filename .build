@@ -5,7 +5,7 @@ fonts/icomoon.eot
 fonts/icomoon.svg
 fonts/icomoon.ttf
 fonts/icomoon.woff
-dist/sidebar_items-03c44d1589.js
+dist/sidebar_items-f3d3c8727b.js
 api-reference.html
 readme.html
 sample_conventions_doc.html
@@ -19,5 +19,6 @@ Noizu.Scaffolding.Query.EntityRefFilteringBehaviour.html
 Noizu.Scaffolding.QueryBehaviour.html
 Noizu.Scaffolding.RepoBehaviour.html
 Noizu.Scaffolding.RepoBehaviour.DefaultImplementation.html
+Noizu.Scaffolding.UnsupportedModule.html
 Noizu.ERP.html
 index.html

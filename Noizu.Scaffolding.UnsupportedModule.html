@@ -1,0 +1,492 @@
+    <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.16.2">
+    <title>Noizu.Scaffolding.UnsupportedModule – noizu_scaffolding v1.1.4</title>
+    <link rel="stylesheet" href="dist/app-268c9dc719.css" />
+    
+    <script src="dist/sidebar_items-f3d3c8727b.js"></script>
+  </head>
+  <body data-type="modules">
+    <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
+
+    <div class="main">
+<button class="sidebar-toggle">
+  <span class="icon-menu" aria-hidden="true"></span>
+  <span class="sr-only">Toggle Sidebar</span>
+</button>
+<section class="sidebar">
+
+  
+  <a href="api-reference.html" class="sidebar-projectLink">
+    <div class="sidebar-projectDetails">
+      <h1 class="sidebar-projectName">
+        noizu_scaffolding
+      </h1>
+      <h2 class="sidebar-projectVersion">
+        v1.1.4
+      </h2>
+    </div>
+    
+  </a>
+
+  <div class="sidebar-search">
+    <span class="icon-search" aria-hidden="true"></span>
+    <input type="text" class="sidebar-searchInput" placeholder="search" aria-label="Search" autocomplete="off" />
+  </div>
+
+  <ul class="sidebar-listNav">
+    <li><a id="extras-list" href="#full-list">Pages</a></li>
+
+    
+      <li><a id="modules-list" href="#full-list">Modules</a></li>
+    
+
+    
+
+    
+      <li><a id="protocols-list" href="#full-list">Protocols</a></li>
+    
+
+    
+  </ul>
+  <div class="gradient"></div>
+  <ul id="full-list" class="sidebar-fullList"></ul>
+</section>
+
+<section class="content">
+  <div class="content-outer">
+    <div id="content" class="content-inner">
+
+
+      <h1>
+        <small class="visible-xs">noizu_scaffolding v1.1.4</small>
+        Noizu.Scaffolding.UnsupportedModule
+        
+          <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/unsupported_module.ex#L1" title="View Source" class="view-source" rel="help">
+            <span class="icon-code" aria-hidden="true"></span>
+            <span class="sr-only">View Source</span>
+          </a>
+        
+      </h1>
+
+      
+
+      
+        <section id="summary" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#summary">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+            Summary
+          </h1>
+          
+  <div class="summary-types summary">
+    <h2>
+      <a href="#types">Types</a>
+    </h2>
+    <div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:t/0">t()</a>
+  </div>
+  
+</div>
+
+  </div>
+
+
+          
+  <div class="summary-functions summary">
+    <h2>
+      <a href="#functions">Functions</a>
+    </h2>
+    <div class="summary-row">
+  <div class="summary-signature">
+    <a href="#as_record/1">as_record(item)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Converts entity into record format. Aka extracts any fields used for indexing with the expected database table looking something like
+  <code>
+    %Table{
+      identifier: entity.identifier,
+      ...
+      any_indexable_fields: entity.indexable_field,
+      ...
+      entity: entity
+    }
+</code>
+  The default implementation assumes table structure if simply <code>%Table{identifier: entity.identifier, entity: entity}</code> therefore you will need to
+  overide this implementation if you have any indexable fields. Future versions of the entity behaviour will accept an indexable field option
+  that will insert expected fields and (if indicated) do simple type casting such as transforming DateTime.t fields into utc time stamps or
+  <code>{time_zone, year, month, day, hour, minute, second}</code> tuples for efficient range querying</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#entity/2">entity(item, options)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Returns entity, given an identifier, ref tuple, ref string or other known identifier type.
+  Where an entity is a EntityBehaviour implementing struct</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#entity!/2">entity!(item, options)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Returns entity, given an identifier, ref tuple, ref string or other known identifier type. Wrapping call in transaction if required.
+  Where an entity is a EntityBehaviour implementing struct</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#record/2">record(item, options)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Returns record, given an identifier, ref tuple, ref string or other known identifier type.
+  Where a record is the raw mnesia table entry, as opposed to a EntityBehaviour based struct object</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#record!/2">record!(item, options)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Returns record, given an identifier, ref tuple, ref string or other known identifier type. Wrapping call in transaction if required.
+  Where a record is the raw mnesia table entry, as opposed to a EntityBehaviour based struct object</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#ref/1">ref(item)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Returns appropriate {:ref|:ext_ref, module, identifier} reference tuple</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#sref/1">sref(item)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Returns appropriate string encoded ref. E.g. ref.user.1234</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#sref_module/0">sref_module()</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Returns the string used for preparing sref format strings. E.g. a <code>User</code> struct might use the string <code>&quot;user&quot;</code> as it&#39;s sref_module resulting in
+  sref strings like <code>ref.user.1234</code></p>
+</div>
+  
+</div>
+
+  </div>
+
+
+          
+
+        </section>
+      
+
+      
+        <section id="types" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#types">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+            Types
+          </h1>
+          <div class="types-list">
+            <div class="detail" id="t:t/0">
+  
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <span class="signature">t()</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/unsupported_module.ex#L2" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>t() :: %Noizu.Scaffolding.UnsupportedModule{reference: any}</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+
+          </div>
+        </section>
+      
+
+      
+        <section id="functions" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#functions">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+            Functions
+          </h1>
+          <div class="detail" id="as_record/1">
+  
+  <div class="detail-header">
+    <a href="#as_record/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">as_record(item)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/unsupported_module.ex#L17" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p>Converts entity into record format. Aka extracts any fields used for indexing with the expected database table looking something like
+  <code>
+    %Table{
+      identifier: entity.identifier,
+      ...
+      any_indexable_fields: entity.indexable_field,
+      ...
+      entity: entity
+    }
+</code>
+  The default implementation assumes table structure if simply <code>%Table{identifier: entity.identifier, entity: entity}</code> therefore you will need to
+  overide this implementation if you have any indexable fields. Future versions of the entity behaviour will accept an indexable field option
+  that will insert expected fields and (if indicated) do simple type casting such as transforming DateTime.t fields into utc time stamps or
+  <code>{time_zone, year, month, day, hour, minute, second}</code> tuples for efficient range querying.</p>
+
+<p>Callback implementation for <a href="Noizu.Scaffolding.EntityBehaviour.html#c:as_record/1"><code>Noizu.Scaffolding.EntityBehaviour.as_record/1</code></a>.</p>
+
+  </section>
+</div>
+<div class="detail" id="entity/2">
+  
+  <div class="detail-header">
+    <a href="#entity/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">entity(item, options)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/unsupported_module.ex#L13" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p>Returns entity, given an identifier, ref tuple, ref string or other known identifier type.
+  Where an entity is a EntityBehaviour implementing struct.</p>
+
+<p>Callback implementation for <a href="Noizu.Scaffolding.EntityBehaviour.html#c:entity/2"><code>Noizu.Scaffolding.EntityBehaviour.entity/2</code></a>.</p>
+
+  </section>
+</div>
+<div class="detail" id="entity!/2">
+  
+  <div class="detail-header">
+    <a href="#entity!/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">entity!(item, options)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/unsupported_module.ex#L14" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p>Returns entity, given an identifier, ref tuple, ref string or other known identifier type. Wrapping call in transaction if required.
+  Where an entity is a EntityBehaviour implementing struct.</p>
+
+<p>Callback implementation for <a href="Noizu.Scaffolding.EntityBehaviour.html#c:entity!/2"><code>Noizu.Scaffolding.EntityBehaviour.entity!/2</code></a>.</p>
+
+  </section>
+</div>
+<div class="detail" id="record/2">
+  
+  <div class="detail-header">
+    <a href="#record/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">record(item, options)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/unsupported_module.ex#L15" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p>Returns record, given an identifier, ref tuple, ref string or other known identifier type.
+  Where a record is the raw mnesia table entry, as opposed to a EntityBehaviour based struct object.</p>
+
+<p>Callback implementation for <a href="Noizu.Scaffolding.EntityBehaviour.html#c:record/2"><code>Noizu.Scaffolding.EntityBehaviour.record/2</code></a>.</p>
+
+  </section>
+</div>
+<div class="detail" id="record!/2">
+  
+  <div class="detail-header">
+    <a href="#record!/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">record!(item, options)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/unsupported_module.ex#L16" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p>Returns record, given an identifier, ref tuple, ref string or other known identifier type. Wrapping call in transaction if required.
+  Where a record is the raw mnesia table entry, as opposed to a EntityBehaviour based struct object.</p>
+
+<p>Callback implementation for <a href="Noizu.Scaffolding.EntityBehaviour.html#c:record!/2"><code>Noizu.Scaffolding.EntityBehaviour.record!/2</code></a>.</p>
+
+  </section>
+</div>
+<div class="detail" id="ref/1">
+  
+  <div class="detail-header">
+    <a href="#ref/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">ref(item)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/unsupported_module.ex#L11" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p>Returns appropriate {:ref|:ext_ref, module, identifier} reference tuple</p>
+
+<p>Callback implementation for <a href="Noizu.Scaffolding.EntityBehaviour.html#c:ref/1"><code>Noizu.Scaffolding.EntityBehaviour.ref/1</code></a>.</p>
+
+  </section>
+</div>
+<div class="detail" id="sref/1">
+  
+  <div class="detail-header">
+    <a href="#sref/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">sref(item)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/unsupported_module.ex#L12" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p>Returns appropriate string encoded ref. E.g. ref.user.1234</p>
+
+<p>Callback implementation for <a href="Noizu.Scaffolding.EntityBehaviour.html#c:sref/1"><code>Noizu.Scaffolding.EntityBehaviour.sref/1</code></a>.</p>
+
+  </section>
+</div>
+<div class="detail" id="sref_module/0">
+  
+  <div class="detail-header">
+    <a href="#sref_module/0" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">sref_module()</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/unsupported_module.ex#L18" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p>Returns the string used for preparing sref format strings. E.g. a <code>User</code> struct might use the string <code>&quot;user&quot;</code> as it&#39;s sref_module resulting in
+  sref strings like <code>ref.user.1234</code>.</p>
+
+<p>Callback implementation for <a href="Noizu.Scaffolding.EntityBehaviour.html#c:sref_module/0"><code>Noizu.Scaffolding.EntityBehaviour.sref_module/0</code></a>.</p>
+
+  </section>
+</div>
+
+        </section>
+      
+
+      
+          <footer class="footer">
+        <p>
+          <span class="line">
+            Built using
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.16.2),
+          </span>
+          <span class="line">
+            designed by
+            <a href="https://twitter.com/dignifiedquire" target="_blank" title="@dignifiedquire">Friedel Ziegelmayer</a>.
+            </span>
+        </p>
+        <button class="night-mode-toggle"><span class="sr-only">Switch theme</span></button>
+      </footer>
+    </div>
+  </div>
+</section>
+</div>
+  <script src="dist/app-4988ddd06b.js"></script>
+  </body>
+</html>
+
