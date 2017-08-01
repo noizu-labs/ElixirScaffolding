@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.16.2">
+    <title>Version Control – noizu_scaffolding v1.1.3</title>
+    <link rel="stylesheet" href="dist/app-268c9dc719.css" />
+    
+    <script src="dist/sidebar_items-0eb00bda75.js"></script>
+  </head>
+  <body data-type="extras">
+    <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
+
+<div class="main">
+<button class="sidebar-toggle">
+  <span class="icon-menu" aria-hidden="true"></span>
+  <span class="sr-only">Toggle Sidebar</span>
+</button>
+<section class="sidebar">
+
+  
+  <a href="api-reference.html" class="sidebar-projectLink">
+    <div class="sidebar-projectDetails">
+      <h1 class="sidebar-projectName">
+        noizu_scaffolding
+      </h1>
+      <h2 class="sidebar-projectVersion">
+        v1.1.3
+      </h2>
+    </div>
+    
+  </a>
+
+  <div class="sidebar-search">
+    <span class="icon-search" aria-hidden="true"></span>
+    <input type="text" class="sidebar-searchInput" placeholder="search" aria-label="Search" autocomplete="off" />
+  </div>
+
+  <ul class="sidebar-listNav">
+    <li><a id="extras-list" href="#full-list">Pages</a></li>
+
+    
+      <li><a id="modules-list" href="#full-list">Modules</a></li>
+    
+
+    
+
+    
+      <li><a id="protocols-list" href="#full-list">Protocols</a></li>
+    
+
+    
+  </ul>
+  <div class="gradient"></div>
+  <ul id="full-list" class="sidebar-fullList"></ul>
+</section>
+
+<section class="content">
+  <div class="content-outer">
+    <div id="content" class="content-inner">
+
+
+<h2 id="amnesia-style-guide" class="section-heading">
+  <a href="#amnesia-style-guide" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Amnesia Style Guide
+</h2>
+
+
+<p>The following are the current Noizu conventions and notes for Amnesia databases, repos and entity objects. Feel free to grab this document and modify
+for your own uses to help onboard your fellow developers on how the project works and naming conventions expected by the framework.</p>
+
+<p>This document has been modified from the (original)[<a href="https://github.com/noizu/ElixirScaffolding/markdown/sample_conventions_doc.md">https://github.com/noizu/ElixirScaffolding/markdown/sample_conventions_doc.md</a>]</p>
+
+<h1>Version Control</h1>
+
+<p>We use a NoizuLabs, Inc. Amnesia friendly schema versioning <a href="https://github.com/noizu/MnesiaVersioning">tool</a>.
+A versioning database <code>Noizu.MnesiaVersioning.Database</code> tracks which change sets have been applied. Change sets themselves (including rollback methods) are defined in <code>lib/__your_app__/versioning/schema_provider.ex</code> and related files.</p>
+
+<p>@See <a href="https://github.com/noizu/MnesiaVersioning">Noizu MnesiaVersioning</a> for more details on using this tool.</p>
+
+<h1>Naming Convention</h1>
+
+<h2 id="entity-tables" class="section-heading">
+  <a href="#entity-tables" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Entity Tables
+</h2>
+
+
+<ul>
+<li>Database Tables should be in singular form and end in the word Table. <code>UserTable</code> not <code>User</code> or <code>Users</code></li>
+</ul>
+
+<h2 id="nesting" class="section-heading">
+  <a href="#nesting" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Nesting
+</h2>
+
+
+<ul>
+<li>Logical name spacing should use a period between levels.  <code>LogicalParent.LogicalChildTable</code>, e.g. <code>User.ExtendedInfoTable</code></li>
+</ul>
+
+<h2 id="join-tables" class="section-heading">
+  <a href="#join-tables" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Join Tables
+</h2>
+
+
+<ul>
+<li>One to One Join Tables should be in singular form with a <code>2</code> to indicate this is a join table <code>User2PrimaryEmailTable</code> not <code>UsersPrimaryEmails</code> or <code>User.PrimaryEmail</code>, etc.</li>
+<li>One to Many Join Tables should be in singular-plural form with a <code>2</code> to indicate join.  <code>User2EmailsTable</code> not <code>UsersEmails</code>, or <code>UserEmail</code></li>
+<li>Many to Many Join Tables should be in plural-plural form with a <code>2</code> to indicate join.
+<code>Users2GroupsTable</code>
+Nested parents can be dropped if no ambiguity will be present, nesting periods should be removed <code>UserGroup2GroupRolesTable</code> not <code>User.Group2Group.RolesTable</code></li>
+</ul>
+
+<h2 id="table-types" class="section-heading">
+  <a href="#table-types" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Table Types
+</h2>
+
+
+<p>In general most tables should use :set or :ordered<em>set table type. The exception would be EAV, and Audit tables where the <code>:bag</code> type is preferred. The heavily leveraged Noizu ElxirScaffolding framework works best with numeric primary key based :set/:ordered</em>set tables.</p>
+
+<p>@see (Noizu ElixirScaffolding Framework)[<a href="https://github.com/noizu/ElixirScaffolding">https://github.com/noizu/ElixirScaffolding</a>]</p>
+
+<h1>Coding Conventions</h1>
+
+<h2 id="date-time" class="section-heading">
+  <a href="#date-time" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Date Time
+</h2>
+
+
+<p>Date time entries should be stored as the elixir native <a href="https://hexdocs.pm/elixir/DateTime.html"><code>DateTime</code></a> type when possible. For efficient range searches the underlying DateTime objects may be converted to <code>Unix Epoch</code> time stamps and or <code>{year, month, day, hour, minute, second}</code> tuples or a combination of both but should when possible remain as standard DateTime object in any actual entity object.</p>
+
+<p>E.g.</p>
+
+<pre><code class="elixir"> %__YOU_APP__.Foo{
+   identifier: 1234,
+   created_on: date_time_object
+ }
+
+ %__YOU_APP__.Database.FooTable{
+   identifier: 1234,
+   created_on: foo.created_on |&gt; DateTime.to_unix(),
+   entity: foo
+ }
+</code></pre>
+
+<p>All <code>Unix Epoch</code> should be stored in UTC time. for tuples the actual time_zone should be indicated as the first param <code>{:utc, year, month, ...}</code></p>
+
+<h2 id="identifiers" class="section-heading">
+  <a href="#identifiers" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Identifiers
+</h2>
+
+
+<p>Identifier fields should be named :identifier not nmid, nmaid, id, appengine_id, etc. and when possible should be numeric to avoid the need to override default noizu elixir scaffolding behaviour.</p>
+
+<h2 id="entity-references" class="section-heading">
+  <a href="#entity-references" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Entity References
+</h2>
+
+
+<p>The Noizu ElixirScaffolding framework relies heavily on what we call <em>Entity References.</em> Entity references are tupples that include an indicator that this tuple is a reference, a module that can obtain an object from it&#39;s persistence layer/source and an identifier. A entity reference for a User object for example may look like <code>{:ref, __YOU_APP__.User, 1234}</code>, The underlying object may then be obtained using the <code>Noizu.EntityReferenceProtocol.entity!</code> method.</p>
+
+<p>E.g. <code>Noizu.EntityReferenceProtocol.entity!({:ref, __YOU_APP__.User, 1234}) -&gt; %User{identifier: 1234, ...}</code></p>
+
+<h3 id="sref" class="section-heading">
+  <a href="#sref" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  SREF
+</h3>
+
+
+<p>For passing data to non tuple supporting environments such as javascript and appengine the Noizu.EntityReferenceProtocol provides a sref implementation that converts refs to string format. <code>{:ref, __YOU_APP__.User, 1234}</code> in sref format for example would become <code>&quot;ref.user.1234&quot;</code>. Behind the scenes entities provide their sref prefix <code>user</code> as a <code>use</code> argument when extending the <a href="Noizu.Scaffolding.EntityBehaviour.html"><code>Noizu.Scaffolding.EntityBehaviour</code></a>.</p>
+
+<p>e.g.
+ <code>
+ defmodule __YOU_APP__.User do
+    use Noizu.Scaffolding.EntityBehaviour,
+      mnesia_table: __YOU_APP__.Database.UserTable,
+      sref_module: &quot;user&quot;    
+ end
+</code></p>
+
+<p>The Noizu.Scaffolding.EntityBehaviour behaviour provides the default sref implementation to convert objects into sref format. However to convert sref strings back into ref, entity or record format the implementer must provide a defimple of the Noizu.EntityReferenceProtocol protocol for the bitstring type. Below is one possible implementation.</p>
+
+<pre><code class="elixir">  defimpl Noizu.ERP, for: BitString do
+    @module_lookup(%{
+      __YOU_APP__.User.sref_module() =&gt; __YOU_APP__.User
+      __YOU_APP__.User.Location.sref_module() =&gt; __YOU_APP__.User.Location
+    })
+
+    def lookup_module(sref_module) do
+      Map.get(@module_lookup, sref_module, UnsupportedModule)
+    end
+
+    # Note - this encoding does not support ref strings that include periods in their module ref string or identifier.
+    def ref(sref) do
+      [&quot;ref&quot;, m_str, id_str] = String.split(sref, &quot;.&quot;)
+      m = lookup_module(m_str)
+      m.ref(id_str)      
+    end
+    def sref(sref), do: sref
+    def entity(sref, options \\ nil), do: Noizu.ERP.entity(ref(sref), options)
+    def entity!(sref, options \\ nil), do: Noizu.ERP.entity!(ref(sref), options)
+    def record(sref, options \\ nil), do: Noizu.ERP.record(ref(sref), options)
+    def record!(sref, options \\ nil), do: Noizu.ERP.record!(ref(sref), options)
+  end
+
+  defimpl Noizu.ERP, for: UnsupportedModule do
+    def ref(_item), do: raise &quot;UnsupportedModule&quot;
+    def sref(_item), do: raise &quot;UnsupportedModule&quot;
+    def entity(_item, _options \\ nil), do: raise &quot;UnsupportedModule&quot;
+    def entity!(_item, _options \\ nil), do: raise &quot;UnsupportedModule&quot;
+    def record(_item, _options \\ nil), do: raise &quot;UnsupportedModule&quot;
+    def record!(_item, _options \\ nil), do: raise &quot;UnsupportedModule&quot;
+  end
+</code></pre>
+
+<h3 id="the-noizu-entityreferenceprotocol" class="section-heading">
+  <a href="#the-noizu-entityreferenceprotocol" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  The Noizu.EntityReferenceProtocol
+</h3>
+
+
+<p>@see (Noizu ElixirScaffolding Framework)[<a href="https://github.com/noizu/ElixirScaffolding">https://github.com/noizu/ElixirScaffolding</a>] for more details.</p>
+
+<pre><code class="elixir">defprotocol Noizu.ERP do
+  @doc &quot;Cast to noizu reference object&quot;
+  def ref(obj)
+
+  @doc &quot;Cast to noizu string reference object&quot;
+  def sref(obj)
+
+  @doc &quot;Convert to persistence object. Options may be passed to coordinate actions like expanding embedded references.&quot;
+  def record(obj, options \\ %{})
+
+  @doc &quot;Convert to persistence object Options may be passed to coordinate actions like expanding embedded references. (With transaction wrapper if required)&quot;
+  def record!(obj, options \\ %{})
+
+  @doc &quot;Convert to scaffolding.struct object. Options may be passed to coordinate actions like expanding embedded references.&quot;
+  def entity(obj, options \\ %{})
+
+  @doc &quot;Convert to scaffolding.struct object Options may be passed to coordinate actions like expanding embedded references. (With transaction wrapper if required)&quot;
+  def entity!(obj, options \\ %{})
+end # end defprotocol Noizu.ERP
+</code></pre>
+
+<h3 id="external-references" class="section-heading">
+  <a href="#external-references" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  External References
+</h3>
+
+
+<p>External references (entities owned by remote apis, such as firebase for example) follow slighlty different conventions. And generally will look like
+{:ext<em>ref, InterfaceForExternalStore, external</em>identifier} where InterfaceForExternalStore is a module that implements the relevant Noizu.EntityReferenceProtocol methods for communicating with the remote store.</p>
+
+<h3 id="entity-reference-naming-conventionts" class="section-heading">
+  <a href="#entity-reference-naming-conventionts" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Entity Reference Naming Conventionts
+</h3>
+
+
+<p>When entities reference other entities as fields you will generally want to add a <code>_ref</code> suffix to those fields. If an entity has a foriegn key reference to a user record for example that field could be named <code>user_ref</code> or simple <code>owner_ref</code>.</p>
+
+<p>Standardized naming convention makes the like of boiler plate code maintenance and scaffolding more straight forward.</p>
+
+<p><code>@see https://github.com/noizu/elixir_scaffolding for more details.</code></p>
+
+<h2 id="embedded-structures" class="section-heading">
+  <a href="#embedded-structures" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Embedded Structures
+</h2>
+
+
+<p>Generally tables will include nested objects that represent the actual record type. Any fields on the mnesia table itself are generally duplicates of data inside of the nested entity, exposed for indexing. Most tables will simple contain an identifier and entity field with all actual data inside of the entity object.</p>
+
+<p>The primary Embedded object should be put in a field named  <code>entity:</code></p>
+
+<p>Even if a database does not require an embedded object (aka when it is very simple etc.) if should still follow this convention to make future expansion more straight forward and avoid the need for custom boilerplate scaffolding code. If absolutely necessary the deftable entry itself can implement the Noizu.Scaffolding.EntityBehaviour and EntityReferenceProtocol protocol.</p>
+
+<p>The main exceptions being vary large list like tables such as Audit, EAV or Join tables.</p>
+
+<p><code>@see https://github.com/noizu/elixir_scaffolding for more details.</code></p>
+
+<h2 id="audit-tables-eav-tables" class="section-heading">
+  <a href="#audit-tables-eav-tables" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Audit Tables &amp; EAV Tables
+</h2>
+
+
+<p>In a few places we use Audit and EAV tables. Although the tables and structs are different the underlying logic is generic.</p>
+
+<pre><code class="elixir">
+  #-----------------------------------------------------------------------------
+  # General Audit History Table
+  #-----------------------------------------------------------------------------
+  deftable AuditHistoryTable, [:entity, :time, :editor, :reason, :event], type: :bag, index: [], fragmentation: [number: 10, copying: %{disk!: 1}] do
+    @type t :: %AuditHistoryTable{
+      entity: Types.entity_reference,
+      time: Types.unix_epoch,
+      editor: Types.entity_reference,
+      reason: String.t|:nil,
+      event: tuple # e.g. {:event_name, {:type_specific_details}}
+    }
+  end
+
+  #-----------------------------------------------------------------------------
+  # Sparse Matrix
+  #-----------------------------------------------------------------------------
+  deftable EntityAttributeValueTable, [:entity, :attribute, :value], type: :bag, index: [:attribute], fragmentation: [number: 10, copying: %{disk!: 1}] do
+    @type t :: %EntityAttributeValueTable{
+        entity: Types.entiy_reference,
+        attribute: atom|String.t,
+        value: integer|atom|float|String.t|any
+    }
+  end
+</code></pre>
+
+<p>We use the :bag table types for audit tables so that we may quickly insert new records, as long as we follow conventions we can easily filter for records for specific entities or users  {:ref, User, identifier} etc.</p>
+
+<p>Likewise we can get pretty flexible with our EAV tables.
+For example we can put :tags all into a single MapSet
+<code>
+%EntityAttributeValueTable{
+ entity: {:ref, User, 1234},
+ attributes: :tags,
+ value: MapSet.new([&quot;banana&quot;, &quot;apple&quot;])
+}
+</code>
+or in individual entries depending on how we plan on searching for records.</p>
+
+<pre><code class="elixir">%EntityAttributeValueTable{
+ entity: {:ref, Users, 1234},
+ attributes: :tags,
+ value: &quot;banana&quot;
+}
+%EntityAttributeValueTable{
+ entity: {:ref, Users, 1234},
+ attributes: :tags,
+ value: &quot;apple&quot;
+}
+</code></pre>
+
+      <footer class="footer">
+        <p>
+          <span class="line">
+            Built using
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.16.2),
+          </span>
+          <span class="line">
+            designed by
+            <a href="https://twitter.com/dignifiedquire" target="_blank" title="@dignifiedquire">Friedel Ziegelmayer</a>.
+            </span>
+        </p>
+        <button class="night-mode-toggle"><span class="sr-only">Switch theme</span></button>
+      </footer>
+    </div>
+  </div>
+</section>
+</div>
+  <script src="dist/app-4988ddd06b.js"></script>
+  </body>
+</html>
+
