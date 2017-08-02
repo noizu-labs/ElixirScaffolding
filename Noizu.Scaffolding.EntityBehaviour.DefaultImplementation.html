@@ -5,10 +5,10 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.16.2">
-    <title>Noizu.Scaffolding.EntityBehaviour.DefaultImplementation – noizu_scaffolding v1.1.4</title>
+    <title>Noizu.Scaffolding.EntityBehaviour.DefaultImplementation – noizu_scaffolding v1.1.5</title>
     <link rel="stylesheet" href="dist/app-268c9dc719.css" />
     
-    <script src="dist/sidebar_items-591341edf6.js"></script>
+    <script src="dist/sidebar_items-8f711ce212.js"></script>
   </head>
   <body data-type="modules">
     <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
@@ -27,7 +27,7 @@
         noizu_scaffolding
       </h1>
       <h2 class="sidebar-projectVersion">
-        v1.1.4
+        v1.1.5
       </h2>
     </div>
     
@@ -63,10 +63,10 @@
 
 
       <h1>
-        <small class="visible-xs">noizu_scaffolding v1.1.4</small>
+        <small class="visible-xs">noizu_scaffolding v1.1.5</small>
         Noizu.Scaffolding.EntityBehaviour.DefaultImplementation <small>behaviour</small>
         
-          <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L95" title="View Source" class="view-source" rel="help">
+          <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L102" title="View Source" class="view-source" rel="help">
             <span class="icon-code" aria-hidden="true"></span>
             <span class="sr-only">View Source</span>
           </a>
@@ -93,6 +93,12 @@
     </h2>
     <div class="summary-row">
   <div class="summary-signature">
+    <a href="#as_record_implementation/2">as_record_implementation(table, options)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
     <a href="#entity_implementation/2">entity_implementation(table, repo)</a>
   </div>
   
@@ -106,6 +112,18 @@
 <div class="summary-row">
   <div class="summary-signature">
     <a href="#erp_imp/1">erp_imp(table)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#expand_repo/2">expand_repo(module, repo)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#expand_table/2">expand_table(module, table)</a>
   </div>
   
 </div>
@@ -144,6 +162,12 @@
     </h2>
     <div class="summary-row">
   <div class="summary-signature">
+    <a href="#c:as_record_implementation/2">as_record_implementation(atom, options)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
     <a href="#c:entity_implementation/2">entity_implementation(table, repo)</a>
   </div>
   
@@ -161,6 +185,18 @@
   
     <div class="summary-synopsis"><p>Noizu.ERP Implementation</p>
 </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#c:expand_repo/2">expand_repo(atom, atom)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#c:expand_table/2">expand_table(atom, atom)</a>
+  </div>
   
 </div>
 <div class="summary-row">
@@ -205,7 +241,28 @@
             </a>
             Functions
           </h1>
-          <div class="detail" id="entity_implementation/2">
+          <div class="detail" id="as_record_implementation/2">
+  
+  <div class="detail-header">
+    <a href="#as_record_implementation/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">as_record_implementation(table, options)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L209" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="entity_implementation/2">
   
   <div class="detail-header">
     <a href="#entity_implementation/2" class="detail-link" title="Link to this function">
@@ -214,7 +271,7 @@
     </a>
     <span class="signature">entity_implementation(table, repo)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L160" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L145" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -235,7 +292,7 @@
     </a>
     <span class="signature">entity_txn_implementation(table, repo)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L178" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L157" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -256,7 +313,49 @@
     </a>
     <span class="signature">erp_imp(table)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L234" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L193" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="expand_repo/2">
+  
+  <div class="detail-header">
+    <a href="#expand_repo/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">expand_repo(module, repo)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L253" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="expand_table/2">
+  
+  <div class="detail-header">
+    <a href="#expand_table/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">expand_table(module, table)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L236" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -277,7 +376,7 @@
     </a>
     <span class="signature">record_implementation(table, repo)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L196" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L169" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -298,7 +397,7 @@
     </a>
     <span class="signature">record_txn_implementation(table, repo)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L215" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L181" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -319,7 +418,7 @@
     </a>
     <span class="signature">ref_implementation(table, sref_prefix)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L108" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L119" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -340,7 +439,7 @@
     </a>
     <span class="signature">sref_implementation(table, sref_prefix)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L134" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L132" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -365,7 +464,34 @@
             </a>
             Callbacks
           </h1>
-          <div class="detail" id="c:entity_implementation/2">
+          <div class="detail" id="c:as_record_implementation/2">
+  
+  <div class="detail-header">
+    <a href="#c:as_record_implementation/2" class="detail-link" title="Link to this callback">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this callback</span>
+    </a>
+    <span class="signature">as_record_implementation(atom, options)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L109" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>as_record_implementation(Module, options :: nil | <a href="https://hexdocs.pm/elixir/Map.html#t:t/0">Map.t</a>) :: any</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="c:entity_implementation/2">
   
   <div class="detail-header">
     <a href="#c:entity_implementation/2" class="detail-link" title="Link to this callback">
@@ -374,7 +500,7 @@
     </a>
     <span class="signature">entity_implementation(table, repo)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L98" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L105" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -401,7 +527,7 @@
     </a>
     <span class="signature">entity_txn_implementation(table, repo)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L99" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L106" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -428,7 +554,7 @@
     </a>
     <span class="signature">erp_imp(table)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L106" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L117" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -447,6 +573,60 @@
 
   </section>
 </div>
+<div class="detail" id="c:expand_repo/2">
+  
+  <div class="detail-header">
+    <a href="#c:expand_repo/2" class="detail-link" title="Link to this callback">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this callback</span>
+    </a>
+    <span class="signature">expand_repo(atom, atom)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L112" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>expand_repo(Module, Module) :: Module</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="c:expand_table/2">
+  
+  <div class="detail-header">
+    <a href="#c:expand_table/2" class="detail-link" title="Link to this callback">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this callback</span>
+    </a>
+    <span class="signature">expand_table(atom, atom)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L111" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>expand_table(Module, Module) :: Module</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
 <div class="detail" id="c:record_implementation/2">
   
   <div class="detail-header">
@@ -456,7 +636,7 @@
     </a>
     <span class="signature">record_implementation(table, repo)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L100" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L107" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -483,7 +663,7 @@
     </a>
     <span class="signature">record_txn_implementation(table, repo)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L101" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L108" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -510,7 +690,7 @@
     </a>
     <span class="signature">ref_implementation(table, sref_prefix)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L96" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L103" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -537,7 +717,7 @@
     </a>
     <span class="signature">sref_implementation(table, sref_prefix)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L97" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/entity_behaviour.ex#L104" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
