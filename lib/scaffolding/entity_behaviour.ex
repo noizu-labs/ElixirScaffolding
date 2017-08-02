@@ -93,42 +93,45 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
   # Default Implementations
   #-----------------------------------------------------------------------------
   defmodule DefaultImplementation do
-    @callback ref_implementation(module :: Module, table :: Module, sref_prefix :: String.t) :: Macro.t
-    @callback sref_implementation(module :: Module, table :: Module, sref_prefix :: String.t) :: Macro.t
-    @callback entity_implementation(module :: Module, table :: Module, repo :: Module) :: Macro.t
-    @callback entity_txn_implementation(module :: Module, table :: Module, repo :: Module) :: Macro.t
-    @callback record_implementation(module :: Module, table :: Module, repo :: Module) :: Macro.t
-    @callback record_txn_implementation(module :: Module, table :: Module, repo :: Module) :: Macro.t
+    @callback ref_implementation(table :: Module, sref_prefix :: String.t) :: Macro.t
+    @callback sref_implementation(table :: Module, sref_prefix :: String.t) :: Macro.t
+    @callback entity_implementation(table :: Module, repo :: Module) :: Macro.t
+    @callback entity_txn_implementation(table :: Module, repo :: Module) :: Macro.t
+    @callback record_implementation(table :: Module, repo :: Module) :: Macro.t
+    @callback record_txn_implementation(table :: Module, repo :: Module) :: Macro.t
 
     @doc """
       Noizu.ERP Implementation
     """
-    @callback erp_imp(entity :: Module, table :: Module) :: Macro.t
+    @callback erp_imp(table :: Module) :: Macro.t
 
-    def ref_implementation(module, table, sref_prefix) do
+    def ref_implementation(table, sref_prefix) do
       quote do
         def ref(identifier) when is_integer(identifier) do
-          {:ref, unquote(module), identifier}
+          {:ref, __MODULE__, identifier}
         end
         def ref("ref." <> unquote(sref_prefix) <> identifier = sref) do
           Noizu.ERP.ref(identifier)
         end
         def ref(identifier) when is_bitstring(identifier) do
-          {:ref, unquote(module), String.to_integer(identifier)}
+          {:ref, __MODULE__, String.to_integer(identifier)}
         end
         def ref(identifier) when is_atom(identifier) do
-          {:ref, unquote(module), identifier}
+          {:ref, __MODULE__, identifier}
         end
-        def ref(%unquote(module){} = entity) do
-          entity.identifier
+        def ref(%{__struct__: __MODULE__} = entity) do
+          {:ref, __MODULE__, entity.identifier}
         end
         def ref(%unquote(table){} = record) do
-          record.identifier
+          {:ref, __MODULE__, record.identifier}
+        end
+        def ref(any) do
+          raise "#{__MODULE__}.ref Unsupported item #{inspect any}"
         end
       end # end quote
     end # end defmacro ref
 
-    def sref_implementation(module, table, sref_prefix) do
+    def sref_implementation(table, sref_prefix) do
       quote do
         def sref(identifier) when is_integer(identifier) do
           unquote(sref_prefix) <> identifier
@@ -142,82 +145,105 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
         def sref(identifier) when is_atom(identifier) do
           unquote(sref_prefix) <> Atom.to_string(identifier)
         end
-        def sref(%unquote(module){} = entity) do
+        def sref(%{__struct__: __MODULE__} = entity) do
           unquote(sref_prefix) <> entity.identifier
         end
         def sref(%unquote(table){} = record) do
           unquote(sref_prefix) <> record.identifier
         end
+        def sref(any) do
+          raise "#{__MODULE__}.sref Unsupported item #{inspect any}"
+        end
       end # end quote
     end # end defmacro ref
 
-    def entity_implementation(module, table, repo) do
+    def entity_implementation(table, repo) do
       quote do
-        def entity(%unquote(module){} = entity, options) when options == %{} or options == nil do
+        def entity(item, options \\ nil)
+        def entity(%{__struct__: __MODULE__} = entity, options) when options == %{} or options == nil do
           entity
         end
         def entity(%unquote(table){} = record, options) when options == %{} or options == nil do
           record.entity
         end
         def entity(identifier, options) do
-          unquote(repo).get(unquote(module).ref(identifier), Noizu.Scaffolding.CallingContext.internal(), options)
+          unquote(repo).get(__MODULE__.ref(identifier), Noizu.Scaffolding.CallingContext.internal(), options)
+        end
+        def entity(any, _options) do
+          raise "#{__MODULE__}.entity Unsupported item #{inspect any}"
         end
       end # end quote
     end # end defmacro ref
 
-    def entity_txn_implementation(module, table, repo) do
+    def entity_txn_implementation(table, repo) do
       quote do
-        def entity!(%unquote(module){} = entity, options) when options == %{} or options == nil do
+        def entity!(item, options \\ nil)
+        def entity!(%{__struct__: __MODULE__} = entity, options) when options == %{} or options == nil do
           entity
         end
         def entity!(%unquote(table){} = record, options) when options == %{} or options == nil do
           record.entity
         end
         def entity!(identifier, options) do
-          unquote(repo).get!(unquote(module).ref(identifier), Noizu.Scaffolding.CallingContext.internal(), options)
+          unquote(repo).get!(__MODULE__.ref(identifier), Noizu.Scaffolding.CallingContext.internal(), options)
+        end
+        def entity!(any, _options) do
+          raise "#{__MODULE__}.entity! Unsupported item #{inspect any}"
         end
       end # end quote
     end # end defmacro ref
 
-    def record_implementation(module, table, repo) do
+    def record_implementation(table, repo) do
       quote do
-        def record(%unquote(module){} = entity, options) when options == %{} or options == nil do
-          unquote(module).as_record(entity)
+        def record(item, options \\ nil)
+        def record(%{__struct__: __MODULE__} = entity, options) when options == %{} or options == nil do
+          __MODULE__.as_record(entity)
         end
         def record(%unquote(table){} = record, options) when options == %{} or options == nil do
           record
         end
         def record(identifier, options) do
-          entity = unquote(repo).get(unquote(module).ref(identifier), Noizu.Scaffolding.CallingContext.internal(), options)
-          unquote(module).as_record(entity)
+          entity = unquote(repo).get(__MODULE__.ref(identifier), Noizu.Scaffolding.CallingContext.internal(), options)
+          __MODULE__.as_record(entity)
+        end
+        def record(any, _options) do
+          raise "#{__MODULE__}.record Unsupported item #{inspect any}"
         end
       end # end quote
     end # end defmacro ref
 
-    def record_txn_implementation(module, table, repo) do
+    def record_txn_implementation(table, repo) do
       quote do
-        def record!(%unquote(module){} = entity, options) when options == %{} or options == nil do
-          unquote(module).as_record(entity)
+        def record!(item, options \\ nil)
+        def record!(%{__struct__: __MODULE__} = entity, options) when options == %{} or options == nil do
+          __MODULE__.as_record(entity)
         end
         def record!(%unquote(table){} = record, options) when options == %{} or options == nil do
           record
         end
         def record!(identifier, options) do
-          unquote(repo).get!(unquote(module).ref(identifier), Noizu.Scaffolding.CallingContext.internal(), options)
-          unquote(module).as_record(entity)
+          unquote(repo).get!(__MODULE__.ref(identifier), Noizu.Scaffolding.CallingContext.internal(), options)
+          |> __MODULE__.as_record()
+        end
+        def record!(any, _options) do
+          raise "#{__MODULE__}.record! Unsupported item #{inspect any}"
         end
       end # end quote
     end # end defmacro ref
 
-    def erp_imp(entity, table) do
+    def erp_imp(table) do
       quote do
-        defimpl Noizu.ERP, for: [unquote(entity), unquote(table)] do
-          def ref(o), do: unquote(entity).ref(o)
-          def sref(o), do: unquote(entity).sref(o)
-          def entity(o, options), do: unquote(entity).entity(o, options)
-          def entity!(o, options), do: unquote(entity).entity!(o, options)
-          def record(o, options), do: unquote(entity).record(o, options)
-          def record!(o, options), do: unquote(entity).record!(o, options)
+        parent_module = __MODULE__
+        defimpl Noizu.ERP, for: [__MODULE__, unquote(table)] do
+          @parent_module(parent_module)
+          def ref(o), do: @parent_module.ref(o)
+          def sref(o), do: @parent_module.sref(o)
+          def entity(o, options), do: @parent_module.entity(o, options)
+          def entity!(o, options), do: @parent_module.entity!(o, options)
+          def record(o, options) do
+             @parent_module.record(o, options)
+          end
+          def record!(o, options), do: @parent_module.record!(o, options)
         end
       end # end quote
     end # end defmacro
@@ -277,25 +303,25 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
       # Default Implementation from default_implementation behaviour
       #-------------------------------------------------------------------------
       if (unquote(only.ref) && !unquote(override.ref)) do
-        unquote(default_implementation).ref_implementation(__MODULE__, unquote(mnesia_table), unquote(sref_prefix))
+        unquote(default_implementation.ref_implementation(mnesia_table, sref_prefix))
       end
       if (unquote(only.sref) && !unquote(override.sref)) do
-        unquote(default_implementation).sref_implementation(__MODULE__, unquote(mnesia_table), unquote(sref_prefix))
+        unquote(default_implementation.sref_implementation(mnesia_table, sref_prefix))
       end
       if (unquote(only.entity) && !unquote(override.entity)) do
-        unquote(default_implementation).entity_implementation(__MODULE__, unquote(mnesia_table), unquote(repo_module))
+        unquote(default_implementation.entity_implementation(mnesia_table, repo_module))
       end
       if (unquote(only.entity!) && !unquote(override.entity!)) do
-        unquote(default_implementation).entity_txn_implementation(__MODULE__, unquote(mnesia_table), unquote(repo_module))
+        unquote(default_implementation.entity_txn_implementation(mnesia_table, repo_module))
       end
       if (unquote(only.record) && !unquote(override.record)) do
-        unquote(default_implementation).record_implementation(__MODULE__, unquote(mnesia_table), unquote(repo_module))
+        unquote(default_implementation.record_implementation(mnesia_table, repo_module))
       end
       if (unquote(only.record!) && !unquote(override.record!)) do
-        unquote(default_implementation).record_txn_implementation(__MODULE__, unquote(mnesia_table), unquote(repo_module))
+        unquote(default_implementation.record_txn_implementation(mnesia_table, repo_module))
       end
       if (unquote(only.erp_imp) && !unquote(override.erp_imp)) do
-        unquote(default_implementation).erp_imp(__MODULE__, unquote(mnesia_table))
+        unquote(default_implementation.erp_imp(mnesia_table))
       end
     end # end quote
   end # end defmacro

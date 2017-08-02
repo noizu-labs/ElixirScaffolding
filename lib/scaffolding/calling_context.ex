@@ -31,8 +31,8 @@ defmodule Noizu.Scaffolding.CallingContext do
 
   def internal do
     %__MODULE__{
-      caller: :internal,
-      auth: :internal
+      caller: Noizu.Scaffolding.InternalTask.ref(:internal),
+      auth: Noizu.Scaffolding.InternalTask.ref(:internal)
     }
   end
 end # end defmodule Noizu.Scaffolding.CallingContext
