@@ -100,18 +100,18 @@ defimpl Noizu.ERP, for: Tuple do
 
   def entity(obj, options \\ nil) do
     case obj do
-      {:ref, manager, identifier} when is_atom(manager)->
+      {:ref, manager, _identifier} when is_atom(manager)->
         #if function_exported?(manager, :entity, 2) do
-          manager.entity(identifier, options)
+          manager.entity(obj, options)
         #end
     end
   end # end entity/2
 
   def entity!(obj, options \\ nil) do
     case obj do
-      {:ref, manager, identifier} when is_atom(manager)->
+      {:ref, manager, _identifier} when is_atom(manager)->
         #if function_exported?(manager, :entity, 2) do
-          manager.entity!(identifier, options)
+        manager.entity!(obj, options)
         #end
     end
   end # end entity/2

@@ -3,7 +3,7 @@ defmodule Noizu.Scaffolding.Mixfile do
 
   def project do
     [app: :noizu_scaffolding,
-     version: "1.1.5",
+     version: "1.1.6",
      elixir: "~> 1.4",
      package: package(),
      deps: deps(),
@@ -30,6 +30,7 @@ defmodule Noizu.Scaffolding.Mixfile do
       {:uuid, "~> 1.1" },
       {:ex_doc, "~> 0.16.2", only: [:dev], optional: true}, # Documentation Provider
       {:markdown, github: "devinus/markdown", only: [:dev], optional: true}, # Markdown processor for ex_doc
+      {:plug, "~> 1.0", optional: true}
     ]
   end # end deps
 

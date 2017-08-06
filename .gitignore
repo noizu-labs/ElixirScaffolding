@@ -17,3 +17,5 @@ log.nonode@nohost
 
 # work around for occasional mix docs submodule issue
 tmp.git
+
+/Mnesia.nonode@nohost

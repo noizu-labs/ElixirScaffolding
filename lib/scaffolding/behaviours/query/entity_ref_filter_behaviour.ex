@@ -32,33 +32,27 @@ defmodule Noizu.Scaffolding.Query.EntityRefFilteringBehaviour do
     end
 
     quote do
-      require Amnesia
-      require Amnesia.Helper
-      require Amnesia.Fragment
       import unquote(__MODULE__)
-      use unquote(mnesia_table)
       @behaviour Noizu.Scaffolding.QueryBehaviour
-      @mnesia_table unquote(mnesia_table)
-
       if (unquote(only.list) && !unquote(override.list)) do
-        def list(%Noizu.Scaffolding.CallingContext{} = context, options) do
+        def list(mnesia_table, %Noizu.Scaffolding.CallingContext{} = context, options) do
           if (options[:filter_caller]) do
             ref = context.caller
-            @mnesia_table.where unquote(constraint_field) == ref
+            mnesia_table.where unquote(constraint_field) == ref
           else
             if (options[:filter_entity]) do
               ref = options[:filter_entity]
-              @mnesia_table.where unquote(constraint_field) == ref
+              mnesia_table.where unquote(constraint_field) == ref
             else
-              @mnesia_table.where 1 == 1
+              mnesia_table.where 1 == 1
             end
           end
         end
       end # end conditional include
 
       if (unquote(only.get) && !unquote(override.get)) do
-        def get(identifier, %Noizu.Scaffolding.CallingContext{} = context, options) do
-          record = @mnesia_table.read(identifier)
+        def get(identifier, mnesia_table, %Noizu.Scaffolding.CallingContext{} = context, options) do
+          record = mnesia_table.read(identifier)
           if (options[:filter_caller]) do
             ref = context.caller
             if (record.unquote(constraint_field) == ref), do: record, else: raise "Not linked to caller"
@@ -74,34 +68,34 @@ defmodule Noizu.Scaffolding.Query.EntityRefFilteringBehaviour do
       end # end conditional include
 
       if (unquote(only.create) && !unquote(override.create)) do
-        def create(record, %Noizu.Scaffolding.CallingContext{} = context, options) do
+        def create(record, mnesia_table, %Noizu.Scaffolding.CallingContext{} = context, options) do
           if (options[:filter_caller]) do
             ref = context.caller
-            if (record.unquote(constraint_field) == ref) , do: @mnesia_table.write(record), else: raise "Not linked to caller"
+            if (record.unquote(constraint_field) == ref) , do: mnesia_table.write(record), else: raise "Not linked to caller"
           else
             if (options[:filter_entity]) do
               ref = options[:filter_entity]
-              if (record.unquote(constraint_field) == ref) , do: @mnesia_table.write(record), else: raise "Not linked to filter_entity"
+              if (record.unquote(constraint_field) == ref) , do: mnesia_table.write(record), else: raise "Not linked to filter_entity"
             else
-              @mnesia_table.write(record)
+              mnesia_table.write(record)
             end
           end
         end
       end # end conditional include
 
       if (unquote(only.update) && !unquote(override.update)) do
-        def update(record, %Noizu.Scaffolding.CallingContext{} = context, options) do
+        def update(record, mnesia_table, %Noizu.Scaffolding.CallingContext{} = context, options) do
           if (options[:filter_caller]) do
             ref = context.caller
-            record2 = @mnesia_table.read(record.identifier)
-            if (record2.unquote(constraint_field) == ref), do: @mnesia_table.write(record), else: raise "Not linked to caller"
+            record2 = mnesia_table.read(record.identifier)
+            if (record2.unquote(constraint_field) == ref), do: mnesia_table.write(record), else: raise "Not linked to caller"
           else
             if (options[:filter_entity]) do
               ref = options[:filter_entity]
-              record2 = @mnesia_table.read(record.identifier)
-              if (record2.unquote(constraint_field) == ref), do: @mnesia_table.write(record), else: raise "Not linked to filter_entity"
+              record2 = mnesia_table.read(record.identifier)
+              if (record2.unquote(constraint_field) == ref), do: mnesia_table.write(record), else: raise "Not linked to filter_entity"
             else
-              @mnesia_table.write(record)
+              mnesia_table.write(record)
             end
           end
         end
@@ -111,15 +105,15 @@ defmodule Noizu.Scaffolding.Query.EntityRefFilteringBehaviour do
         def delete(identifier, %Noizu.Scaffolding.CallingContext{} = context, options) do
           if (options[:filter_caller]) do
             ref = context.caller
-            record = @mnesia_table.read(identifier)
-            if (record.unquote(constraint_field) == ref), do: @mnesia_table.delete(identifier), else: raise "Not linked to caller"
+            record = mnesia_table.read(identifier)
+            if (record.unquote(constraint_field) == ref), do: mnesia_table.delete(identifier), else: raise "Not linked to caller"
           else
             if (options[:filter_entity]) do
               ref = options[:filter_entity]
-              record = @mnesia_table.read(identifier)
-              if (record.unquote(constraint_field) == ref), do: @mnesia_table.delete(identifier), else: raise "Not linked to filter_entity"
+              record = mnesia_table.read(identifier)
+              if (record.unquote(constraint_field) == ref), do: mnesia_table.delete(identifier), else: raise "Not linked to filter_entity"
             else
-              @mnesia_table.delete(identifier)
+              mnesia_table.delete(identifier)
             end
           end
         end

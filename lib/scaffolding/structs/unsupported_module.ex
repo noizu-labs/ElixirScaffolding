@@ -8,6 +8,8 @@ defmodule Noizu.Scaffolding.UnsupportedModule do
   ]
 
   @behaviour Noizu.Scaffolding.EntityBehaviour
+
+  def id(item), do: raise "UnsupportedModule #{inspect item}"
   def ref(item), do: raise "UnsupportedModule #{inspect item}"
   def sref(item), do: raise "UnsupportedModule #{inspect item}"
   def entity(item, _options), do: raise "UnsupportedModule #{inspect item}"
