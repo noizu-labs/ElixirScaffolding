@@ -5,10 +5,10 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.16.2">
-    <title>Noizu.Scaffolding.InternalTask – noizu_scaffolding v1.1.5</title>
+    <title>Noizu.Scaffolding.InternalTask – noizu_scaffolding v1.1.6</title>
     <link rel="stylesheet" href="dist/app-268c9dc719.css" />
     
-    <script src="dist/sidebar_items-8f711ce212.js"></script>
+    <script src="dist/sidebar_items-2d67701d94.js"></script>
   </head>
   <body data-type="modules">
     <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
@@ -27,7 +27,7 @@
         noizu_scaffolding
       </h1>
       <h2 class="sidebar-projectVersion">
-        v1.1.5
+        v1.1.6
       </h2>
     </div>
     
@@ -63,10 +63,10 @@
 
 
       <h1>
-        <small class="visible-xs">noizu_scaffolding v1.1.5</small>
+        <small class="visible-xs">noizu_scaffolding v1.1.6</small>
         Noizu.Scaffolding.InternalTask
         
-          <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/internal_task.ex#L1" title="View Source" class="view-source" rel="help">
+          <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/internal_task.ex#L1" title="View Source" class="view-source" rel="help">
             <span class="icon-code" aria-hidden="true"></span>
             <span class="sr-only">View Source</span>
           </a>
@@ -106,7 +106,7 @@
     </h2>
     <div class="summary-row">
   <div class="summary-signature">
-    <a href="#as_record/1">as_record(item)</a>
+    <a href="#as_record/1">as_record(this)</a>
   </div>
   
     <div class="summary-synopsis"><p>Converts entity into record format. Aka extracts any fields used for indexing with the expected database table looking something like
@@ -128,7 +128,13 @@
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#entity/2">entity(item, options)</a>
+    <a href="#calling_context/3">calling_context(type \\ :internal, env \\ nil, opts \\ %{})</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#entity/2">entity(item, options \\ nil)</a>
   </div>
   
     <div class="summary-synopsis"><p>Returns entity, given an identifier, ref tuple, ref string or other known identifier type.
@@ -138,7 +144,7 @@
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#entity!/2">entity!(item, options)</a>
+    <a href="#entity!/2">entity!(item, options \\ nil)</a>
   </div>
   
     <div class="summary-synopsis"><p>Returns entity, given an identifier, ref tuple, ref string or other known identifier type. Wrapping call in transaction if required.
@@ -148,7 +154,16 @@
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#record/2">record(item, options)</a>
+    <a href="#id/1">id(identifier)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Return identifier of ref, sref, entity or record</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#record/2">record(item, options \\ nil)</a>
   </div>
   
     <div class="summary-synopsis"><p>Returns record, given an identifier, ref tuple, ref string or other known identifier type.
@@ -158,7 +173,7 @@
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#record!/2">record!(item, options)</a>
+    <a href="#record!/2">record!(item, options \\ nil)</a>
   </div>
   
     <div class="summary-synopsis"><p>Returns record, given an identifier, ref tuple, ref string or other known identifier type. Wrapping call in transaction if required.
@@ -168,7 +183,13 @@
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#ref/1">ref(item)</a>
+    <a href="#ref/0">ref()</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#ref/1">ref(level)</a>
   </div>
   
     <div class="summary-synopsis"><p>Returns appropriate {:ref|:ext_ref, module, identifier} reference tuple</p>
@@ -222,7 +243,7 @@
     </a>
     <span class="signature">t()</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/internal_task.ex#L2" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/internal_task.ex#L12" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -231,7 +252,7 @@
     
       <div class="specs">
         
-          <pre>t() :: %Noizu.Scaffolding.InternalTask{}</pre>
+          <pre>t() :: %Noizu.Scaffolding.InternalTask{level: :system | :restricted | :internal}</pre>
         
       </div>
     
@@ -261,9 +282,9 @@
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this function</span>
     </a>
-    <span class="signature">as_record(item)</span>
+    <span class="signature">as_record(this)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/internal_task.ex#L12" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/internal_task.ex#L80" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -291,16 +312,45 @@
 
   </section>
 </div>
+<div class="detail" id="calling_context/3">
+  
+    <span id="calling_context/0"></span>
+  
+    <span id="calling_context/1"></span>
+  
+    <span id="calling_context/2"></span>
+  
+  <div class="detail-header">
+    <a href="#calling_context/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">calling_context(type \\ :internal, env \\ nil, opts \\ %{})</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/internal_task.ex#L31" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
 <div class="detail" id="entity/2">
+  
+    <span id="entity/1"></span>
   
   <div class="detail-header">
     <a href="#entity/2" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this function</span>
     </a>
-    <span class="signature">entity(item, options)</span>
+    <span class="signature">entity(item, options \\ nil)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/internal_task.ex#L8" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/internal_task.ex#L70" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -318,14 +368,16 @@
 </div>
 <div class="detail" id="entity!/2">
   
+    <span id="entity!/1"></span>
+  
   <div class="detail-header">
     <a href="#entity!/2" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this function</span>
     </a>
-    <span class="signature">entity!(item, options)</span>
+    <span class="signature">entity!(item, options \\ nil)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/internal_task.ex#L9" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/internal_task.ex#L74" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -341,16 +393,42 @@
 
   </section>
 </div>
+<div class="detail" id="id/1">
+  
+  <div class="detail-header">
+    <a href="#id/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">id(identifier)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/internal_task.ex#L47" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p>Return identifier of ref, sref, entity or record</p>
+
+<p>Callback implementation for <a href="Noizu.Scaffolding.EntityBehaviour.html#c:id/1"><code>Noizu.Scaffolding.EntityBehaviour.id/1</code></a>.</p>
+
+  </section>
+</div>
 <div class="detail" id="record/2">
+  
+    <span id="record/1"></span>
   
   <div class="detail-header">
     <a href="#record/2" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this function</span>
     </a>
-    <span class="signature">record(item, options)</span>
+    <span class="signature">record(item, options \\ nil)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/internal_task.ex#L10" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/internal_task.ex#L76" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -368,14 +446,16 @@
 </div>
 <div class="detail" id="record!/2">
   
+    <span id="record!/1"></span>
+  
   <div class="detail-header">
     <a href="#record!/2" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this function</span>
     </a>
-    <span class="signature">record!(item, options)</span>
+    <span class="signature">record!(item, options \\ nil)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/internal_task.ex#L11" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/internal_task.ex#L78" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -391,6 +471,27 @@
 
   </section>
 </div>
+<div class="detail" id="ref/0">
+  
+  <div class="detail-header">
+    <a href="#ref/0" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">ref()</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/internal_task.ex#L52" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
 <div class="detail" id="ref/1">
   
   <div class="detail-header">
@@ -398,9 +499,9 @@
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this function</span>
     </a>
-    <span class="signature">ref(item)</span>
+    <span class="signature">ref(level)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/internal_task.ex#L6" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/internal_task.ex#L56" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -424,7 +525,7 @@
     </a>
     <span class="signature">sref(item)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/internal_task.ex#L7" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/internal_task.ex#L65" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -448,7 +549,7 @@
     </a>
     <span class="signature">sref_module()</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/internal_task.ex#L13" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/internal_task.ex#L44" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>

@@ -5,10 +5,10 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.16.2">
-    <title>Noizu.Scaffolding.RepoBehaviour – noizu_scaffolding v1.1.5</title>
+    <title>Noizu.Scaffolding.RepoBehaviour – noizu_scaffolding v1.1.6</title>
     <link rel="stylesheet" href="dist/app-268c9dc719.css" />
     
-    <script src="dist/sidebar_items-8f711ce212.js"></script>
+    <script src="dist/sidebar_items-2d67701d94.js"></script>
   </head>
   <body data-type="modules">
     <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
@@ -27,7 +27,7 @@
         noizu_scaffolding
       </h1>
       <h2 class="sidebar-projectVersion">
-        v1.1.5
+        v1.1.6
       </h2>
     </div>
     
@@ -63,10 +63,10 @@
 
 
       <h1>
-        <small class="visible-xs">noizu_scaffolding v1.1.5</small>
+        <small class="visible-xs">noizu_scaffolding v1.1.6</small>
         Noizu.Scaffolding.RepoBehaviour <small>behaviour</small>
         
-          <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/repo_behaviour.ex#L6" title="View Source" class="view-source" rel="help">
+          <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L6" title="View Source" class="view-source" rel="help">
             <span class="icon-code" aria-hidden="true"></span>
             <span class="sr-only">View Source</span>
           </a>
@@ -114,24 +114,6 @@
     </h2>
     <div class="summary-row">
   <div class="summary-signature">
-    <a href="#c:audit/5">audit(atom, any, ref, arg3, any)</a>
-  </div>
-  
-    <div class="summary-synopsis"><p>Insert audit record</p>
-</div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature">
-    <a href="#c:audit!/5">audit!(atom, any, ref, arg3, any)</a>
-  </div>
-  
-    <div class="summary-synopsis"><p>Insert audit record. Transaction Wrapped</p>
-</div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature">
     <a href="#c:create/3">create(any, arg1, opts)</a>
   </div>
   
@@ -163,15 +145,6 @@
   </div>
   
     <div class="summary-synopsis"><p>Delete record. Transaction Wrapped</p>
-</div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature">
-    <a href="#c:entity/0">entity()</a>
-  </div>
-  
-    <div class="summary-synopsis"><p>Struct used by repo</p>
 </div>
   
 </div>
@@ -222,24 +195,6 @@
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#c:keys/0">keys()</a>
-  </div>
-  
-    <div class="summary-synopsis"><p>Keys from mnesia table</p>
-</div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature">
-    <a href="#c:keys!/0">keys!()</a>
-  </div>
-  
-    <div class="summary-synopsis"><p>Keys from mnesia table (in transaction)</p>
-</div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature">
     <a href="#c:list/2">list(arg0, opts)</a>
   </div>
   
@@ -253,15 +208,6 @@
   </div>
   
     <div class="summary-synopsis"><p>List Records. Transaction Wrapped</p>
-</div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature">
-    <a href="#c:mnesia_table/0">mnesia_table()</a>
-  </div>
-  
-    <div class="summary-synopsis"><p>Table used by repo</p>
 </div>
   
 </div>
@@ -365,7 +311,7 @@
     </a>
     <span class="signature">opts()</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/repo_behaviour.ex#L8" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L10" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -392,7 +338,7 @@
     </a>
     <span class="signature">ref()</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/repo_behaviour.ex#L7" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L9" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -426,67 +372,7 @@
             </a>
             Callbacks
           </h1>
-          <div class="detail" id="c:audit/5">
-  
-  <div class="detail-header">
-    <a href="#c:audit/5" class="detail-link" title="Link to this callback">
-      <span class="icon-link" aria-hidden="true"></span>
-      <span class="sr-only">Link to this callback</span>
-    </a>
-    <span class="signature">audit(atom, any, ref, arg3, any)</span>
-    
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/repo_behaviour.ex#L108" class="view-source" rel="help" title="View Source">
-       <span class="icon-code" aria-hidden="true"></span>
-       <span class="sr-only">View Source</span>
-     </a>
-    
-    
-    
-      <div class="specs">
-        
-          <pre>audit(atom, any, <a href="#t:ref/0">ref</a>, <a href="Noizu.Scaffolding.CallingContext.html#t:t/0">Noizu.Scaffolding.CallingContext.t</a>, any) ::
-  :ok |
-  {:error, any}</pre>
-        
-      </div>
-    
-  </div>
-  <section class="docstring">
-    <p>Insert audit record.</p>
-
-  </section>
-</div>
-<div class="detail" id="c:audit!/5">
-  
-  <div class="detail-header">
-    <a href="#c:audit!/5" class="detail-link" title="Link to this callback">
-      <span class="icon-link" aria-hidden="true"></span>
-      <span class="sr-only">Link to this callback</span>
-    </a>
-    <span class="signature">audit!(atom, any, ref, arg3, any)</span>
-    
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/repo_behaviour.ex#L113" class="view-source" rel="help" title="View Source">
-       <span class="icon-code" aria-hidden="true"></span>
-       <span class="sr-only">View Source</span>
-     </a>
-    
-    
-    
-      <div class="specs">
-        
-          <pre>audit!(atom, any, <a href="#t:ref/0">ref</a>, <a href="Noizu.Scaffolding.CallingContext.html#t:t/0">Noizu.Scaffolding.CallingContext.t</a>, any) ::
-  :ok |
-  {:error, any}</pre>
-        
-      </div>
-    
-  </div>
-  <section class="docstring">
-    <p>Insert audit record. Transaction Wrapped</p>
-
-  </section>
-</div>
-<div class="detail" id="c:create/3">
+          <div class="detail" id="c:create/3">
   
   <div class="detail-header">
     <a href="#c:create/3" class="detail-link" title="Link to this callback">
@@ -495,7 +381,7 @@
     </a>
     <span class="signature">create(any, arg1, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/repo_behaviour.ex#L56" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L55" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -523,7 +409,7 @@
     </a>
     <span class="signature">create!(any, arg1, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/repo_behaviour.ex#L61" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L60" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -551,7 +437,7 @@
     </a>
     <span class="signature">delete(any, arg1, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/repo_behaviour.ex#L46" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L45" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -579,7 +465,7 @@
     </a>
     <span class="signature">delete!(any, arg1, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/repo_behaviour.ex#L51" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L50" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -598,34 +484,6 @@
 
   </section>
 </div>
-<div class="detail" id="c:entity/0">
-  
-  <div class="detail-header">
-    <a href="#c:entity/0" class="detail-link" title="Link to this callback">
-      <span class="icon-link" aria-hidden="true"></span>
-      <span class="sr-only">Link to this callback</span>
-    </a>
-    <span class="signature">entity()</span>
-    
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/repo_behaviour.ex#L138" class="view-source" rel="help" title="View Source">
-       <span class="icon-code" aria-hidden="true"></span>
-       <span class="sr-only">View Source</span>
-     </a>
-    
-    
-    
-      <div class="specs">
-        
-          <pre>entity() :: atom</pre>
-        
-      </div>
-    
-  </div>
-  <section class="docstring">
-    <p>Struct used by repo</p>
-
-  </section>
-</div>
 <div class="detail" id="c:from_json/2">
   
   <div class="detail-header">
@@ -635,7 +493,7 @@
     </a>
     <span class="signature">from_json(arg0, arg1)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/repo_behaviour.ex#L118" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L107" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -663,7 +521,7 @@
     </a>
     <span class="signature">generate_identifier(any)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/repo_behaviour.ex#L98" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L97" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -691,7 +549,7 @@
     </a>
     <span class="signature">generate_identifier!(any)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/repo_behaviour.ex#L103" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L102" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -719,7 +577,7 @@
     </a>
     <span class="signature">get(arg0, arg1, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/repo_behaviour.ex#L26" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L25" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -747,7 +605,7 @@
     </a>
     <span class="signature">get!(arg0, arg1, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/repo_behaviour.ex#L31" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L30" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -766,62 +624,6 @@
 
   </section>
 </div>
-<div class="detail" id="c:keys/0">
-  
-  <div class="detail-header">
-    <a href="#c:keys/0" class="detail-link" title="Link to this callback">
-      <span class="icon-link" aria-hidden="true"></span>
-      <span class="sr-only">Link to this callback</span>
-    </a>
-    <span class="signature">keys()</span>
-    
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/repo_behaviour.ex#L123" class="view-source" rel="help" title="View Source">
-       <span class="icon-code" aria-hidden="true"></span>
-       <span class="sr-only">View Source</span>
-     </a>
-    
-    
-    
-      <div class="specs">
-        
-          <pre>keys() :: list</pre>
-        
-      </div>
-    
-  </div>
-  <section class="docstring">
-    <p>Keys from mnesia table</p>
-
-  </section>
-</div>
-<div class="detail" id="c:keys!/0">
-  
-  <div class="detail-header">
-    <a href="#c:keys!/0" class="detail-link" title="Link to this callback">
-      <span class="icon-link" aria-hidden="true"></span>
-      <span class="sr-only">Link to this callback</span>
-    </a>
-    <span class="signature">keys!()</span>
-    
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/repo_behaviour.ex#L128" class="view-source" rel="help" title="View Source">
-       <span class="icon-code" aria-hidden="true"></span>
-       <span class="sr-only">View Source</span>
-     </a>
-    
-    
-    
-      <div class="specs">
-        
-          <pre>keys!() :: list</pre>
-        
-      </div>
-    
-  </div>
-  <section class="docstring">
-    <p>Keys from mnesia table (in transaction)</p>
-
-  </section>
-</div>
 <div class="detail" id="c:list/2">
   
   <div class="detail-header">
@@ -831,7 +633,7 @@
     </a>
     <span class="signature">list(arg0, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/repo_behaviour.ex#L16" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L15" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -859,7 +661,7 @@
     </a>
     <span class="signature">list!(arg0, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/repo_behaviour.ex#L21" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L20" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -878,34 +680,6 @@
 
   </section>
 </div>
-<div class="detail" id="c:mnesia_table/0">
-  
-  <div class="detail-header">
-    <a href="#c:mnesia_table/0" class="detail-link" title="Link to this callback">
-      <span class="icon-link" aria-hidden="true"></span>
-      <span class="sr-only">Link to this callback</span>
-    </a>
-    <span class="signature">mnesia_table()</span>
-    
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/repo_behaviour.ex#L133" class="view-source" rel="help" title="View Source">
-       <span class="icon-code" aria-hidden="true"></span>
-       <span class="sr-only">View Source</span>
-     </a>
-    
-    
-    
-      <div class="specs">
-        
-          <pre>mnesia_table() :: atom</pre>
-        
-      </div>
-    
-  </div>
-  <section class="docstring">
-    <p>Table used by repo</p>
-
-  </section>
-</div>
 <div class="detail" id="c:post_create_callback/3">
   
   <div class="detail-header">
@@ -915,7 +689,7 @@
     </a>
     <span class="signature">post_create_callback(any, arg1, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/repo_behaviour.ex#L83" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L82" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -944,7 +718,7 @@
     </a>
     <span class="signature">post_delete_callback(any, arg1, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/repo_behaviour.ex#L93" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L92" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -972,7 +746,7 @@
     </a>
     <span class="signature">post_update_callback(any, arg1, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/repo_behaviour.ex#L88" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L87" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -1000,7 +774,7 @@
     </a>
     <span class="signature">pre_create_callback(any, arg1, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/repo_behaviour.ex#L67" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L66" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -1029,7 +803,7 @@
     </a>
     <span class="signature">pre_delete_callback(any, arg1, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/repo_behaviour.ex#L77" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L76" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -1057,7 +831,7 @@
     </a>
     <span class="signature">pre_update_callback(any, arg1, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/repo_behaviour.ex#L72" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L71" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -1085,7 +859,7 @@
     </a>
     <span class="signature">update(any, arg1, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/repo_behaviour.ex#L36" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L35" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -1113,7 +887,7 @@
     </a>
     <span class="signature">update!(any, arg1, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/repo_behaviour.ex#L41" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L40" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
