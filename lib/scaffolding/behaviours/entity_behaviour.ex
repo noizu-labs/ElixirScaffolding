@@ -228,13 +228,13 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
     def as_record_implementation(table, options) do
       quote do
         @mnesia_table(unquote(__MODULE__).expand_table(__MODULE__, unquote(table)))
-        @options(unquote(options))
+        @options(unquote(options))        
         def as_record(nil), do: nil
         def as_record(this) do
           if @options do
             if Map.has_key?(@options, :additional_fields) do
               base = %@mnesia_table{identifier: this.identifier, entity: this}
-              List.foldl(@options[:additional_mnesia_fields], base,
+              List.foldl(@options[:additional_fields], base,
                 fn(field, acc) ->
                   case Map.get(acc, field, :erp_imp_field_not_found) do
                     :erp_imp_field_not_found -> acc
@@ -299,7 +299,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
     # Repo module (entity/record implementation), Module name with "Repo" appeneded if :auto
     repo_module = Keyword.get(options, :repo_module, :auto)
     mnesia_table = Keyword.get(options, :mnesia_table, :auto)
-    as_record_options = Keyword.get(options, :as_record_options, nil)
+    as_record_options = Keyword.get(options, :as_record_options, Macro.escape(%{}))
 
     # Default Implementation Provider
     default_implementation = Keyword.get(options, :default_implementation, DefaultImplementation)
