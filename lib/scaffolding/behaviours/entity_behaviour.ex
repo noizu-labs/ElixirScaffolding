@@ -228,7 +228,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
     def as_record_implementation(table, options) do
       quote do
         @mnesia_table(unquote(__MODULE__).expand_table(__MODULE__, unquote(table)))
-        @options(unquote(options))        
+        @options(unquote(options))
         def as_record(nil), do: nil
         def as_record(this) do
           if @options do
@@ -236,7 +236,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
               base = %@mnesia_table{identifier: this.identifier, entity: this}
               List.foldl(@options[:additional_fields], base,
                 fn(field, acc) ->
-                  case Map.get(acc, field, :erp_imp_field_not_found) do
+                  case Map.get(this, field, :erp_imp_field_not_found) do
                     :erp_imp_field_not_found -> acc
                     %DateTime{} = v -> Map.put(acc, field, DateTime.to_unix(v))
                     v -> Map.put(acc, field, v)
