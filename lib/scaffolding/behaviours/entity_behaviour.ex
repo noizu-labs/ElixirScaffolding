@@ -236,7 +236,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
               base = %@mnesia_table{identifier: this.identifier, entity: this}
               List.foldl(@options[:additional_fields], base,
                 fn(field, acc) ->
-                  case Map.get(this, field, :erp_imp_field_not_found) do
+                  case Map.get(acc, field, :erp_imp_field_not_found) do
                     :erp_imp_field_not_found -> acc
                     %DateTime{} = v -> Map.put(acc, field, DateTime.to_unix(v))
                     v -> Map.put(acc, field, v)
@@ -318,15 +318,15 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
       #-------------------------------------------------------------------------
       # Default Implementation from default_implementation behaviour
       #-------------------------------------------------------------------------
-      if unquote(required?.id), do: unquote(default_implementation.id_implementation(mnesia_table, sref_prefix))
-      if unquote(required?.ref), do: unquote(default_implementation.ref_implementation(mnesia_table, sref_prefix))
-      if unquote(required?.sref), do: unquote(default_implementation.sref_implementation(mnesia_table, sref_prefix))
-      if unquote(required?.entity), do: unquote(default_implementation.entity_implementation(mnesia_table, repo_module))
-      if unquote(required?.entity!), do: unquote(default_implementation.entity_txn_implementation(mnesia_table, repo_module))
-      if unquote(required?.record), do: unquote(default_implementation.record_implementation(mnesia_table, repo_module))
-      if unquote(required?.record!), do: unquote(default_implementation.record_txn_implementation(mnesia_table, repo_module))
-      if unquote(required?.erp_imp), do: unquote(default_implementation.erp_imp(mnesia_table))
-      if unquote(required?.as_record), do: unquote(default_implementation.as_record_implementation(mnesia_table, as_record_options))
+      if unquote(required?.id), do: unquote(Macro.expand(default_implementation, __CALLER__).id_implementation(mnesia_table, sref_prefix))
+      if unquote(required?.ref), do: unquote(Macro.expand(default_implementation, __CALLER__).ref_implementation(mnesia_table, sref_prefix))
+      if unquote(required?.sref), do: unquote(Macro.expand(default_implementation, __CALLER__).sref_implementation(mnesia_table, sref_prefix))
+      if unquote(required?.entity), do: unquote(Macro.expand(default_implementation, __CALLER__).entity_implementation(mnesia_table, repo_module))
+      if unquote(required?.entity!), do: unquote(Macro.expand(default_implementation, __CALLER__).entity_txn_implementation(mnesia_table, repo_module))
+      if unquote(required?.record), do: unquote(Macro.expand(default_implementation, __CALLER__).record_implementation(mnesia_table, repo_module))
+      if unquote(required?.record!), do: unquote(Macro.expand(default_implementation, __CALLER__).record_txn_implementation(mnesia_table, repo_module))
+      if unquote(required?.erp_imp), do: unquote(Macro.expand(default_implementation, __CALLER__).erp_imp(mnesia_table))
+      if unquote(required?.as_record), do: unquote(Macro.expand(default_implementation, __CALLER__).as_record_implementation(mnesia_table, as_record_options))
     end # end quote
   end # end defmacro
 
