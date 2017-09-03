@@ -68,6 +68,7 @@ defimpl Noizu.ERP, for: Tuple do
   def ref(obj) do
     case obj do
       {:ref, manager, _identifier} when is_atom(manager)-> obj
+      {:ext_ref, manager, _identifier} when is_atom(manager) -> obj
     end
   end # end ref/1
 
@@ -77,6 +78,8 @@ defimpl Noizu.ERP, for: Tuple do
         #if function_exported?(manager, :sref, 1) do
           manager.sref(identifier)
         #end
+      {:ext_ref, manager, identifier} when is_atom(manager) ->
+        manager.sref(identifier)
     end
   end # end sref/1
 
@@ -86,6 +89,8 @@ defimpl Noizu.ERP, for: Tuple do
         #if function_exported?(manager, :entity, 2) do
           manager.record(identifier, options)
         #end
+      {:ext_ref, manager, identifier} when is_atom(manager) ->
+        manager.record(identifier, options)
     end
   end # end record/2
 
@@ -95,6 +100,8 @@ defimpl Noizu.ERP, for: Tuple do
         #if function_exported?(manager, :entity, 2) do
           manager.record!(identifier, options)
         #end
+      {:ext_ref, manager, identifier} when is_atom(manager) ->
+          manager.record!(identifier, options)
     end
   end # end record/2
 
@@ -104,6 +111,9 @@ defimpl Noizu.ERP, for: Tuple do
         #if function_exported?(manager, :entity, 2) do
           manager.entity(obj, options)
         #end
+      {:ext_ref, manager, _identifier} when is_atom(manager) ->
+
+          manager.entity(obj, options)
     end
   end # end entity/2
 
@@ -113,6 +123,8 @@ defimpl Noizu.ERP, for: Tuple do
         #if function_exported?(manager, :entity, 2) do
         manager.entity!(obj, options)
         #end
+      {:ext_ref, manager, _identifier} when is_atom(manager) ->
+        manager.entity!(obj, options)
     end
   end # end entity/2
 end # end defimpl EntityReferenceProtocol, for: Tuple
