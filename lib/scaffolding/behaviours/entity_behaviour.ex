@@ -169,8 +169,8 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
         @repo(unquote(__MODULE__).expand_repo(__MODULE__, unquote(repo)))
         def entity(item, options \\ nil)
         def entity(nil, _options), do: nil
-        def entity(%{__struct__: __MODULE__} = this, options) when options == %{} or options == nil, do: this
-        def entity(%@table{} = record, options) when options == %{} or options == nil, do: record.entity
+        def entity(%{__struct__: __MODULE__} = this, options), do: this
+        def entity(%@table{} = record, options), do: record.entity
         def entity(identifier, options), do: @repo.get(__MODULE__.id(identifier), Noizu.Scaffolding.CallingContext.internal(), options)
       end # end quote
     end # end entity_implementation
@@ -182,7 +182,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
         def entity!(item, options \\ nil)
         def entity!(nil, _options), do: nil
         def entity!(%{__struct__: __MODULE__} = this, options) when options == %{} or options == nil, do: this
-        def entity!(%@table{} = record, options) when options == %{} or options == nil, do: record.entity
+        def entity!(%@table{} = record, options), do: record.entity
         def entity!(identifier, options), do: @repo.get!(__MODULE__.ref(identifier) |> __MODULE__.id(), Noizu.Scaffolding.CallingContext.internal(), options)
       end # end quote
     end # end entity_txn_implementation
@@ -193,8 +193,8 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
         @repo(unquote(__MODULE__).expand_repo(__MODULE__, unquote(repo)))
         def record(item, options \\ nil)
         def record(nil, _options), do: nil
-        def record(%{__struct__: __MODULE__} = this, options) when options == %{} or options == nil, do: __MODULE__.as_record(this)
-        def record(%@table{} = record, options) when options == %{} or options == nil, do: record
+        def record(%{__struct__: __MODULE__} = this, options), do: __MODULE__.as_record(this)
+        def record(%@table{} = record, options), do: record
         def record(identifier, options), do: __MODULE__.as_record(@repo.get(__MODULE__.ref(identifier) |> __MODULE__.id(), Noizu.Scaffolding.CallingContext.internal(), options)) |> __MODULE__.as_record()
       end # end quote
     end # end record_implementation
@@ -205,8 +205,8 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
         @repo(unquote(__MODULE__).expand_repo(__MODULE__, unquote(repo)))
         def record!(item, options \\ nil)
         def record!(nil, _options), do: nil
-        def record!(%{__struct__: __MODULE__} = this, options) when options == %{} or options == nil, do: __MODULE__.as_record(this)
-        def record!(%@table{} = record, options) when options == %{} or options == nil, do: record
+        def record!(%{__struct__: __MODULE__} = this, options), do: __MODULE__.as_record(this)
+        def record!(%@table{} = record, options), do: record
         def record!(identifier, options), do: @repo.get!(__MODULE__.ref(identifier) |> __MODULE__.id(), Noizu.Scaffolding.CallingContext.internal(), options) |> __MODULE__.as_record()
       end # end quote
     end # end record_txn_implementation

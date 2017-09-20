@@ -111,7 +111,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
     :update, :update!, :delete, :delete!, :create, :create!, :get, :get!,
     :list, :list!, :pre_create_callback, :pre_update_callback, :pre_delete_callback,
     :post_create_callback, :post_update_callback, :post_delete_callback,
-    :from_json])
+    :from_json, :extract_date])
 
   defmacro __using__(options) do
     # Only include implementation for these methods.
