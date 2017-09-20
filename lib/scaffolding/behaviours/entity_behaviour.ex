@@ -72,6 +72,9 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
   """
   @callback record!(entity_reference, options) :: entity_record | error
 
+  @callback has_permission(entity_reference, any, any, options) :: boolean | error
+  @callback has_permission!(entity_reference, any, any, options) :: boolean | error
+
   @doc """
     Converts entity into record format. Aka extracts any fields used for indexing with the expected database table looking something like
     ```
@@ -112,7 +115,6 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
     @callback record_implementation(table :: Module, repo :: Module) :: Macro.t
     @callback record_txn_implementation(table :: Module, repo :: Module) :: Macro.t
     @callback as_record_implementation(Module, options :: nil | Map.t) :: any
-
     @callback expand_table(Module, Module) :: Module
     @callback expand_repo(Module, Module) :: Module
 
@@ -327,7 +329,15 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
       if unquote(required?.record!), do: unquote(Macro.expand(default_implementation, __CALLER__).record_txn_implementation(mnesia_table, repo_module))
       if unquote(required?.erp_imp), do: unquote(Macro.expand(default_implementation, __CALLER__).erp_imp(mnesia_table))
       if unquote(required?.as_record), do: unquote(Macro.expand(default_implementation, __CALLER__).as_record_implementation(mnesia_table, as_record_options))
+      @before_compile unquote(__MODULE__)
     end # end quote
-  end # end defmacro
+  end #end defmacro __using__(options)
+
+  defmacro __before_compile__(_env) do
+    quote do
+      def has_permission(ref, permission, context, options), do: false
+      def has_permission!(ref, permission, context, options), do: false
+    end # end quote
+  end # end defmacro __before_compile__(_env)
 
 end #end defmodule
