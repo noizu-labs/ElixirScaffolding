@@ -4,7 +4,7 @@
 #-------------------------------------------------------------------------------
 
 defmodule Noizu.Scaffolding.QueryStrategy.Default do
-  @behaviour Noizu.Scaffolding.QueryBehaviour  
+  @behaviour Noizu.Scaffolding.QueryBehaviour
   alias Noizu.Scaffolding.CallingContext
   alias Amnesia.Table, as: T
   #alias Amnesia.Table.Selection, as: S
@@ -18,7 +18,11 @@ defmodule Noizu.Scaffolding.QueryStrategy.Default do
     t = List.to_tuple([mnesia_table] ++ a)
     spec = [{t, [{:==, true, true}], [:"$_"]}]
     raw = T.select(mnesia_table, spec)
-    %Amnesia.Table.Select{raw| coerce: mnesia_table}
+    case raw do
+      nil -> nil
+      :badarg -> :badarg
+      raw -> %Amnesia.Table.Select{raw| coerce: mnesia_table}
+    end
   end
 
   def get(identifier, mnesia_table,  %CallingContext{} = _context, _options) do

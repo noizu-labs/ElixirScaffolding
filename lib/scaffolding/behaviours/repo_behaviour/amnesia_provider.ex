@@ -200,9 +200,16 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
       audit_engine.audit(:list, :scaffolding, entity_module, context)
     end
 
-    strategy.list(mnesia_table, context, options)
-      |> Amnesia.Selection.values
-      |> EntityReferenceProtocol.entity(options)
+    case strategy.list(mnesia_table, context, options) do
+      nil -> []
+      :badarg ->
+        Logger.warn("#{entity_module}.list -> :badarg")
+        []
+      m ->
+        m
+        |> Amnesia.Selection.values
+        |> EntityReferenceProtocol.entity(options)
+    end
   end # end list/3
 
   def list!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine} = _indicator, %CallingContext{} = context, options) do
