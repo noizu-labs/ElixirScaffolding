@@ -238,7 +238,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
               base = %@mnesia_table{identifier: this.identifier, entity: this}
               List.foldl(@options[:additional_fields], base,
                 fn(field, acc) ->
-                  case Map.get(acc, field, :erp_imp_field_not_found) do
+                  case Map.get(this, field, :erp_imp_field_not_found) do
                     :erp_imp_field_not_found -> acc
                     %DateTime{} = v -> Map.put(acc, field, DateTime.to_unix(v))
                     v -> Map.put(acc, field, v)
