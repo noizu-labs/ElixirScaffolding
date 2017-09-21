@@ -201,7 +201,8 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
     end
 
     case strategy.list(mnesia_table, context, options) do
-      nil -> []
+      nil ->
+         []
       :badarg ->
         Logger.warn("#{entity_module}.list -> :badarg")
         []
@@ -299,37 +300,24 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
   end
   def post_create_callback(_indicator, entity, _context, _options), do: entity
   def create({mod, entity_module, mnesia_table, query_strategy, audit_engine} = _indicator, entity, context = %CallingContext{}, options) do
-    IO.puts "CREATE #{inspect __MODULE__}.create(#{inspect {{mod, entity_module, mnesia_table, query_strategy, audit_engine}, entity}})"
     strategy = options[:query_strategy] || query_strategy
-    IO.puts "HERE 1 #{inspect entity}"
     entity = mod.pre_create_callback(entity, context, options)
-    IO.puts "HERE 2 #{inspect entity}"
     if (entity.identifier == nil) do
       raise "Cannot Create #{inspect entity_module} with out identiifer field set."
     end
-    IO.puts "HERE 3 #{inspect entity_module} ->
-      (#{inspect entity}, #{inspect options}) => #{inspect entity_module.record(entity, nil)}"
-
     ref = entity
       |> entity_module.record(options)
-      |> IO.inspect
       |> strategy.create(mnesia_table, context, options)
-      |> IO.inspect
       |> entity_module.ref()
-      |> IO.inspect
 
     audit_engine = options[:audit_engine] || audit_engine
-    |> IO.inspect
     audit_engine.audit(:create!, :scaffolding, ref, context)
-    |> IO.inspect
     # No need to return actual record as to_mnesia should not be modifying it in a way that would impact the final structure.
     entity
       |> mod.post_create_callback(context, options)
-      |> IO.inspect
   end # end create/3
 
   def create!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine} = _indicator, entity, %CallingContext{} = context, options) do
-    IO.puts "CREATE! #{inspect mod}.create(#{inspect {entity, context, options}})"
     Amnesia.Fragment.transaction do
       mod.create(entity, context, options)
     end

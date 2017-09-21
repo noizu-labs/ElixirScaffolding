@@ -181,7 +181,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
         @repo(unquote(__MODULE__).expand_repo(__MODULE__, unquote(repo)))
         def entity!(item, options \\ nil)
         def entity!(nil, _options), do: nil
-        def entity!(%{__struct__: __MODULE__} = this, options) when options == %{} or options == nil, do: this
+        def entity!(%{__struct__: __MODULE__} = this, options), do: this
         def entity!(%@table{} = record, options), do: record.entity
         def entity!(identifier, options), do: @repo.get!(__MODULE__.ref(identifier) |> __MODULE__.id(), Noizu.Scaffolding.CallingContext.internal(), options)
       end # end quote
@@ -335,8 +335,8 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
 
   defmacro __before_compile__(_env) do
     quote do
-      def has_permission(ref, permission, context, options), do: false
-      def has_permission!(ref, permission, context, options), do: false
+      def has_permission(_ref, _permission, _context, _options), do: false
+      def has_permission!(_ref, _permission, _context, _options), do: false
     end # end quote
   end # end defmacro __before_compile__(_env)
 
