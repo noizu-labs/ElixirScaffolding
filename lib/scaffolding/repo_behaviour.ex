@@ -225,7 +225,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
       :list, :list!,
       :pre_create_callback, :pre_update_callback, :pre_delete_callback,
       :post_create_callback, :post_update_callback, :post_delete_callback,
-      :keys, :keys!, :mnesia_table, :entity
+      :keys, :keys!, :mnesia_table, :entity, :default_identifier
       ])
     only = %{
       audit: Enum.member?(r, :audit),
@@ -251,7 +251,8 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
       keys: Enum.member?(r, :keys),
       keys!: Enum.member?(r, :keys!),
       mnesia_table: Enum.member?(r, :mnesia_table),
-      entity: Enum.member?(r, :entity)
+      entity: Enum.member?(r, :entity),
+      default_identifier: Enum.member?(r, :default_identifier),
     }
 
     r = Keyword.get(options, :override, [])
@@ -279,7 +280,8 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
       keys: Enum.member?(r, :keys),
       keys!: Enum.member?(r, :keys!),
       mnesia_table: Enum.member?(r, :mnesia_table),
-      entity: Enum.member?(r, :entity)
+      entity: Enum.member?(r, :entity),
+      default_identifier: Enum.member?(r, :default_identifier),
     }
 
     default_nmid_generator = Application.get_env(:noizu_scaffolding, :default_nmid_generator)
@@ -287,6 +289,8 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
 
     default_audit_engine = Application.get_env(:noizu_scaffolding, :default_audit_engine)
     audit_engine = Keyword.get(options, :audit_engine, default_audit_engine)
+
+    default_implementation = Keyword.get(options, :default_implementation, Noizu.Scaffolding.RepoBehaviour.DefaultImplementation)
 
     audit? = Keyword.get(options, :audit?, true)
     query_strategy = Keyword.get(options, :query_strategy, nil)
@@ -311,7 +315,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
       require Amnesia.Fragment
       require Logger
       import unquote(__MODULE__)
-      import Noizu.Scaffolding.RepoBehaviour.DefaultImplementation
+      import unquote(default_implementation)
 
       use unquote(mnesia_table)
 
@@ -365,12 +369,14 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
         end # end from_json/2
       end
 
-      def default_identifier(entity, options) do
-        if entity.identifier == nil do
-          id = generate_identifier(options)
-          Map.put(entity, :identifier, id)
-        else
-          entity
+      if (unquote(only.default_identifier) && !unquote(override.default_identifier)) do
+        def default_identifier(entity, options) do
+          if entity.identifier == nil do
+            id = generate_identifier(options)
+            Map.put(entity, :identifier, id)
+          else
+            entity
+          end
         end
       end
 
@@ -432,7 +438,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
       if (unquote(only.list) && !unquote(override.list)) do
         def list(context, options \\ %{})
         def list(%CallingContext{} = context, options) do
-          default_list(__MODULE__, context, options)
+          unquote(default_implementation).default_list(__MODULE__, context, options)
         end # end list/2
       end # end if (unquote(only.list) && !unquote(override.list)) do
 
@@ -451,7 +457,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
       if (unquote(only.get) && !unquote(override.get)) do
         def get(identifier, context, options \\ %{})
         def get(identifier, %CallingContext{} = context, options) do
-          default_get(__MODULE__, identifier, context, options)
+          unquote(default_implementation).default_get(__MODULE__, identifier, context, options)
         end # end get/3
       end # emd if (unquote(only.get))
 
@@ -470,7 +476,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
       if (unquote(only.update) && !unquote(override.update)) do
         def update(entity, context, options \\ %{})
         def update(entity, %CallingContext{} = context, options) do
-          default_update(__MODULE__, entity, context, options)
+          unquote(default_implementation).default_update(__MODULE__, entity, context, options)
         end # end update/3
       end # if (unquote(only.update))
 
@@ -501,7 +507,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
       if (unquote(only.delete) && !unquote(override.delete)) do
         def delete(entity, context, options \\ %{})
         def delete(entity, %CallingContext{} = context, options) do
-          default_delete(__MODULE__, entity, context, options)
+          unquote(default_implementation).default_delete(__MODULE__, entity, context, options)
         end # end delete/3
       end # end if (unquote(only.delete!))
 
@@ -532,7 +538,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
       if (unquote(only.create) && !unquote(override.create)) do
         def create(entity, context, options \\ %{})
         def create(entity, context = %CallingContext{}, options) do
-          default_create(__MODULE__, entity, context, options)
+          unquote(default_implementation).default_create(__MODULE__, entity, context, options)
         end # end create/3
       end # end if (unquote(only.create))
 
