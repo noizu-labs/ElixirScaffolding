@@ -332,9 +332,51 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
         defmodule DefaultQueryStrategy do
           @behaviour Noizu.Scaffolding.QueryBehaviour
           @mnesia_table unquote(mnesia_table)
+          alias Amnesia.Table, as: T
 
-          def list(%CallingContext{} = _context, _options) do
-            @mnesia_table.where 1 == 1
+          @field_number(
+            for index <- 1..Enum.count(@mnesia_table.attributes()) do
+              String.to_atom("$#{index}")
+            end
+          )
+
+          @t(List.to_tuple([@mnesia_table] ++ @field_number))
+
+          @field_lookup(
+            Enum.reduce(@mnesia_table.attributes(), %{__noizu_internal_index: 0},
+              fn({k,v}, acc) ->
+                index = acc[:__noizu_internal_index] + 1
+                acc
+                  |> Map.put(:__noizu_internal_index, index)
+                  |> Map.put(k, String.to_atom("$#{index}"))
+              end
+            )
+          )
+
+          def list(%CallingContext{} = _context, options) do
+            qspec = if options[:filter] do
+              case @field_lookup[options[:filter][:field]] do
+                nil -> {:==, true, true}
+                field -> {options[:filter][:comparison] || :==, options[:filter][:value], field}
+              end
+            else
+              {:==, true, true}
+            end
+
+            pg = options[:pg] || 1
+            rpp = options[:rpp] || 5000
+
+
+            spec = [{@t, [qspec], [:"$_"]}]
+            
+            raw = T.select(@mnesia_table, rpp, spec)
+            case raw do
+              nil -> nil
+              :badarg -> :badarg
+              raw ->
+                raw = if pg > 1, do: Enum.reduce(2..pg, raw, fn(_i, a) -> Amnesia.Selection.next(a) end), else: raw
+                if raw == nil, do: nil, else: %Amnesia.Table.Select{raw| coerce: @mnesia_table}
+            end
           end
 
           def get(identifier, %CallingContext{} = _context, _options) do
