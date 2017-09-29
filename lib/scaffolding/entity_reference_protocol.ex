@@ -26,43 +26,6 @@ end # end defprotocol Noizu.ERP
 #-------------------------------------------------------------------------------
 # Useful default implementations
 #-------------------------------------------------------------------------------
-defimpl Noizu.ERP, for: List do
-  def ref(entities) do
-    for obj <- entities do
-      Noizu.ERP.ref(obj)
-    end
-  end # end reference/1
-
-  def sref(entities) do
-    for obj <- entities do
-      Noizu.ERP.sref(obj)
-    end
-  end # end sref/1
-
-  def record(entities, options \\ nil) do
-    for obj <- entities do
-      Noizu.ERP.record(obj, options)
-    end
-  end # end record/2
-
-  def record!(entities, options \\ nil) do
-    for obj <- entities do
-      Noizu.ERP.record!(obj, options)
-    end
-  end # end record!/2
-
-  def entity(entities, options \\ nil) do
-    for obj <- entities do
-      Noizu.ERP.entity(obj, options)
-    end
-  end # end entity/2
-
-  def entity!(entities, options \\ nil) do
-    for obj <- entities do
-      Noizu.ERP.entity!(obj, options)
-    end
-  end # end entity!/2
-end # end defimpl EntityReferenceProtocol, for: List
 
 defimpl Noizu.ERP, for: Tuple do
   def ref(obj) do
