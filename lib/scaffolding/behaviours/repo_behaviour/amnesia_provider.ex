@@ -11,7 +11,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
   @methods([
     :generate_identifier!, :generate_identifier,
     :update, :update!, :delete, :delete!, :create, :create!, :get, :get!,
-    :list, :list!, :pre_create_callback, :pre_update_callback, :pre_delete_callback,
+    :match, :match!, :list, :list!, :pre_create_callback, :pre_update_callback, :pre_delete_callback,
     :post_create_callback, :post_update_callback, :post_delete_callback,
     :extract_date
   ])
@@ -39,12 +39,16 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
     nmid_generator = Keyword.get(options, :nmid_generator, Application.get_env(:noizu_scaffolding, :default_nmid_generator))
     sequencer = Keyword.get(options, :sequencer, :auto)
 
+    dirty_default = Keyword.get(options, :dirty_default, false)
+
     quote do
       use Amnesia
       require Logger
       alias Noizu.Scaffolding.CallingContext
       alias Noizu.ERP, as: EntityReferenceProtocol
       import unquote(__MODULE__)
+
+      @dirty_default(unquote(dirty_default))
 
       mnesia_table = if unquote(mnesia_table) == :auto, do: Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider.expand_table(__MODULE__), else: unquote(mnesia_table)
       @mnesia_table(mnesia_table)
@@ -81,6 +85,18 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
       end
 
       #-------------------------------------------------------------------------
+      # @match
+      #-------------------------------------------------------------------------
+      if unquote(required?.match) do
+        def match(match_sel, context, options \\ %{})
+        def match(match_sel, %CallingContext{} = context, options), do: match(@param_pass_thru, match_sel, context, options)
+      end # end required?.match
+      if unquote(required?.match!) do
+        def match!(match_sel, context, options \\ %{dirty: @dirty_default})
+        def match!(match_sel, %CallingContext{} = context, options), do: match!(@param_pass_thru, match_sel, context, options)
+      end # end required?.match!
+
+      #-------------------------------------------------------------------------
       # @list
       #-------------------------------------------------------------------------
       if unquote(required?.list) do
@@ -88,17 +104,21 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
         def list(%CallingContext{} = context, options), do: list(@param_pass_thru, context, options)
       end # end required?.list
       if unquote(required?.list!) do
-        def list!(context, options \\ %{})
+        def list!(context, options \\ %{dirty: @dirty_default})
         def list!(%CallingContext{} = context, options), do: list!(@param_pass_thru, context, options)
       end # end required?.list!
+
+      #-------------------------------------------------------------------------
+      # @get
+      #-------------------------------------------------------------------------
       if unquote(required?.get) do
         def get(identifier, context, options \\ %{})
         def get(identifier, %CallingContext{} = context, options), do: get(@param_pass_thru, identifier, context, options)
-      end # end required?.list
+      end # end required?.get
       if unquote(required?.get!) do
-        def get!(identifier, context, options \\ %{})
+        def get!(identifier, context, options \\ %{dirty: @dirty_default})
         def get!(identifier, %CallingContext{} = context, options), do: get!(@param_pass_thru, identifier, context, options)
-      end # end required?.list!
+      end # end required?.get!
 
       #-------------------------------------------------------------------------
       # @update
@@ -114,7 +134,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
         def update(entity, %CallingContext{} = context, options), do: update(@param_pass_thru, entity, context, options)
       end # end required?.update
       if unquote(required?.update!) do
-        def update!(entity, context, options \\ %{})
+        def update!(entity, context, options \\ %{dirty: @dirty_default})
         def update!(entity, %CallingContext{} = context, options), do: update!(@param_pass_thru, entity, context, options)
       end # end required?.update!
 
@@ -132,7 +152,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
         def delete(entity, %CallingContext{} = context, options), do: delete(@param_pass_thru, entity, context, options)
       end # end  required?.delete
       if unquote(required?.delete!) do
-        def delete!(entity, context, options \\ %{})
+        def delete!(entity, context, options \\ %{dirty: @dirty_default})
         def delete!(entity, %CallingContext{} = context, options), do: delete!(@param_pass_thru, entity, context, options)
       end # end required?.delete!
 
@@ -150,7 +170,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
         def create(entity, context = %CallingContext{}, options), do: create(@param_pass_thru, entity, context, options)
       end # end required?.create
       if unquote(required?.create!) do
-        def create!(entity, context, options \\ %{})
+        def create!(entity, context, options \\ %{dirty: @dirty_default})
         def create!(entity, context = %CallingContext{}, options), do: create!(@param_pass_thru, entity, context, options)
       end # end required?.create
 
@@ -175,7 +195,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
       path = Module.split(module)
       default_database = Module.concat([List.first(path), "Database"])
       root_table =
-        Application.get_env(Noizu.ElixirScaffolding, :default_database, default_database)
+        Application.get_env(:noizu_scaffolding, :default_database, default_database)
         |> Module.split()
       entity_name = path |> List.last()
       table_name = String.slice(entity_name, 0..-5) <> "Table"
@@ -193,11 +213,41 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
   #-----------------------------------------------------------------------------
   # Behaviour methods
   #-----------------------------------------------------------------------------
+  def match({_mod, entity_module, mnesia_table, query_strategy, audit_engine} = _indicator, match_sel, %CallingContext{} = context, options) do
+    strategy = options[:query_strategy] || query_strategy
+    if options[:audit] do
+      audit_engine = options[:audit_engine] || audit_engine
+      audit_engine.audit(:match, :scaffolding, entity_module, context, options)
+    end
+
+    case strategy.match(match_sel, mnesia_table, context, options) do
+      nil ->
+         []
+      :badarg ->
+        Logger.warn("#{entity_module}.match -> :badarg")
+        []
+      m ->
+        m
+        |> Amnesia.Selection.values
+        |> EntityReferenceProtocol.entity(options)
+    end
+  end # end list/3
+
+  def match!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine} = _indicator, match_sel, %CallingContext{} = context, options) do
+    if options[:dirty] == false do
+      mod.match(match_sel, context, options)
+    else
+      Amnesia.Fragment.transaction  do
+         mod.match(match_sel, context, options)
+      end
+    end
+  end
+
   def list({_mod, entity_module, mnesia_table, query_strategy, audit_engine} = _indicator, %CallingContext{} = context, options) do
     strategy = options[:query_strategy] || query_strategy
     if options[:audit] do
       audit_engine = options[:audit_engine] || audit_engine
-      audit_engine.audit(:list, :scaffolding, entity_module, context)
+      audit_engine.audit(:list, :scaffolding, entity_module, context, options)
     end
 
     case strategy.list(mnesia_table, context, options) do
@@ -214,8 +264,12 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
   end # end list/3
 
   def list!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine} = _indicator, %CallingContext{} = context, options) do
-    Amnesia.Fragment.transaction  do
-       mod.list(context, options)
+    if options[:dirty] == false do
+      mod.list(context, options)
+    else
+      Amnesia.Fragment.transaction  do
+         mod.list(context, options)
+      end
     end
   end
 
@@ -229,15 +283,19 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
         _ -> EntityReferenceProtocol.ref(record)
       end
       audit_engine = options[:audit_engine] || audit_engine
-      audit_engine.audit(:get, :scaffolding, ref, context)
+      audit_engine.audit(:get, :scaffolding, ref, context, options)
     end
 
     entity_module.entity(record, options)
   end # end get/3
 
   def get!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine} = _indicator, identifier, %CallingContext{} = context, options) do
-    Amnesia.Fragment.transaction do
+    if options[:dirty] == false do
       mod.get(identifier, context, options)
+    else
+      Amnesia.Fragment.transaction do
+        mod.get(identifier, context, options)
+      end
     end
   end
 
@@ -254,15 +312,19 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
       |> entity_module.ref()
 
     audit_engine = options[:audit_engine] || audit_engine
-    audit_engine.audit(:update!, :scaffolding, ref, context)
+    audit_engine.audit(:update!, :scaffolding, ref, context, options)
 
     entity
       |> mod.post_update_callback(context, options)
   end # end update/3
 
   def update!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine} = _indicator, entity, %CallingContext{} = context, options) do
-    Amnesia.Fragment.transaction do
+    if options[:dirty] do
       mod.update(entity, context, options)
+    else
+      Amnesia.Fragment.transaction do
+        mod.update(entity, context, options)
+      end
     end
   end
 
@@ -280,14 +342,18 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
       |> entity_module.ref()
 
     audit_engine = options[:audit_engine] || audit_engine
-    audit_engine.audit(:delete!, :scaffolding, ref, context)
+    audit_engine.audit(:delete!, :scaffolding, ref, context, options)
 
     true
   end # end delete/3
 
   def delete!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine} = _indicator, entity, %CallingContext{} = context, options) do
-    Amnesia.Fragment.transaction do
+    if options[:dirty] do
       mod.delete(entity, context, options)
+    else
+      Amnesia.Fragment.transaction do
+        mod.delete(entity, context, options)
+      end
     end
   end
 
@@ -311,15 +377,19 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
       |> entity_module.ref()
 
     audit_engine = options[:audit_engine] || audit_engine
-    audit_engine.audit(:create!, :scaffolding, ref, context)
+    audit_engine.audit(:create!, :scaffolding, ref, context, options)
     # No need to return actual record as to_mnesia should not be modifying it in a way that would impact the final structure.
     entity
       |> mod.post_create_callback(context, options)
   end # end create/3
 
   def create!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine} = _indicator, entity, %CallingContext{} = context, options) do
-    Amnesia.Fragment.transaction do
+    if options[:dirty] do
       mod.create(entity, context, options)
+    else
+      Amnesia.Fragment.transaction do
+        mod.create(entity, context, options)
+      end
     end
   end
 end

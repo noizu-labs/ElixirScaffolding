@@ -11,14 +11,24 @@ defmodule Noizu.Scaffolding.QueryStrategy.Default do
   require Exquisite
 
 
+  def match(_match_sel, _mnesia_table, %CallingContext{} = _context, _options) do
+    raise "Match NYI"
+  end
+
   def list(mnesia_table, %CallingContext{} = _context, options) do
     pg = options[:pg] || 1
     rpp = options[:rpp] || 5000
+    qspec = if options[:filter] do
+      {options[:filter][:comparison] || :==, options[:filter][:field], options[:filter][:value]}
+    else
+      {:==, true, true}
+    end
+
     a = for index <- 1..Enum.count(mnesia_table.attributes()) do
       String.to_atom("$#{index}")
     end
     t = List.to_tuple([mnesia_table] ++ a)
-    spec = [{t, [{:==, true, true}], [:"$_"]}]
+    spec = [{t, [qspec], [:"$_"]}]
     raw = T.select(mnesia_table, rpp, spec)
     case raw do
       nil -> nil
@@ -29,20 +39,36 @@ defmodule Noizu.Scaffolding.QueryStrategy.Default do
     end
   end
 
-  def get(identifier, mnesia_table,  %CallingContext{} = _context, _options) do
-    mnesia_table.read(identifier)
+  def get(identifier, mnesia_table,  %CallingContext{} = _context, options) do
+    if options[:dirty] do
+      mnesia_table.read!(identifier)
+    else
+      mnesia_table.read(identifier)
+    end
   end
 
-  def update(entity, mnesia_table,  %CallingContext{} = _context, _options) do
-    mnesia_table.write(entity)
+  def update(entity, mnesia_table,  %CallingContext{} = _context, options) do
+    if options[:dirty] do
+      mnesia_table.write!(entity)
+    else
+      mnesia_table.write(entity)
+    end
   end
 
-  def create(entity, mnesia_table,  %CallingContext{} = _context, _options) do
-    mnesia_table.write(entity)
+  def create(entity, mnesia_table,  %CallingContext{} = _context, options) do
+    if options[:dirty] do
+      mnesia_table.write!(entity)
+    else
+      mnesia_table.write(entity)
+    end
   end
 
-  def delete(identifier, mnesia_table,  %CallingContext{} = _context, _options) do
-    mnesia_table.delete(identifier)
+  def delete(identifier, mnesia_table,  %CallingContext{} = _context, options) do
+    if options[:dirty] do
+      mnesia_table.delete!(identifier)
+    else
+      mnesia_table.delete(identifier)
+    end
   end
 
 end

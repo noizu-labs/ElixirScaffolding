@@ -9,6 +9,17 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
   @type ref :: tuple
   @type opts :: Map.t
 
+
+  @doc """
+    Match Records.
+  """
+  @callback match(any, CallingContext.t, opts) :: list
+
+  @doc """
+    Match Records. Transaction Wrapped
+  """
+  @callback match!(any, CallingContext.t, opts) :: list
+
   @doc """
     List Records.
   """
@@ -109,7 +120,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
   @methods([
     :generate_identifier!, :generate_identifier,
     :update, :update!, :delete, :delete!, :create, :create!, :get, :get!,
-    :list, :list!, :pre_create_callback, :pre_update_callback, :pre_delete_callback,
+    :match, :match!, :list, :list!, :pre_create_callback, :pre_update_callback, :pre_delete_callback,
     :post_create_callback, :post_update_callback, :post_delete_callback,
     :from_json, :extract_date])
 

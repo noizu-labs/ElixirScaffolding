@@ -261,7 +261,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
         path = Module.split(module)
         default_database = Module.concat([List.first(path), "Database"])
         root_table =
-          Application.get_env(Noizu.ElixirScaffolding, :default_database, default_database)
+          Application.get_env(:noizu_scaffolding, :default_database, default_database)
           |> Module.split()
         entity_name = path |> List.last()
         table_name = String.slice(entity_name, 0..-7) <> "Table"

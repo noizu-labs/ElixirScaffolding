@@ -93,3 +93,38 @@ defmodule Noizu.Scaffolding.CallingContext do
   def restricted(env, opts \\ %{})
   def restricted(env, opts), do: Noizu.Scaffolding.InternalTask.calling_context(:restricted, env, opts)
 end # end defmodule Noizu.Scaffolding.CallingContext
+
+
+if Application.get_env(:noizu_scaffolding, :inspect_calling_context, true) do
+  #-----------------------------------------------------------------------------
+  # Inspect Protocol
+  #-----------------------------------------------------------------------------
+  defimpl Inspect, for: Noizu.Scaffolding.CallingContext do
+    import Inspect.Algebra
+    def inspect(entity, opts) do
+      heading = "#CallingContext(#{entity.token})"
+      {seperator, end_seperator} = if opts.pretty, do: {"\n   ", "\n"}, else: {" ", " "}
+      inner = cond do
+        opts.limit == :infinity ->
+          concat(["<#{seperator}", to_doc(Map.from_struct(entity), opts), "#{seperator}>"])
+        opts.limit >= 200 ->
+          concat ["<",
+          "#{seperator}caller: #{inspect entity.caller},",
+          "#{seperator}reason: #{inspect entity.reason},",
+          "#{seperator}permissions: #{inspect entity.auth[:permissions]}",
+          "#{end_seperator}>"]
+        opts.limit >= 150 ->
+          concat ["<",
+          "#{seperator}caller: #{inspect entity.caller},",
+          "#{seperator}reason: #{inspect entity.reason}",
+          "#{end_seperator}>"]
+        opts.limit >= 100 ->
+          concat ["<",
+          "#{seperator}caller: #{inspect entity.caller}",
+          "#{end_seperator}>"]
+        true -> "<>"
+      end
+      concat [heading, inner]
+    end # end inspect/2
+  end # end defimpl
+end

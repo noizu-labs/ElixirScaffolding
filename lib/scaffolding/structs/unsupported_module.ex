@@ -18,6 +18,8 @@ defmodule Noizu.Scaffolding.UnsupportedModule do
   def record!(item, _options), do: raise "UnsupportedModule #{inspect item}"
   def as_record(item), do: raise "UnsupportedModule #{inspect item}"
   def sref_module(), do: "unsupported-module"
+  def has_permission(_,_,_,_), do: false
+  def has_permission!(_,_,_,_), do: false
 end
 
 defimpl Noizu.ERP, for: Noizu.Scaffolding.UnsupportedModule do
