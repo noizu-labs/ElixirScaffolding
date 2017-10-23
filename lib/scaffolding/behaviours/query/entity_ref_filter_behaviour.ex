@@ -59,7 +59,7 @@ defmodule Noizu.Scaffolding.Query.EntityRefFilteringBehaviour do
 
       if (unquote(only.get) && !unquote(override.get)) do
         def get(identifier, mnesia_table, %Noizu.Scaffolding.CallingContext{} = context, options) do
-          record = if options[:dirty] do
+          record = if options[:dirty] == true do
             mnesia_table.read!(identifier)
           else
             mnesia_table.read(identifier)
@@ -84,7 +84,7 @@ defmodule Noizu.Scaffolding.Query.EntityRefFilteringBehaviour do
           if (options[:filter_caller]) do
             ref = context.caller
             if (record.unquote(constraint_field) == ref) do
-               if options[:dirty] do
+               if options[:dirty] == true do
                  mnesia_table.write!(record)
                else
                  mnesia_table.write(record)
@@ -96,7 +96,7 @@ defmodule Noizu.Scaffolding.Query.EntityRefFilteringBehaviour do
             if (options[:filter_entity]) do
               ref = options[:filter_entity]
               if (record.unquote(constraint_field) == ref) do
-                 if options[:dirty] do
+                 if options[:dirty] == true  do
                    mnesia_table.write!(record)
                  else
                    mnesia_table.write(record)
@@ -105,7 +105,7 @@ defmodule Noizu.Scaffolding.Query.EntityRefFilteringBehaviour do
                  raise "Not linked to filter_entity"
               end
             else
-              if options[:dirty] do
+              if options[:dirty] == true  do
                 mnesia_table.write!(record)
               else
                 mnesia_table.write(record)
@@ -119,14 +119,14 @@ defmodule Noizu.Scaffolding.Query.EntityRefFilteringBehaviour do
         def update(record, mnesia_table, %Noizu.Scaffolding.CallingContext{} = context, options) do
           if (options[:filter_caller]) do
             ref = context.caller
-            record2 = if options[:dirty] do
+            record2 = if options[:dirty] == true  do
               mnesia_table.read!(record.identifier)
             else
               mnesia_table.read(record.identifier)
             end
 
             if (record2.unquote(constraint_field) == ref) do
-               if options[:dirty] do
+               if options[:dirty] == true  do
                  mnesia_table.write!(record)
                else
                  mnesia_table.write(record)
@@ -139,7 +139,7 @@ defmodule Noizu.Scaffolding.Query.EntityRefFilteringBehaviour do
               ref = options[:filter_entity]
               record2 = mnesia_table.read(record.identifier)
               if (record2.unquote(constraint_field) == ref) do
-                 if options[:dirty] do
+                 if options[:dirty] == true  do
                    mnesia_table.write!(record)
                  else
                    mnesia_table.write(record)
@@ -148,7 +148,7 @@ defmodule Noizu.Scaffolding.Query.EntityRefFilteringBehaviour do
                  raise "Not linked to filter_entity"
               end
             else
-              if options[:dirty] do
+              if options[:dirty] == true  do
                 mnesia_table.write!(record)
               else
                 mnesia_table.write(record)
@@ -162,13 +162,13 @@ defmodule Noizu.Scaffolding.Query.EntityRefFilteringBehaviour do
         def delete(identifier, %Noizu.Scaffolding.CallingContext{} = context, options) do
           if (options[:filter_caller]) do
             ref = context.caller
-            record = if options[:dirty] do
+            record = if options[:dirty] == true  do
               mnesia_table.read!(identifier)
             else
               mnesia_table.read(identifier)
             end
             if (record.unquote(constraint_field) == ref) do
-              if options[:dirty] do
+              if options[:dirty] == true  do
                 mnesia_table.delete!(identifier)
               else
                 mnesia_table.delete(identifier)
@@ -179,13 +179,13 @@ defmodule Noizu.Scaffolding.Query.EntityRefFilteringBehaviour do
           else
             if (options[:filter_entity]) do
               ref = options[:filter_entity]
-              record = if options[:dirty] do
+              record = if options[:dirty] == true  do
                 mnesia_table.read!(identifier)
               else
                 mnesia_table.read(identifier)
               end
               if (record.unquote(constraint_field) == ref) do
-                if options[:dirty] do
+                if options[:dirty] == true  do
                   mnesia_table.delete!(identifier)
                 else
                   mnesia_table.delete(identifier)
@@ -194,7 +194,7 @@ defmodule Noizu.Scaffolding.Query.EntityRefFilteringBehaviour do
                  raise "Not linked to filter_entity"
                end
             else
-              if options[:dirty] do
+              if options[:dirty] == true  do
                 mnesia_table.delete!(identifier)
               else
                 mnesia_table.delete(identifier)

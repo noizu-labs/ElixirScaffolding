@@ -234,7 +234,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
   end # end list/3
 
   def match!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine} = _indicator, match_sel, %CallingContext{} = context, options) do
-    if options[:dirty] do
+    if options[:dirty] == true do
       mod.match(match_sel, context, options)
     else
       Amnesia.Fragment.transaction  do
@@ -264,7 +264,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
   end # end list/3
 
   def list!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine} = _indicator, %CallingContext{} = context, options) do
-    if options[:dirty] do
+    if options[:dirty] == true do
       mod.list(context, options)
     else
       Amnesia.Fragment.transaction  do
@@ -290,7 +290,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
   end # end get/3
 
   def get!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine} = _indicator, identifier, %CallingContext{} = context, options) do
-    if options[:dirty] do
+    if options[:dirty] == true do
       mod.get(identifier, context, options)
     else
       Amnesia.Fragment.transaction do
@@ -319,7 +319,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
   end # end update/3
 
   def update!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine} = _indicator, entity, %CallingContext{} = context, options) do
-    if options[:dirty] do
+    if options[:dirty] == true do
       mod.update(entity, context, options)
     else
       Amnesia.Fragment.transaction do
@@ -348,7 +348,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
   end # end delete/3
 
   def delete!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine} = _indicator, entity, %CallingContext{} = context, options) do
-    if options[:dirty] do
+    if options[:dirty] == true do
       mod.delete(entity, context, options)
     else
       Amnesia.Fragment.transaction do
@@ -384,7 +384,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
   end # end create/3
 
   def create!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine} = _indicator, entity, %CallingContext{} = context, options) do
-    if options[:dirty] do
+    if options[:dirty] == true do
       mod.create(entity, context, options)
     else
       Amnesia.Fragment.transaction do

@@ -40,7 +40,7 @@ defmodule Noizu.Scaffolding.QueryStrategy.Default do
   end
 
   def get(identifier, mnesia_table,  %CallingContext{} = _context, options) do
-    if options[:dirty] do
+    if options[:dirty] == true do
       mnesia_table.read!(identifier)
     else
       mnesia_table.read(identifier)
@@ -48,7 +48,7 @@ defmodule Noizu.Scaffolding.QueryStrategy.Default do
   end
 
   def update(entity, mnesia_table,  %CallingContext{} = _context, options) do
-    if options[:dirty] do
+    if options[:dirty] == true do
       mnesia_table.write!(entity)
     else
       mnesia_table.write(entity)
@@ -56,7 +56,7 @@ defmodule Noizu.Scaffolding.QueryStrategy.Default do
   end
 
   def create(entity, mnesia_table,  %CallingContext{} = _context, options) do
-    if options[:dirty] do
+    if options[:dirty] == true do
       mnesia_table.write!(entity)
     else
       mnesia_table.write(entity)
@@ -64,7 +64,7 @@ defmodule Noizu.Scaffolding.QueryStrategy.Default do
   end
 
   def delete(identifier, mnesia_table,  %CallingContext{} = _context, options) do
-    if options[:dirty] do
+    if options[:dirty] == true do
       mnesia_table.delete!(identifier)
     else
       mnesia_table.delete(identifier)
