@@ -234,7 +234,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
   end # end list/3
 
   def match!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine} = _indicator, match_sel, %CallingContext{} = context, options) do
-    if options[:dirty] == false do
+    if options[:dirty] do
       mod.match(match_sel, context, options)
     else
       Amnesia.Fragment.transaction  do
@@ -264,7 +264,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
   end # end list/3
 
   def list!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine} = _indicator, %CallingContext{} = context, options) do
-    if options[:dirty] == false do
+    if options[:dirty] do
       mod.list(context, options)
     else
       Amnesia.Fragment.transaction  do
@@ -290,7 +290,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
   end # end get/3
 
   def get!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine} = _indicator, identifier, %CallingContext{} = context, options) do
-    if options[:dirty] == false do
+    if options[:dirty] do
       mod.get(identifier, context, options)
     else
       Amnesia.Fragment.transaction do
