@@ -99,10 +99,20 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
   """
   @callback sref_module() :: String.t
 
+  @doc """
+  Cast from json to struct.
+  """
+  @callback from_json(Map.t, CallingContext.t) :: any
+
+  @doc """
+  get entitie's repo module
+  """
+  @callback repo() :: atom
+
   #-----------------------------------------------------------------------------
   # Defines
   #-----------------------------------------------------------------------------
-  @methods([:id, :ref, :sref, :entity, :entity!, :record, :record!, :erp_imp, :as_record, :sref_module, :as_record])
+  @methods([:id, :ref, :sref, :entity, :entity!, :record, :record!, :erp_imp, :as_record, :sref_module, :as_record, :from_json, :repo])
 
   #-----------------------------------------------------------------------------
   # Default Implementations
@@ -305,6 +315,8 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
     # Repo module (entity/record implementation), Module name with "Repo" appeneded if :auto
     repo_module = Keyword.get(options, :repo_module, :auto)
     mnesia_table = Keyword.get(options, :mnesia_table, :auto)
+
+
     as_record_options = Keyword.get(options, :as_record_options, Macro.escape(%{}))
 
     # Default Implementation Provider
@@ -317,13 +329,25 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
       import unquote(__MODULE__)
       @behaviour Noizu.Scaffolding.EntityBehaviour
 
+      @expanded_repo(unquote(default_implementation).expand_repo(__MODULE__, unquote(repo_module)))
+
       if unquote(required?.sref_module) do
         def sref_module(), do: unquote(sm)
+      end
+
+      if unquote(required?.repo) do
+        def repo(), do: @expanded_repo
       end
 
       #-------------------------------------------------------------------------
       # Default Implementation from default_implementation behaviour
       #-------------------------------------------------------------------------
+      if unquote(required?.from_json) do
+        def from_json(json, context) do
+           @expanded_repo.from_json(json, context)
+         end
+      end
+
       if unquote(required?.id), do: unquote(Macro.expand(default_implementation, __CALLER__).id_implementation(mnesia_table, sref_prefix))
       if unquote(required?.ref), do: unquote(Macro.expand(default_implementation, __CALLER__).ref_implementation(mnesia_table, sref_prefix))
       if unquote(required?.sref), do: unquote(Macro.expand(default_implementation, __CALLER__).sref_implementation(mnesia_table, sref_prefix))
