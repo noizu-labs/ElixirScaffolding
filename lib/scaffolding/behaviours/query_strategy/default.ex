@@ -18,8 +18,17 @@ defmodule Noizu.Scaffolding.QueryStrategy.Default do
   def list(mnesia_table, %CallingContext{} = _context, options) do
     pg = options[:pg] || 1
     rpp = options[:rpp] || 5000
+
+
     qspec = if options[:filter] do
-      {options[:filter][:comparison] || :==, options[:filter][:field], options[:filter][:value]}
+      {m, _} = Enum.reduce(mnesia_table.attributes(), {%{}, 0},
+        fn({k,v}, {acc, c}) ->
+          {Map.put(acc, k, :"$#{c + 1}"), c + 1}
+        end
+      )
+      f = m[options[:filter][:field]]
+      v = is_tuple(options[:filter][:value]) && {options[:filter][:value]} || options[:filter][:value]
+      {options[:filter][:comparison] || :==, f, v}
     else
       {:==, true, true}
     end
@@ -27,8 +36,10 @@ defmodule Noizu.Scaffolding.QueryStrategy.Default do
     a = for index <- 1..Enum.count(mnesia_table.attributes()) do
       String.to_atom("$#{index}")
     end
+
     t = List.to_tuple([mnesia_table] ++ a)
     spec = [{t, [qspec], [:"$_"]}]
+
     raw = T.select(mnesia_table, rpp, spec)
     case raw do
       nil -> nil
