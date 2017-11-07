@@ -9,6 +9,7 @@ defmodule Noizu.Scaffolding.QueryStrategy.Default do
   alias Amnesia.Table, as: T
   #alias Amnesia.Table.Selection, as: S
   require Exquisite
+  require Logger
 
 
   def match(_match_sel, _mnesia_table, %CallingContext{} = _context, _options) do
@@ -19,14 +20,14 @@ defmodule Noizu.Scaffolding.QueryStrategy.Default do
     pg = options[:pg] || 1
     rpp = options[:rpp] || 5000
 
-
     qspec = if options[:filter] do
-      {m, _} = Enum.reduce(mnesia_table.attributes(), {%{}, 0},
-        fn({k,v}, {acc, c}) ->
-          {Map.put(acc, k, :"$#{c + 1}"), c + 1}
-        end
-      )
-      f = m[options[:filter][:field]]
+      index = Enum.find_index(Dict.keys(mnesia_table.attributes()), &( &1 == options[:filter][:field]))
+      f = cond do
+        index != nil -> :"$#{index + 1}"
+        true ->
+          Logger.warn("Attempting to filter query by nonexistent field #{options[:filter][:field]}")
+          nil
+      end
       v = is_tuple(options[:filter][:value]) && {options[:filter][:value]} || options[:filter][:value]
       {options[:filter][:comparison] || :==, f, v}
     else
