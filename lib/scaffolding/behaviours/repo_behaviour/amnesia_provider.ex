@@ -161,10 +161,12 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
       #-------------------------------------------------------------------------
       # @create
       #-------------------------------------------------------------------------
-      if unquote(required?.pre_delete_callback) do
-        def pre_create_callback(entity, context, options), do: pre_create_callback(@param_pass_thru, entity, context, options)
+      if unquote(required?.pre_create_callback) do
+        def pre_create_callback(entity, context, options) do
+           pre_create_callback(@param_pass_thru, entity, context, options)
+        end
       end # end required?.pre_create_callback
-      if unquote(required?.post_delete_callback) do
+      if unquote(required?.post_create_callback) do
         def post_create_callback(entity, context, options), do: post_create_callback(@param_pass_thru, entity, context, options)
       end # end required?.post_create_callback
       if unquote(required?.create) do
@@ -384,19 +386,24 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
     end # end cond do
   end
 
-  def pre_create_callback({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine} = _indicator, entity, _context, _options) do
+  def pre_create_callback({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine, _dirty, _frag} = _indicator, entity, _context, _options) do
     if entity.identifier == nil do
       %{entity| identifier: mod.generate_identifier}
     else
       entity
     end
   end
+
+  def pre_create_callback(indicator, entity, _context, _options) do
+    entity
+  end
+
   def post_create_callback(_indicator, entity, _context, _options), do: entity
   def create({mod, entity_module, mnesia_table, query_strategy, audit_engine, _dirty, _frag} = _indicator, entity, context = %CallingContext{}, options) do
     strategy = options[:query_strategy] || query_strategy
     entity = mod.pre_create_callback(entity, context, options)
     if (entity.identifier == nil) do
-      raise "Cannot Create #{inspect entity_module} with out identiifer field set."
+      raise "Cannot Create #{inspect entity_module} with out identifier field set."
     end
     ref = entity
       |> entity_module.record(options)
