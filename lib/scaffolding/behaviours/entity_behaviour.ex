@@ -227,6 +227,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
         mnesia_table = unquote(__MODULE__).expand_table(parent_module, unquote(table))
         defimpl Noizu.ERP, for: [__MODULE__, mnesia_table] do
           @parent_module(parent_module)
+          def id(o), do: @parent_module.id(o)
           def ref(o), do: @parent_module.ref(o)
           def sref(o), do: @parent_module.sref(o)
           def entity(o, options \\ nil), do: @parent_module.entity(o, options)
