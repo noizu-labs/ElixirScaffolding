@@ -4,6 +4,9 @@
 #-------------------------------------------------------------------------------
 
 defprotocol Noizu.ERP do
+  @doc "Get underlying id for ref"
+  def id(obj)
+
   @doc "Cast to noizu reference object"
   def ref(obj)
 
@@ -27,6 +30,12 @@ end # end defprotocol Noizu.ERP
 # Useful default implementations
 #-------------------------------------------------------------------------------
 defimpl Noizu.ERP, for: List do
+  def id(entities) do
+    for obj <- entities do
+      Noizu.ERP.id(obj)
+    end
+  end # end reference/1
+
   def ref(entities) do
     for obj <- entities do
       Noizu.ERP.ref(obj)
@@ -65,6 +74,18 @@ defimpl Noizu.ERP, for: List do
 end # end defimpl EntityReferenceProtocol, for: List
 
 defimpl Noizu.ERP, for: Tuple do
+
+  def id(obj) do
+    case obj do
+      {:ref, manager, identifier} when is_atom(manager)->
+        #if function_exported?(manager, :sref, 1) do
+          manager.id(identifier)
+        #end
+      {:ext_ref, manager, identifier} when is_atom(manager) ->
+        manager.id(identifier)
+    end
+  end # end sref/1
+    
   def ref(obj) do
     case obj do
       {:ref, manager, _identifier} when is_atom(manager)-> obj
