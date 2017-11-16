@@ -39,8 +39,8 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
     nmid_generator = Keyword.get(options, :nmid_generator, Application.get_env(:noizu_scaffolding, :default_nmid_generator))
     sequencer = Keyword.get(options, :sequencer, :auto)
 
-    dirty_default = Keyword.get(options, :dirty_default, false)
-    frag_default = Keyword.get(options, :frag_default, :sync)
+    dirty_default = Keyword.get(options, :dirty_default, true)
+    frag_default = Keyword.get(options, :frag_default, :async)
 
     quote do
       use Amnesia
