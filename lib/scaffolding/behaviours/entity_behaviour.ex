@@ -4,7 +4,7 @@
 #-------------------------------------------------------------------------------
 
 defmodule Noizu.Scaffolding.EntityBehaviour do
-  @moduledoc("""
+  @moduledoc """
   This Behaviour provides some callbacks needed for the Noizu.ERP (EntityReferenceProtocol) to work smoothly.
 
   Note the following naming conventions  (where Path.To.Entity is the same path in each following case)
@@ -13,7 +13,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
   - Repos     MyApp.(Path.To.Entity).MyFooRepo
 
   If the above conventions are not used a framework user must provide the appropriate `mnesia_table`, and `repo_module` `use` options.
-  """)
+  """
 
   #-----------------------------------------------------------------------------
   # aliases, imports, uses,
@@ -112,7 +112,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
   #-----------------------------------------------------------------------------
   # Defines
   #-----------------------------------------------------------------------------
-  @methods([:id, :ref, :sref, :entity, :entity!, :record, :record!, :erp_imp, :as_record, :sref_module, :as_record, :from_json, :repo])
+  @methods [:id, :ref, :sref, :entity, :entity!, :record, :record!, :erp_imp, :as_record, :sref_module, :as_record, :from_json, :repo, :shallow]
 
   #-----------------------------------------------------------------------------
   # Default Implementations
@@ -135,7 +135,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
 
     def id_implementation(table, sref_prefix) do
       quote do
-        @table(unquote(__MODULE__).expand_table(__MODULE__, unquote(table)))
+        @table unquote(__MODULE__).expand_table(__MODULE__, unquote(table))
         def id(nil), do: nil
         def id({:ref, __MODULE__, identifier} = _ref), do: identifier
         def id(%__MODULE__{} = entity), do: entity.identifier
@@ -146,7 +146,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
 
     def ref_implementation(table, sref_prefix) do
       quote do
-        @table(unquote(__MODULE__).expand_table(__MODULE__, unquote(table)))
+        @table unquote(__MODULE__).expand_table(__MODULE__, unquote(table))
         def ref(nil), do: nil
         def ref({:ref, __MODULE__, _identifier} = ref), do: ref
         def ref(identifier) when is_integer(identifier), do: {:ref, __MODULE__, identifier}
@@ -161,7 +161,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
 
     def sref_implementation(table, sref_prefix) do
       quote do
-        @table(unquote(__MODULE__).expand_table(__MODULE__, unquote(table)))
+        @table unquote(__MODULE__).expand_table(__MODULE__, unquote(table))
         def sref(nil), do: nil
         def sref(identifier) when is_integer(identifier), do: "#{unquote(sref_prefix)}#{identifier}"
         def sref(unquote(sref_prefix) <> identifier = sref), do: sref
@@ -175,8 +175,8 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
 
     def entity_implementation(table, repo) do
       quote do
-        @table(unquote(__MODULE__).expand_table(__MODULE__, unquote(table)))
-        @repo(unquote(__MODULE__).expand_repo(__MODULE__, unquote(repo)))
+        @table unquote(__MODULE__).expand_table(__MODULE__, unquote(table))
+        @repo unquote(__MODULE__).expand_repo(__MODULE__, unquote(repo))
         def entity(item, options \\ nil)
         def entity(nil, _options), do: nil
         def entity(%__MODULE__{} = this, options), do: this
@@ -187,8 +187,8 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
 
     def entity_txn_implementation(table, repo) do
       quote do
-        @table(unquote(__MODULE__).expand_table(__MODULE__, unquote(table)))
-        @repo(unquote(__MODULE__).expand_repo(__MODULE__, unquote(repo)))
+        @table unquote(__MODULE__).expand_table(__MODULE__, unquote(table))
+        @repo unquote(__MODULE__).expand_repo(__MODULE__, unquote(repo))
         def entity!(item, options \\ nil)
         def entity!(nil, _options), do: nil
         def entity!(%__MODULE__{} = this, options), do: this
@@ -199,8 +199,8 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
 
     def record_implementation(table, repo) do
       quote do
-        @table(unquote(__MODULE__).expand_table(__MODULE__, unquote(table)))
-        @repo(unquote(__MODULE__).expand_repo(__MODULE__, unquote(repo)))
+        @table unquote(__MODULE__).expand_table(__MODULE__, unquote(table))
+        @repo unquote(__MODULE__).expand_repo(__MODULE__, unquote(repo))
         def record(item, options \\ nil)
         def record(nil, _options), do: nil
         def record(%__MODULE__{} = this, options), do: __MODULE__.as_record(this)
@@ -211,8 +211,8 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
 
     def record_txn_implementation(table, repo) do
       quote do
-        @table(unquote(__MODULE__).expand_table(__MODULE__, unquote(table)))
-        @repo(unquote(__MODULE__).expand_repo(__MODULE__, unquote(repo)))
+        @table unquote(__MODULE__).expand_table(__MODULE__, unquote(table))
+        @repo unquote(__MODULE__).expand_repo(__MODULE__, unquote(repo))
         def record!(item, options \\ nil)
         def record!(nil, _options), do: nil
         def record!(%__MODULE__{} = this, options), do: __MODULE__.as_record(this)
@@ -226,7 +226,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
         parent_module = __MODULE__
         mnesia_table = unquote(__MODULE__).expand_table(parent_module, unquote(table))
         defimpl Noizu.ERP, for: [__MODULE__, mnesia_table] do
-          @parent_module(parent_module)
+          @parent_module parent_module
           def id(o), do: @parent_module.id(o)
           def ref(o), do: @parent_module.ref(o)
           def sref(o), do: @parent_module.sref(o)
@@ -240,8 +240,8 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
 
     def as_record_implementation(table, options) do
       quote do
-        @mnesia_table(unquote(__MODULE__).expand_table(__MODULE__, unquote(table)))
-        @options(unquote(options))
+        @mnesia_table unquote(__MODULE__).expand_table(__MODULE__, unquote(table))
+        @options unquote(options)
         def as_record(nil), do: nil
         if @options != nil do
           if Map.has_key?(@options, :additional_fields) do
@@ -330,7 +330,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
       import unquote(__MODULE__)
       @behaviour Noizu.Scaffolding.EntityBehaviour
 
-      @expanded_repo(unquote(default_implementation).expand_repo(__MODULE__, unquote(repo_module)))
+      @expanded_repo unquote(default_implementation).expand_repo(__MODULE__, unquote(repo_module))
 
       if unquote(required?.sref_module) do
         def sref_module(), do: unquote(sm)
@@ -349,6 +349,14 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
          end
       end
 
+      if unquote(required?.shallow) do
+        def shallow(identifier) do
+          %__MODULE__{identifier: identifier}
+        end
+      end
+
+      #unquote(Macro.expand(default_implementation, __CALLER__).prepare(mnesia_table, repo_module, sref_prefix))
+
       if unquote(required?.id), do: unquote(Macro.expand(default_implementation, __CALLER__).id_implementation(mnesia_table, sref_prefix))
       if unquote(required?.ref), do: unquote(Macro.expand(default_implementation, __CALLER__).ref_implementation(mnesia_table, sref_prefix))
       if unquote(required?.sref), do: unquote(Macro.expand(default_implementation, __CALLER__).sref_implementation(mnesia_table, sref_prefix))
@@ -358,6 +366,8 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
       if unquote(required?.record!), do: unquote(Macro.expand(default_implementation, __CALLER__).record_txn_implementation(mnesia_table, repo_module))
       if unquote(required?.erp_imp), do: unquote(Macro.expand(default_implementation, __CALLER__).erp_imp(mnesia_table))
       if unquote(required?.as_record), do: unquote(Macro.expand(default_implementation, __CALLER__).as_record_implementation(mnesia_table, as_record_options))
+
+
       @before_compile unquote(__MODULE__)
     end # end quote
   end #end defmacro __using__(options)
