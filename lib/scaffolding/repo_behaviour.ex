@@ -433,9 +433,9 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
 
       if (unquote(only.keys!) && !unquote(override.keys!)) do
         def keys! do
-          Amnesia.Fragment.transaction do
+          Amnesia.Fragment.async(fn ->
             keys()
-          end
+          end)
         end
       end
 
@@ -487,9 +487,9 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
       if (unquote(only.list!) && !unquote(override.list!)) do
         def list!(context, options \\ %{})
         def list!(%CallingContext{} = context, options) do
-          Amnesia.Fragment.transaction do
+          Amnesia.Fragment.async(fn ->
             list(context, options)
-          end
+          end)
         end # end list!/2
       end # end if (unquote(only.list!))
 
@@ -506,9 +506,9 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
       if (unquote(only.get!) && !unquote(override.get!)) do
         def get!(identifier, context, options \\ %{})
         def get!(identifier, %CallingContext{} = context, options) do
-          Amnesia.Fragment.transaction do
+          Amnesia.Fragment.async(fn ->
             get(identifier, context, options)
-          end
+          end)
         end # end get/3
       end # end if (unquote(only.get!))
 
@@ -525,9 +525,9 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
       if (unquote(only.update!) && !unquote(override.update!)) do
         def update!(entity, context, options \\ %{})
         def update!(entity, %CallingContext{} = context, options) do
-          Amnesia.Fragment.transaction do
+          Amnesia.Fragment.async(fn ->
             update(entity, context, options)
-          end
+          end)
         end # end update/3
       end # end if (unquote(only.update!))
 
@@ -556,9 +556,9 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
       if (unquote(only.delete!) && !unquote(override.delete!)) do
         def delete!(entity, context, options \\ %{})
         def delete!(entity, %CallingContext{} = context, options) do
-          Amnesia.Fragment.transaction do
+          Amnesia.Fragment.async(fn ->
             delete(entity, context, options)
-          end
+          end)
         end # end delete/3
       end # end if (unquote(only.delete!))
 
@@ -587,9 +587,9 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
       if (unquote(only.create!) && !unquote(override.create!)) do
         def create!(entity, context, options \\ %{})
         def create!(entity, context = %CallingContext{}, options) do
-          Amnesia.Fragment.transaction do
+          Amnesia.Fragment.async(fn ->
             create(entity, context, options)
-          end
+          end)
         end # end create/3
       end # end if (unquote(only.create!))
 
