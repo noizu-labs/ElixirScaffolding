@@ -112,13 +112,14 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
   #-----------------------------------------------------------------------------
   # Defines
   #-----------------------------------------------------------------------------
-  @methods [:id, :ref, :sref, :entity, :entity!, :record, :record!, :erp_imp, :as_record, :sref_module, :as_record, :from_json, :repo, :shallow]
+  @methods [:id, :ref, :sref, :entity, :entity!, :record, :record!, :erp_imp, :as_record, :sref_module, :as_record, :from_json, :repo, :shallow, :miss_cb]
 
   #-----------------------------------------------------------------------------
   # Default Implementations
   #-----------------------------------------------------------------------------
   defmodule DefaultImplementation do
     @callback ref_implementation(table :: Module, sref_prefix :: String.t) :: Macro.t
+    @callback miss_cb_implementation() :: Macro.t
     @callback sref_implementation(table :: Module, sref_prefix :: String.t) :: Macro.t
     @callback entity_implementation(table :: Module, repo :: Module) :: Macro.t
     @callback entity_txn_implementation(table :: Module, repo :: Module) :: Macro.t
@@ -127,6 +128,8 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
     @callback as_record_implementation(Module, options :: nil | Map.t) :: any
     @callback expand_table(Module, Module) :: Module
     @callback expand_repo(Module, Module) :: Module
+
+
 
     @doc """
       Noizu.ERP Implementation
@@ -173,6 +176,14 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
       end # end quote
     end # end sref_implementation
 
+
+    def miss_cb_implementation() do
+      quote do
+        def miss_cb(id, options \\ nil)
+        def miss_cb(id, _options), do: nil
+      end # end quote
+    end # end entity_implementation
+
     def entity_implementation(table, repo) do
       quote do
         @table unquote(__MODULE__).expand_table(__MODULE__, unquote(table))
@@ -181,7 +192,9 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
         def entity(nil, _options), do: nil
         def entity(%__MODULE__{} = this, options), do: this
         def entity(%@table{} = record, options), do: record.entity
-        def entity(identifier, options), do: @repo.get(__MODULE__.id(identifier), Noizu.Scaffolding.CallingContext.internal(), options)
+        def entity(identifier, options) do
+          @repo.get(__MODULE__.id(identifier), Noizu.Scaffolding.CallingContext.internal(), options) || __MODULE__.miss_cb(identifier, options)
+        end
       end # end quote
     end # end entity_implementation
 
@@ -193,7 +206,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
         def entity!(nil, _options), do: nil
         def entity!(%__MODULE__{} = this, options), do: this
         def entity!(%@table{} = record, options), do: record.entity
-        def entity!(identifier, options), do: @repo.get!(__MODULE__.ref(identifier) |> __MODULE__.id(), Noizu.Scaffolding.CallingContext.internal(), options)
+        def entity!(identifier, options), do: @repo.get!(__MODULE__.ref(identifier) |> __MODULE__.id(), Noizu.Scaffolding.CallingContext.internal(), options) || __MODULE__.miss_cb(identifier, options)
       end # end quote
     end # end entity_txn_implementation
 
@@ -360,6 +373,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
       if unquote(required?.id), do: unquote(Macro.expand(default_implementation, __CALLER__).id_implementation(mnesia_table, sref_prefix))
       if unquote(required?.ref), do: unquote(Macro.expand(default_implementation, __CALLER__).ref_implementation(mnesia_table, sref_prefix))
       if unquote(required?.sref), do: unquote(Macro.expand(default_implementation, __CALLER__).sref_implementation(mnesia_table, sref_prefix))
+      if unquote(required?.miss_cb), do: unquote(Macro.expand(default_implementation, __CALLER__).miss_cb_implementation())
       if unquote(required?.entity), do: unquote(Macro.expand(default_implementation, __CALLER__).entity_implementation(mnesia_table, repo_module))
       if unquote(required?.entity!), do: unquote(Macro.expand(default_implementation, __CALLER__).entity_txn_implementation(mnesia_table, repo_module))
       if unquote(required?.record), do: unquote(Macro.expand(default_implementation, __CALLER__).record_implementation(mnesia_table, repo_module))
