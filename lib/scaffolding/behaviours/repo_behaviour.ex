@@ -4,7 +4,7 @@
 #-------------------------------------------------------------------------------
 
 defmodule Noizu.Scaffolding.RepoBehaviour do
-  alias Noizu.Scaffolding.CallingContext
+  alias Noizu.ElixirCore.CallingContext
 
   @type ref :: tuple
   @type opts :: Map.t
@@ -117,7 +117,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
   """
   @callback from_json(Map.t, CallingContext.t) :: any
 
-  @methods([
+  @methods ([
     :generate_identifier!, :generate_identifier,
     :update, :update!, :delete, :delete!, :create, :create!, :get, :get!,
     :match, :match!, :list, :list!, :pre_create_callback, :pre_update_callback, :pre_delete_callback,
@@ -144,7 +144,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
 
     quote do
       @behaviour Noizu.Scaffolding.RepoBehaviour
-      @implementation(unquote(implementation_provider))
+      @implementation (unquote(implementation_provider))
       use unquote(implementation_provider), unquote(options)
 
       def audit_engine, do: unquote(audit_engine)

@@ -14,7 +14,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
 
   If the above conventions are not used a framework user must provide the appropriate `mnesia_table`, and `repo_module` `use` options.
   """
-
+  alias Noizu.ElixirCore.CallingContext
   #-----------------------------------------------------------------------------
   # aliases, imports, uses,
   #-----------------------------------------------------------------------------
@@ -193,7 +193,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
         def entity(%__MODULE__{} = this, options), do: this
         def entity(%@table{} = record, options), do: record.entity
         def entity(identifier, options) do
-          @repo.get(__MODULE__.id(identifier), Noizu.Scaffolding.CallingContext.internal(), options) || __MODULE__.miss_cb(identifier, options)
+          @repo.get(__MODULE__.id(identifier), Noizu.ElixirCore.CallingContext.internal(), options) || __MODULE__.miss_cb(identifier, options)
         end
       end # end quote
     end # end entity_implementation
@@ -206,7 +206,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
         def entity!(nil, _options), do: nil
         def entity!(%__MODULE__{} = this, options), do: this
         def entity!(%@table{} = record, options), do: record.entity
-        def entity!(identifier, options), do: @repo.get!(__MODULE__.ref(identifier) |> __MODULE__.id(), Noizu.Scaffolding.CallingContext.internal(), options) || __MODULE__.miss_cb(identifier, options)
+        def entity!(identifier, options), do: @repo.get!(__MODULE__.ref(identifier) |> __MODULE__.id(), Noizu.ElixirCore.CallingContext.internal(), options) || __MODULE__.miss_cb(identifier, options)
       end # end quote
     end # end entity_txn_implementation
 
@@ -218,7 +218,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
         def record(nil, _options), do: nil
         def record(%__MODULE__{} = this, options), do: __MODULE__.as_record(this)
         def record(%@table{} = record, options), do: record
-        def record(identifier, options), do: __MODULE__.as_record(@repo.get(__MODULE__.ref(identifier) |> __MODULE__.id(), Noizu.Scaffolding.CallingContext.internal(), options)) |> __MODULE__.as_record()
+        def record(identifier, options), do: __MODULE__.as_record(@repo.get(__MODULE__.ref(identifier) |> __MODULE__.id(), Noizu.ElixirCore.CallingContext.internal(), options)) |> __MODULE__.as_record()
       end # end quote
     end # end record_implementation
 
@@ -230,7 +230,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
         def record!(nil, _options), do: nil
         def record!(%__MODULE__{} = this, options), do: __MODULE__.as_record(this)
         def record!(%@table{} = record, options), do: record
-        def record!(identifier, options), do: @repo.get!(__MODULE__.ref(identifier) |> __MODULE__.id(), Noizu.Scaffolding.CallingContext.internal(), options) |> __MODULE__.as_record()
+        def record!(identifier, options), do: @repo.get!(__MODULE__.ref(identifier) |> __MODULE__.id(), Noizu.ElixirCore.CallingContext.internal(), options) |> __MODULE__.as_record()
       end # end quote
     end # end record_txn_implementation
 

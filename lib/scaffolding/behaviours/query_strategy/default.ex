@@ -5,7 +5,7 @@
 
 defmodule Noizu.Scaffolding.QueryStrategy.Default do
   @behaviour Noizu.Scaffolding.QueryBehaviour
-  alias Noizu.Scaffolding.CallingContext
+  alias Noizu.ElixirCore.CallingContext
   alias Amnesia.Table, as: T
   #alias Amnesia.Table.Selection, as: S
   require Exquisite

@@ -17,8 +17,8 @@ defmodule Noizu.Scaffolding.AuditEngineBehaviour do
   @type response :: :ok | {:error, details} | any
 
   @doc("Save event occurence to persistence layer with out wrapping within a Mnesia transaction.")
-  @callback audit(event, details, entity, Noizu.Scaffolding.CallingContext.t, note) :: response
+  @callback audit(event, details, entity, Noizu.ElixirCore.CallingContext.t, note) :: response
 
   @doc("Save event occurence to persistence layer including mnesia transaction if mnesia backend used.")
-  @callback audit!(event, details, entity, Noizu.Scaffolding.CallingContext.t, note) :: response
+  @callback audit!(event, details, entity, Noizu.ElixirCore.CallingContext.t, note) :: response
 end

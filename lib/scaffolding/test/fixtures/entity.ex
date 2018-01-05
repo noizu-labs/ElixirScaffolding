@@ -5,10 +5,7 @@
 
 if (Mix.env == :test) do
   defmodule Noizu.Scaffolding.Test.Fixture.FooEntity do
-    use Noizu.Scaffolding.EntityBehaviour,
-      sref_module: "foo-test",
-      additional_mnesia_fields: :second
-    @vsn(1.0)
+    @vsn (1.0)
 
     #-----------------------------------------------------------------------------
     # Struct & Types
@@ -26,5 +23,9 @@ if (Mix.env == :test) do
         content: :test,
         vsn: @vsn
     ]
+
+    use Noizu.Scaffolding.EntityBehaviour,
+        sref_module: "foo-test",
+        additional_mnesia_fields: :second
   end
 end

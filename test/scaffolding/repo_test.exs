@@ -11,7 +11,7 @@ defmodule Noizu.Scaffolding.RepTest do
   alias Noizu.Database.Scaffolding.Test.Fixture.FooTable
   alias Noizu.Scaffolding.Test.Fixture.FooRepo
   alias Noizu.Scaffolding.Test.Fixture.FooEntity
-  alias Noizu.Scaffolding.CallingContext
+  alias Noizu.ElixirCore.CallingContext
 
   setup do
     Amnesia.stop
@@ -183,7 +183,7 @@ defmodule Noizu.Scaffolding.RepTest do
 
     r = Amnesia.Fragment.transaction do
       Noizu.Database.Scaffolding.Test.Fixture.FooTable.where true == true
-    end |> IO.inspect
+    end
 
     entities = FooRepo.list!(context) |> Enum.sort(&(&1.identifier <= &2.identifier))
     assert entities == [entity, entity_two, entity_three]

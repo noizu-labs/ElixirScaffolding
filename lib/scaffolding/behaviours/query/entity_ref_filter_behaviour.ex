@@ -36,13 +36,13 @@ defmodule Noizu.Scaffolding.Query.EntityRefFilteringBehaviour do
       @behaviour Noizu.Scaffolding.QueryBehaviour
 
       if (unquote(only.match) && !unquote(override.match)) do
-        def match(_match_sel, _mnesia_table, %Noizu.Scaffolding.CallingContext{} = _context, _options) do
+        def match(_match_sel, _mnesia_table, %Noizu.ElixirCore.CallingContext{} = _context, _options) do
           raise "Match NYI"
         end
       end
 
       if (unquote(only.list) && !unquote(override.list)) do
-        def list(mnesia_table, %Noizu.Scaffolding.CallingContext{} = context, options) do
+        def list(mnesia_table, %Noizu.ElixirCore.CallingContext{} = context, options) do
           if (options[:filter_caller]) do
             ref = context.caller
             mnesia_table.where unquote(constraint_field) == ref
@@ -58,7 +58,7 @@ defmodule Noizu.Scaffolding.Query.EntityRefFilteringBehaviour do
       end # end conditional include
 
       if (unquote(only.get) && !unquote(override.get)) do
-        def get(identifier, mnesia_table, %Noizu.Scaffolding.CallingContext{} = context, options) do
+        def get(identifier, mnesia_table, %Noizu.ElixirCore.CallingContext{} = context, options) do
           record = if options[:dirty] == true do
             mnesia_table.read!(identifier)
           else
@@ -80,7 +80,7 @@ defmodule Noizu.Scaffolding.Query.EntityRefFilteringBehaviour do
       end # end conditional include
 
       if (unquote(only.create) && !unquote(override.create)) do
-        def create(record, mnesia_table, %Noizu.Scaffolding.CallingContext{} = context, options) do
+        def create(record, mnesia_table, %Noizu.ElixirCore.CallingContext{} = context, options) do
           if (options[:filter_caller]) do
             ref = context.caller
             if (record.unquote(constraint_field) == ref) do
@@ -116,7 +116,7 @@ defmodule Noizu.Scaffolding.Query.EntityRefFilteringBehaviour do
       end # end conditional include
 
       if (unquote(only.update) && !unquote(override.update)) do
-        def update(record, mnesia_table, %Noizu.Scaffolding.CallingContext{} = context, options) do
+        def update(record, mnesia_table, %Noizu.ElixirCore.CallingContext{} = context, options) do
           if (options[:filter_caller]) do
             ref = context.caller
             record2 = if options[:dirty] == true  do
@@ -159,7 +159,7 @@ defmodule Noizu.Scaffolding.Query.EntityRefFilteringBehaviour do
       end # end conditional include
 
       if (unquote(only.delete) && !unquote(override.delete)) do
-        def delete(identifier, %Noizu.Scaffolding.CallingContext{} = context, options) do
+        def delete(identifier, %Noizu.ElixirCore.CallingContext{} = context, options) do
           if (options[:filter_caller]) do
             ref = context.caller
             record = if options[:dirty] == true  do
