@@ -91,7 +91,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
     that will insert expected fields and (if indicated) do simple type casting such as transforming DateTime.t fields into utc time stamps or
     `{time_zone, year, month, day, hour, minute, second}` tuples for efficient range querying.
   """
-  @callback as_record(entity_obj) :: entity_record | error
+  @callback as_record(entity_obj, options :: Map.t) :: entity_record | error
 
   @doc """
     Returns the string used for preparing sref format strings. E.g. a `User` struct might use the string ``"user"`` as it's sref_module resulting in
