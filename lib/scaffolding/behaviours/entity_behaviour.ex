@@ -273,10 +273,10 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
       end # end quote
     end # end erp_imp
 
-    def as_record_implementation(table, options) do
+    def as_record_implementation(table, opts) do
       quote do
         @mnesia_table unquote(__MODULE__).expand_table(__MODULE__, unquote(table))
-        @options unquote(options)
+        @options unquote(opts)
 
         def as_record(entity, options \\ %{})
 
