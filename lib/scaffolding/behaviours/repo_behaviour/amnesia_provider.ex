@@ -233,7 +233,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
       m ->
         m
         |> Amnesia.Selection.values
-        |> EntityReferenceProtocol.entity(options)
+        |> Enum.map(fn(x) -> entity_module.entity(x, options) end)
     end
   end # end list/3
 
@@ -268,7 +268,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
       m ->
         m
         |> Amnesia.Selection.values
-        |> EntityReferenceProtocol.entity(options)
+        |> Enum.map(fn(x) -> entity_module.entity(x, options) end)
     end
   end # end list/3
 
@@ -330,8 +330,12 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
       |> strategy.update(mnesia_table, context, options)
       |> entity_module.ref()
 
-    audit_engine = options[:audit_engine] || audit_engine
-    audit_engine.audit(:update!, :scaffolding, ref, context, options)
+    cond do
+      options[:audit] == false -> :skip
+      true ->
+        audit_engine = options[:audit_engine] || audit_engine
+        audit_engine.audit(:update!, :scaffolding, ref, context, options)
+    end
 
     entity
       |> mod.post_update_callback(context, options)
@@ -360,13 +364,18 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
       raise "Cannot Delete #{inspect entity_module} with out identiifer field set."
     end
     entity = mod.pre_delete_callback(entity, context, options)
+
     strategy.delete(entity.identifier, mnesia_table, context, options)
     ref = entity
       |> mod.post_delete_callback(context, options)
       |> entity_module.ref()
 
-    audit_engine = options[:audit_engine] || audit_engine
-    audit_engine.audit(:delete!, :scaffolding, ref, context, options)
+    cond do
+      options[:audit] == false -> :skip
+      true ->
+        audit_engine = options[:audit_engine] || audit_engine
+        audit_engine.audit(:delete!, :scaffolding, ref, context, options)
+    end
 
     true
   end # end delete/3
@@ -410,8 +419,13 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
       |> strategy.create(mnesia_table, context, options)
       |> entity_module.ref()
 
-    audit_engine = options[:audit_engine] || audit_engine
-    audit_engine.audit(:create!, :scaffolding, ref, context, options)
+    cond do
+      options[:audit] == false -> :skip
+      true ->
+        audit_engine = options[:audit_engine] || audit_engine
+        audit_engine.audit(:create!, :scaffolding, ref, context, options)
+    end
+
     # No need to return actual record as to_mnesia should not be modifying it in a way that would impact the final structure.
     entity
       |> mod.post_create_callback(context, options)
