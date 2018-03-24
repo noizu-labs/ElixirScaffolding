@@ -109,10 +109,32 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
   """
   @callback repo() :: atom
 
+
+  @doc """
+  Compress entity, default options
+  """
+  @callback compress(entity :: any) :: any
+
+  @doc """
+  Compress entity
+  """
+  @callback compress(entity :: any, options :: Map.t) :: any
+
+  @doc """
+  Expand entity, default options
+  """
+  @callback expand(entity :: any) :: any
+
+  @doc """
+  Expand entity
+  """
+  @callback expand(entity :: any, options :: Map.t) :: any
+
+
   #-----------------------------------------------------------------------------
   # Defines
   #-----------------------------------------------------------------------------
-  @methods [:id, :ref, :sref, :entity, :entity!, :record, :record!, :erp_imp, :as_record, :sref_module, :as_record, :from_json, :repo, :shallow, :miss_cb]
+  @methods [:id, :ref, :sref, :entity, :entity!, :record, :record!, :erp_imp, :as_record, :sref_module, :as_record, :from_json, :repo, :shallow, :miss_cb, :compress, :expand]
 
   #-----------------------------------------------------------------------------
   # Default Implementations
@@ -191,7 +213,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
         def entity(item, options \\ nil)
         def entity(nil, _options), do: nil
         def entity(%__MODULE__{} = this, options), do: this
-        def entity(%@table{} = record, options), do: record.entity
+        def entity(%@table{} = record, options), do: __MODULE__.expand(record.entity, options[:compression] || %{})
         def entity(identifier, options) do
           @repo.get(__MODULE__.id(identifier), Noizu.ElixirCore.CallingContext.internal(), options) || __MODULE__.miss_cb(identifier, options)
         end
@@ -205,7 +227,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
         def entity!(item, options \\ nil)
         def entity!(nil, _options), do: nil
         def entity!(%__MODULE__{} = this, options), do: this
-        def entity!(%@table{} = record, options), do: record.entity
+        def entity!(%@table{} = record, options), do: __MODULE__.expand(record.entity, options[:compression] || %{})
         def entity!(identifier, options), do: @repo.get!(__MODULE__.ref(identifier) |> __MODULE__.id(), Noizu.ElixirCore.CallingContext.internal(), options) || __MODULE__.miss_cb(identifier, options)
       end # end quote
     end # end entity_txn_implementation
@@ -218,7 +240,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
         def record(nil, _options), do: nil
         def record(%__MODULE__{} = this, options), do: __MODULE__.as_record(this)
         def record(%@table{} = record, options), do: record
-        def record(identifier, options), do: __MODULE__.as_record(@repo.get(__MODULE__.ref(identifier) |> __MODULE__.id(), Noizu.ElixirCore.CallingContext.internal(), options)) |> __MODULE__.as_record()
+        def record(identifier, options), do: __MODULE__.as_record(@repo.get(__MODULE__.ref(identifier) |> __MODULE__.id(), Noizu.ElixirCore.CallingContext.internal(), options)) |> __MODULE__.as_record(options)
       end # end quote
     end # end record_implementation
 
@@ -230,7 +252,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
         def record!(nil, _options), do: nil
         def record!(%__MODULE__{} = this, options), do: __MODULE__.as_record(this)
         def record!(%@table{} = record, options), do: record
-        def record!(identifier, options), do: @repo.get!(__MODULE__.ref(identifier) |> __MODULE__.id(), Noizu.ElixirCore.CallingContext.internal(), options) |> __MODULE__.as_record()
+        def record!(identifier, options), do: @repo.get!(__MODULE__.ref(identifier) |> __MODULE__.id(), Noizu.ElixirCore.CallingContext.internal(), options) |> __MODULE__.as_record(options)
       end # end quote
     end # end record_txn_implementation
 
@@ -255,11 +277,15 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
       quote do
         @mnesia_table unquote(__MODULE__).expand_table(__MODULE__, unquote(table))
         @options unquote(options)
-        def as_record(nil), do: nil
+
+        def as_record(entity, options \\ %{})
+
+        def as_record(nil, _options), do: nil
+
         if @options != nil do
           if Map.has_key?(@options, :additional_fields) do
-            def as_record(this) do
-              base = %@mnesia_table{identifier: this.identifier, entity: this}
+            def as_record(this, options) do
+              base = %@mnesia_table{identifier: this.identifier, entity: __MODULE__.compress(this, options[:compression] || %{})}
               List.foldl(@options[:additional_fields], base,
                 fn(field, acc) ->
                   case Map.get(this, field, :erp_imp_field_not_found) do
@@ -271,13 +297,13 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
               )
             end
           else
-            def as_record(this) do
-              %@mnesia_table{identifier: this.identifier, entity: this}
+            def as_record(this, options) do
+              %@mnesia_table{identifier: this.identifier, entity:  __MODULE__.compress(this, options[:compression] || %{})}
             end
           end
         else
-          def as_record(this) do
-            %@mnesia_table{identifier: this.identifier, entity: this}
+          def as_record(this, options) do
+            %@mnesia_table{identifier: this.identifier, entity: __MODULE__.compress(this, options[:compression] || %{})}
           end
         end
       end # end quote
@@ -369,6 +395,17 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
       end
 
       #unquote(Macro.expand(default_implementation, __CALLER__).prepare(mnesia_table, repo_module, sref_prefix))
+
+
+      if unquote(required?.compress) do
+        def compress(entity), do: compress(entity, %{})
+        def compress(entity, options), do: entity
+      end
+
+      if unquote(required?.expand) do
+        def expand(entity), do: expand(entity, %{})
+        def expand(entity, options), do: entity
+      end
 
       if unquote(required?.id), do: unquote(Macro.expand(default_implementation, __CALLER__).id_implementation(mnesia_table, sref_prefix))
       if unquote(required?.ref), do: unquote(Macro.expand(default_implementation, __CALLER__).ref_implementation(mnesia_table, sref_prefix))
