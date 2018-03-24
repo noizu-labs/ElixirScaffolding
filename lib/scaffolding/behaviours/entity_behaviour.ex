@@ -238,7 +238,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
         @repo unquote(__MODULE__).expand_repo(__MODULE__, unquote(repo))
         def record(item, options \\ nil)
         def record(nil, _options), do: nil
-        def record(%__MODULE__{} = this, options), do: __MODULE__.as_record(this)
+        def record(%__MODULE__{} = this, options), do: __MODULE__.as_record(this, options)
         def record(%@table{} = record, options), do: record
         def record(identifier, options), do: __MODULE__.as_record(@repo.get(__MODULE__.ref(identifier) |> __MODULE__.id(), Noizu.ElixirCore.CallingContext.internal(), options)) |> __MODULE__.as_record(options)
       end # end quote
@@ -250,7 +250,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
         @repo unquote(__MODULE__).expand_repo(__MODULE__, unquote(repo))
         def record!(item, options \\ nil)
         def record!(nil, _options), do: nil
-        def record!(%__MODULE__{} = this, options), do: __MODULE__.as_record(this)
+        def record!(%__MODULE__{} = this, options), do: __MODULE__.as_record(this, options)
         def record!(%@table{} = record, options), do: record
         def record!(identifier, options), do: @repo.get!(__MODULE__.ref(identifier) |> __MODULE__.id(), Noizu.ElixirCore.CallingContext.internal(), options) |> __MODULE__.as_record(options)
       end # end quote
