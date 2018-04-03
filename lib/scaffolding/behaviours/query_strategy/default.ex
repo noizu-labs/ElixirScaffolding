@@ -21,7 +21,7 @@ defmodule Noizu.Scaffolding.QueryStrategy.Default do
     rpp = options[:rpp] || 5000
 
     qspec = if options[:filter] do
-      index = Enum.find_index(Dict.keys(mnesia_table.attributes()), &( &1 == options[:filter][:field]))
+      index = Enum.find_index(Keyword.keys(mnesia_table.attributes()), &( &1 == options[:filter][:field]))
       f = cond do
         index != nil -> :"$#{index + 1}"
         true ->

@@ -3,18 +3,18 @@
 # Copyright (C) 2018 Noizu Labs, Inc. All rights reserved.
 #-------------------------------------------------------------------------------
 
-defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
+defmodule Noizu.Scaffolding.RepoBehaviour.RedisProvider do
   use Amnesia
   require Logger
   alias Noizu.ElixirCore.CallingContext
   alias Noizu.ERP, as: EntityReferenceProtocol
   @methods ([
-    :generate_identifier!, :generate_identifier,
-    :update, :update!, :delete, :delete!, :create, :create!, :get, :get!,
-    :match, :match!, :list, :list!, :pre_create_callback, :pre_update_callback, :pre_delete_callback,
-    :post_create_callback, :post_update_callback, :post_delete_callback,
-    :extract_date
-  ])
+              :generate_identifier!, :generate_identifier,
+              :update, :update!, :delete, :delete!, :create, :create!, :get, :get!,
+              :match, :match!, :list, :list!, :pre_create_callback, :pre_update_callback, :pre_delete_callback,
+              :post_create_callback, :post_update_callback, :post_delete_callback,
+              :extract_date
+            ])
 
   defmacro __using__(options) do
     # Only include implementation for these methods.
@@ -29,10 +29,10 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
     required? = List.foldl(@methods, %{}, fn(method, acc) -> Map.put(acc, method, only[method] && !override[method]) end)
 
     # associated mnesia table and entity
-    mnesia_table = Keyword.get(options, :mnesia_table, :auto)
+    #mnesia_table = Keyword.get(options, :mnesia_table, :auto)
     entity_module = Keyword.get(options, :entity_module, :auto)
 
-    query_strategy = Keyword.get(options, :query_strategy, Noizu.Scaffolding.QueryStrategy.Default)
+    query_strategy = Keyword.get(options, :query_strategy, Noizu.Scaffolding.QueryStrategy.Redis)
 
     audit_engine = Keyword.get(options, :audit_engine, Application.get_env(:noizu_scaffolding, :default_audit_engine, Noizu.Scaffolding.AuditEngine.Default))
 
@@ -52,17 +52,18 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
       @dirty_default (unquote(dirty_default))
       @frag_default (unquote(frag_default))
 
-      mnesia_table = if unquote(mnesia_table) == :auto, do: Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault.expand_table(__MODULE__), else: unquote(mnesia_table)
-      @mnesia_table (mnesia_table)
+      #mnesia_table = if unquote(mnesia_table) == :auto, do: Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider.expand_table(__MODULE__), else: unquote(mnesia_table)
+      mnesia_table = :redis_backed
+      @mnesia_table mnesia_table
 
       sequencer = if unquote(sequencer) == :auto, do: mnesia_table, else: unquote(sequencer)
       @sequencer (sequencer)
 
-      entity_module = if unquote(entity_module) == :auto, do: Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault.expand_entity(__MODULE__), else: unquote(entity_module)
+      entity_module = if unquote(entity_module) == :auto, do: Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider.expand_entity(__MODULE__), else: unquote(entity_module)
       @entity_module (entity_module)
 
       query_strategy = unquote(query_strategy)
-      @query_strategy (query_strategy)
+      @query_strategy query_strategy
 
       audit_engine = unquote(audit_engine)
       @audit_engine (audit_engine)
@@ -91,11 +92,11 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
       #-------------------------------------------------------------------------
       if unquote(required?.match) do
         def match(match_sel, context, options \\ %{})
-        def match(match_sel, %CallingContext{} = context, options), do: Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault.match(@param_pass_thru, match_sel, context, options)
+        def match(match_sel, %CallingContext{} = context, options), do: Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault.match(@param_pass_thru, match_sel, context, options)
       end # end required?.match
       if unquote(required?.match!) do
         def match!(match_sel, context, options \\ %{})
-        def match!(match_sel, %CallingContext{} = context, options), do: Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault.match!(@param_pass_thru, match_sel, context, options)
+        def match!(match_sel, %CallingContext{} = context, options), do: Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault.match!(@param_pass_thru, match_sel, context, options)
       end # end required?.match!
 
       #-------------------------------------------------------------------------
@@ -103,11 +104,11 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
       #-------------------------------------------------------------------------
       if unquote(required?.list) do
         def list(context, options \\ %{})
-        def list(%CallingContext{} = context, options), do: Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault.list(@param_pass_thru, context, options)
+        def list(%CallingContext{} = context, options), do: Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault.list(@param_pass_thru, context, options)
       end # end required?.list
       if unquote(required?.list!) do
         def list!(context, options \\ %{})
-        def list!(%CallingContext{} = context, options), do: Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault.list!(@param_pass_thru, context, options)
+        def list!(%CallingContext{} = context, options), do: Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault.list!(@param_pass_thru, context, options)
       end # end required?.list!
 
       #-------------------------------------------------------------------------
@@ -115,47 +116,47 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
       #-------------------------------------------------------------------------
       if unquote(required?.get) do
         def get(identifier, context, options \\ %{})
-        def get(identifier, %CallingContext{} = context, options), do: Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault.get(@param_pass_thru, identifier, context, options)
+        def get(identifier, %CallingContext{} = context, options), do: Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault.get(@param_pass_thru, identifier, context, options)
       end # end required?.get
       if unquote(required?.get!) do
         def get!(identifier, context, options \\ %{})
-        def get!(identifier, %CallingContext{} = context, options), do: Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault.get!(@param_pass_thru, identifier, context, options)
+        def get!(identifier, %CallingContext{} = context, options), do: Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault.get!(@param_pass_thru, identifier, context, options)
       end # end required?.get!
 
       #-------------------------------------------------------------------------
       # @update
       #-------------------------------------------------------------------------
       if unquote(required?.pre_update_callback) do
-        def pre_update_callback(entity, context, options), do: Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault.pre_update_callback(@param_pass_thru, entity, context, options)
+        def pre_update_callback(entity, context, options), do: Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault.pre_update_callback(@param_pass_thru, entity, context, options)
       end # end required?.pre_update_callback
       if unquote(required?.post_update_callback) do
-        def post_update_callback(entity, context, options), do: Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault.post_update_callback(@param_pass_thru, entity, context, options)
+        def post_update_callback(entity, context, options), do: Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault.post_update_callback(@param_pass_thru, entity, context, options)
       end # end required?.post_update_callback
       if unquote(required?.update) do
         def update(entity, context, options \\ %{})
-        def update(entity, %CallingContext{} = context, options), do: Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault.update(@param_pass_thru, entity, context, options)
+        def update(entity, %CallingContext{} = context, options), do: Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault.update(@param_pass_thru, entity, context, options)
       end # end required?.update
       if unquote(required?.update!) do
         def update!(entity, context, options \\ %{})
-        def update!(entity, %CallingContext{} = context, options), do: Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault.update!(@param_pass_thru, entity, context, options)
+        def update!(entity, %CallingContext{} = context, options), do: Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault.update!(@param_pass_thru, entity, context, options)
       end # end required?.update!
 
       #-------------------------------------------------------------------------
       # @delete
       #-------------------------------------------------------------------------
       if unquote(required?.pre_delete_callback) do
-        def pre_delete_callback(entity, context, options), do: Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault.pre_delete_callback(@param_pass_thru, entity, context, options)
+        def pre_delete_callback(entity, context, options), do: Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault.pre_delete_callback(@param_pass_thru, entity, context, options)
       end # end required?.pre_delete_callback
       if unquote(required?.post_delete_callback) do
-        def post_delete_callback(entity, context, options), do: Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault.post_delete_callback(@param_pass_thru, entity, context, options)
+        def post_delete_callback(entity, context, options), do: Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault.post_delete_callback(@param_pass_thru, entity, context, options)
       end # end required?.post_delete_callback
       if unquote(required?.delete) do
         def delete(entity, context, options \\ %{})
-        def delete(entity, %CallingContext{} = context, options), do: Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault.delete(@param_pass_thru, entity, context, options)
+        def delete(entity, %CallingContext{} = context, options), do: Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault.delete(@param_pass_thru, entity, context, options)
       end # end  required?.delete
       if unquote(required?.delete!) do
         def delete!(entity, context, options \\ %{})
-        def delete!(entity, %CallingContext{} = context, options), do: Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault.delete!(@param_pass_thru, entity, context, options)
+        def delete!(entity, %CallingContext{} = context, options), do: Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault.delete!(@param_pass_thru, entity, context, options)
       end # end required?.delete!
 
       #-------------------------------------------------------------------------
@@ -163,25 +164,27 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
       #-------------------------------------------------------------------------
       if unquote(required?.pre_create_callback) do
         def pre_create_callback(entity, context, options) do
-          Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault.pre_create_callback(@param_pass_thru, entity, context, options)
+          Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault.pre_create_callback(@param_pass_thru, entity, context, options)
         end
       end # end required?.pre_create_callback
       if unquote(required?.post_create_callback) do
-        def post_create_callback(entity, context, options), do: Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault.post_create_callback(@param_pass_thru, entity, context, options)
+        def post_create_callback(entity, context, options), do: Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault.post_create_callback(@param_pass_thru, entity, context, options)
       end # end required?.post_create_callback
       if unquote(required?.create) do
         def create(entity, context, options \\ %{})
-        def create(entity, context = %CallingContext{}, options), do: Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault.create(@param_pass_thru, entity, context, options)
+        def create(entity, context = %CallingContext{}, options), do: Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault.create(@param_pass_thru, entity, context, options)
       end # end required?.create
       if unquote(required?.create!) do
         def create!(entity, context, options \\ %{})
-        def create!(entity, context = %CallingContext{}, options), do: Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault.create!(@param_pass_thru, entity, context, options)
+        def create!(entity, context = %CallingContext{}, options), do: Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault.create!(@param_pass_thru, entity, context, options)
       end # end required?.create
 
+
       if unquote(required?.extract_date) do
-        def extract_date(any), do: Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault.extract_date(any)
+        def extract_date(any), do: Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault.extract_date(any)
       end
 
     end # end quote
   end # end __using__
+
 end
