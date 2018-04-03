@@ -59,7 +59,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.RedisProvider do
       sequencer = if unquote(sequencer) == :auto, do: mnesia_table, else: unquote(sequencer)
       @sequencer (sequencer)
 
-      entity_module = if unquote(entity_module) == :auto, do: Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider.expand_entity(__MODULE__), else: unquote(entity_module)
+      entity_module = if unquote(entity_module) == :auto, do: Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault.expand_entity(__MODULE__), else: unquote(entity_module)
       @entity_module (entity_module)
 
       query_strategy = unquote(query_strategy)
