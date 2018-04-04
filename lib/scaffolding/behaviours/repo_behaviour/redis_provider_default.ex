@@ -5,7 +5,7 @@
 
 defmodule Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault do
   alias Noizu.ElixirCore.CallingContext
-  
+
   #-----------------------------------------------------------------------------
   #  Utils
   #-----------------------------------------------------------------------------

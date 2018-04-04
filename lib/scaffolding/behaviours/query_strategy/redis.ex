@@ -22,17 +22,19 @@ defmodule Noizu.Scaffolding.QueryStrategy.Redis do
 
   def get(identifier, entity_module,  %CallingContext{} = _context, options) do
     client = get_redix_client(entity_module, options)
-    cond do
+    r = cond do
       client ->
         identifier = entity_module.sref(identifier)
         Redix.command(client, ["GET", identifier])
       true -> {:error, :no_client}
     end
+    if options[:redix_client] == nil, do: Redix.stop(client)
+    r
   end
 
   def update(entity, entity_module,  %CallingContext{} = _context, options) do
     client = get_redix_client(entity_module, options)
-    cond do
+    r = cond do
       client ->
         identifier = entity_module.sref(entity)
         encoded = entity_module.redis_encode(entity, options)
@@ -42,11 +44,13 @@ defmodule Noizu.Scaffolding.QueryStrategy.Redis do
         end
       true -> {:error, :no_client}
     end
+    if options[:redix_client] == nil, do: Redix.stop(client)
+    r
   end
 
   def create(entity, entity_module,  %CallingContext{} = _context, options) do
     client = get_redix_client(entity_module, options)
-    cond do
+    r = cond do
       client ->
         identifier = entity_module.sref(entity)
         encoded = entity_module.redis_encode(entity, options)
@@ -56,15 +60,19 @@ defmodule Noizu.Scaffolding.QueryStrategy.Redis do
         end
       true -> {:error, :no_client}
     end
+    if options[:redix_client] == nil, do: Redix.stop(client)
+    r
   end
 
   def delete(identifier, entity_module,  %CallingContext{} = _context, options) do
     client = get_redix_client(entity_module, options)
-    cond do
+    r = cond do
       client ->
         identifier = entity_module.sref(identifier)
         Redix.command(client, ["DEL", identifier])
       true -> {:error, :no_client}
     end
+    if options[:redix_client] == nil, do: Redix.stop(client)
+    r
   end
 end
