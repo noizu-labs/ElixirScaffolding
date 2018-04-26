@@ -42,7 +42,7 @@ defmodule Noizu.Scaffolding.EntityBehaviourDefault do
         def ref(identifier) when is_atom(identifier), do: {:ref, __MODULE__, identifier}
         def ref(%__MODULE__{} = entity), do: {:ref, __MODULE__, entity.identifier}
         def ref(%@table{} = record), do: {:ref, __MODULE__, record.identifier}
-        def ref(any), do: raise "#{__MODULE__}.ref Unsupported item #{inspect any}"
+        def ref(any), do: throw "#{__MODULE__}.ref Unsupported item #{inspect any}"
       end # end quote
     end # end ref_implementation
 
@@ -56,7 +56,7 @@ defmodule Noizu.Scaffolding.EntityBehaviourDefault do
         def sref(identifier) when is_atom(identifier), do: "#{unquote(sref_prefix)}#{identifier}"
         def sref(%__MODULE__{} = this), do: "#{unquote(sref_prefix)}#{this.identifier}"
         def sref(%@table{} = record), do: "#{unquote(sref_prefix)}#{record.identifier}"
-        def sref(any), do: raise "#{__MODULE__}.sref Unsupported item #{inspect any}"
+        def sref(any), do: throw "#{__MODULE__}.sref Unsupported item #{inspect any}"
       end # end quote
     end # end sref_implementation
 

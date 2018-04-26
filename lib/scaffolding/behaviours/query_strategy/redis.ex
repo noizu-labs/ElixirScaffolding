@@ -13,11 +13,11 @@ defmodule Noizu.Scaffolding.QueryStrategy.Redis do
   end
 
   def match(_match_sel, _entity_module, %CallingContext{} = _context, _options) do
-    raise "Match NYI"
+    throw "Match NYI"
   end
 
   def list(_entity_module, %CallingContext{} = _context, _options) do
-    raise "List NYI"
+    throw "List NYI"
   end
 
   def get(identifier, entity_module,  %CallingContext{} = _context, options) do

@@ -89,7 +89,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault do
 
   def update({mod, entity_module, _mnesia_table, query_strategy, _audit_engine, _dirty, _frag} = _indicator, entity, %CallingContext{} = context, options) do
     strategy = options[:query_strategy] || query_strategy
-    if entity.identifier == nil, do: raise "Cannot Update #{inspect entity_module} with out identifier field set."
+    if entity.identifier == nil, do: throw "Cannot Update #{inspect entity_module} with out identifier field set."
     entity = mod.pre_update_callback(entity, context, options)
 
     case strategy.update(entity, entity_module, context, options) do
@@ -118,7 +118,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault do
   def delete({mod, entity_module, _mnesia_table, query_strategy, _audit_engine, _dirty, _frag} = _indicator, entity, %CallingContext{} = context, options) do
     strategy = options[:query_strategy] || query_strategy
     if entity.identifier == nil do
-      raise "Cannot Delete #{inspect entity_module} with out identiifer field set."
+      throw "Cannot Delete #{inspect entity_module} with out identiifer field set."
     end
     entity = mod.pre_delete_callback(entity, context, options)
     case strategy.delete(entity.identifier, entity_module, context, options) do
@@ -163,7 +163,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault do
     strategy = options[:query_strategy] || query_strategy
     entity = mod.pre_create_callback(entity, context, options)
     if (entity.identifier == nil) do
-      raise "Cannot Create #{inspect entity_module} with out identifier field set."
+      throw "Cannot Create #{inspect entity_module} with out identifier field set."
     end
 
     case strategy.create(entity, entity_module, context, options) do

@@ -13,7 +13,7 @@ defmodule Noizu.Scaffolding.QueryStrategy.Default do
 
 
   def match(_match_sel, _mnesia_table, %CallingContext{} = _context, _options) do
-    raise "Match NYI"
+    throw "Match NYI"
   end
 
   def list(mnesia_table, %CallingContext{} = _context, options) do

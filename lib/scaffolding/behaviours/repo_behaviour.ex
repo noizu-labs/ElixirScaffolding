@@ -153,7 +153,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
       #-------------------------------------------------------------------------
       if unquote(required?.from_json) do
         def from_json(_json, _context) do
-          raise "From Json Not Implemented For #{__MODULE__}.  use override: from_json and provide your implementation."
+          throw "From Json Not Implemented For #{__MODULE__}.  use override: from_json and provide your implementation."
         end # end from_json/2
       end
 
