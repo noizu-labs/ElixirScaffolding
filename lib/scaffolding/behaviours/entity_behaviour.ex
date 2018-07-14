@@ -134,7 +134,7 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
   #-----------------------------------------------------------------------------
   # Defines
   #-----------------------------------------------------------------------------
-  @methods [:id, :ref, :sref, :entity, :entity!, :record, :record!, :erp_imp, :as_record, :sref_module, :as_record, :from_json, :repo, :shallow, :miss_cb, :compress, :expand]
+  @methods [:id, :ref, :sref, :entity, :entity!, :record, :record!, :erp_imp, :as_record, :sref_module, :as_record, :from_json, :repo, :shallow, :miss_cb, :compress, :expand, :has_permission, :has_permission!]
 
   #-----------------------------------------------------------------------------
   # Using Implementation
@@ -216,16 +216,18 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
       if unquote(required?.erp_imp), do: unquote(Macro.expand(default_implementation, __CALLER__).erp_imp(mnesia_table))
       if unquote(required?.as_record), do: unquote(Macro.expand(default_implementation, __CALLER__).as_record_implementation(mnesia_table, as_record_options))
 
+      if unquote(required?.has_permission), do: unquote(Macro.expand(default_implementation, __CALLER__).has_permission_implementation())
+      if unquote(required?.has_permission!), do: unquote(Macro.expand(default_implementation, __CALLER__).has_permission_txn_implementation())
 
-      @before_compile unquote(__MODULE__)
+      #@before_compile unquote(__MODULE__)
     end # end quote
   end #end defmacro __using__(options)
 
-  defmacro __before_compile__(_env) do
-    quote do
-      def has_permission(_ref, _permission, _context, _options), do: false
-      def has_permission!(_ref, _permission, _context, _options), do: false
-    end # end quote
-  end # end defmacro __before_compile__(_env)
+  #defmacro __before_compile__(_env) do
+  # quote do
+  #   def has_permission(_ref, _permission, _context, _options), do: false
+  #   def has_permission!(_ref, _permission, _context, _options), do: false
+  # end # end quote
+  #end # end defmacro __before_compile__(_env)
 
 end #end defmodule

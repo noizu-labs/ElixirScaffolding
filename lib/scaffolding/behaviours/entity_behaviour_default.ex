@@ -118,6 +118,28 @@ defmodule Noizu.Scaffolding.EntityBehaviourDefault do
       end # end quote
     end # end record_txn_implementation
 
+    def has_permission_implementation() do
+      quote do
+        def has_permission(ref, permission, %Noizu.ElixirCore.CallingContext{} = context, options) do
+          context.auth[:permissions][:admin] || context.auth[:permissions][:system] || false
+        end
+        def has_permission(ref, permission, %{auth: _auth} = context, options) do
+          context.auth[:permissions][:admin] || context.auth[:permissions][:system] || false
+        end
+        def has_permission(ref, permission, context, options) do
+          false
+        end
+      end # end quote
+    end # end record_implementation
+
+    def has_permission_txn_implementation() do
+      quote do
+        def has_permission!(ref, permission, context, options) do
+          __MODULE__.has_permission(ref, permission, context, options)
+        end
+      end # end quote
+    end # end record_txn_implementation
+
     def erp_imp(table) do
       quote do
         parent_module = __MODULE__
