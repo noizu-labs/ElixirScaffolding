@@ -12,7 +12,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.RedisProvider do
               :generate_identifier!, :generate_identifier,
               :update, :update!, :delete, :delete!, :create, :create!, :get, :get!,
               :match, :match!, :list, :list!, :pre_create_callback, :pre_update_callback, :pre_delete_callback,
-              :post_create_callback, :post_update_callback, :post_delete_callback,
+              :post_create_callback, :post_get_callback, :post_update_callback, :post_delete_callback,
               :extract_date
             ])
 
@@ -118,6 +118,9 @@ defmodule Noizu.Scaffolding.RepoBehaviour.RedisProvider do
         def get(identifier, context, options \\ %{})
         def get(identifier, %CallingContext{} = context, options), do: Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault.get(@param_pass_thru, identifier, context, options)
       end # end required?.get
+      if unquote(required?.post_get_callback) do
+        def post_get_callback(entity, context, options), do: Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault.post_get_callback(@param_pass_thru, entity, context, options)
+      end # end required?.post_get_callback
       if unquote(required?.get!) do
         def get!(identifier, context, options \\ %{})
         def get!(identifier, %CallingContext{} = context, options), do: Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault.get!(@param_pass_thru, identifier, context, options)

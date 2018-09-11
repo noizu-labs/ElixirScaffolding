@@ -104,7 +104,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
     end # end cond do
   end
 
-  def get({_mod, entity_module, mnesia_table, query_strategy, audit_engine, _dirty, _frag} = _indicator, identifier, %CallingContext{} = context, options) do
+  def get({mod, entity_module, mnesia_table, query_strategy, audit_engine, _dirty, _frag} = _indicator, identifier, %CallingContext{} = context, options) do
     strategy = options[:query_strategy] || query_strategy
     record = strategy.get(identifier, mnesia_table, context, options)
 
@@ -118,7 +118,9 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
     end
 
     entity_module.entity(record, options)
+    |> mod.post_get_callback(context, options)
   end # end get/3
+  def post_get_callback(_indicator, entity, _context, _options), do: entity
 
   def get!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine, dirty, frag} = _indicator, identifier, %CallingContext{} = context, options) do
     options = options || %{}
@@ -134,6 +136,8 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
         end
     end # end cond do
   end
+
+
 
   def pre_update_callback(_indicator, entity, _context, _options), do: entity
   def post_update_callback(_indicator, entity, _context, _options), do: entity

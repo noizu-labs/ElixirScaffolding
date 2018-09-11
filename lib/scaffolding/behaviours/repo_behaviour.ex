@@ -92,6 +92,12 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
   """
   @callback post_create_callback(any, CallingContext.t, opts) :: any
 
+
+  @doc """
+    Hook for any post get steps. (such as versioning)
+  """
+  @callback post_get_callback(any, CallingContext.t, opts) :: any
+
   @doc """
     Hook for any post update steps.
   """
@@ -121,7 +127,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
     :generate_identifier!, :generate_identifier,
     :update, :update!, :delete, :delete!, :create, :create!, :get, :get!,
     :match, :match!, :list, :list!, :pre_create_callback, :pre_update_callback, :pre_delete_callback,
-    :post_create_callback, :post_update_callback, :post_delete_callback,
+    :post_create_callback, :post_get_callback, :post_update_callback, :post_delete_callback,
     :from_json, :extract_date])
 
   defmacro __using__(options) do

@@ -71,13 +71,16 @@ defmodule Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault do
     list(indicator, context, options)
   end
 
-  def get({_mod, entity_module, _mnesia_table, query_strategy, _audit_engine, _dirty, _frag} = _indicator, identifier, %CallingContext{} = context, options) do
+  def get({mod, entity_module, _mnesia_table, query_strategy, _audit_engine, _dirty, _frag} = _indicator, identifier, %CallingContext{} = context, options) do
     strategy = options[:query_strategy] || query_strategy
     case strategy.get(identifier, entity_module, context, options) do
-      {:ok, encoded} -> entity_module.redis_decode(encoded, options)
+      {:ok, encoded} ->
+        entity_module.redis_decode(encoded, options)
+        |> mod.post_get_callback(context, options)
       error -> error
     end
   end # end get/3
+  def post_get_callback(_indicator, entity, _context, _options), do: entity
 
   def get!(indicator, identifier, %CallingContext{} = context, options) do
     get(indicator, identifier, context, options)
