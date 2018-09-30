@@ -9,7 +9,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.RedisProvider do
   alias Noizu.ElixirCore.CallingContext
   alias Noizu.ERP, as: EntityReferenceProtocol
   @methods ([
-              :generate_identifier!, :generate_identifier,
+              :entity, :options, :generate_identifier!, :generate_identifier,
               :update, :update!, :delete, :delete!, :create, :create!, :get, :get!,
               :match, :match!, :list, :list!, :pre_create_callback, :pre_update_callback, :pre_delete_callback,
               :post_create_callback, :post_get_callback, :post_update_callback, :post_delete_callback,
@@ -42,6 +42,8 @@ defmodule Noizu.Scaffolding.RepoBehaviour.RedisProvider do
     dirty_default = Keyword.get(options, :dirty_default, true)
     frag_default = Keyword.get(options, :frag_default, :async)
 
+    audit_level = Keyword.get(options, :audit_level, Application.get_env(:noizu_scaffolding, :default_audit_level, :silent))
+
     quote do
       use Amnesia
       require Logger
@@ -56,11 +58,14 @@ defmodule Noizu.Scaffolding.RepoBehaviour.RedisProvider do
       mnesia_table = :redis_backed
       @mnesia_table mnesia_table
 
-      sequencer = if unquote(sequencer) == :auto, do: mnesia_table, else: unquote(sequencer)
-      @sequencer (sequencer)
-
       entity_module = if unquote(entity_module) == :auto, do: Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault.expand_entity(__MODULE__), else: unquote(entity_module)
       @entity_module (entity_module)
+
+      sequencer = case unquote(sequencer) do
+        :auto -> @entity_module
+        v -> v
+      end
+      @sequencer sequencer
 
       query_strategy = unquote(query_strategy)
       @query_strategy query_strategy
@@ -68,7 +73,31 @@ defmodule Noizu.Scaffolding.RepoBehaviour.RedisProvider do
       audit_engine = unquote(audit_engine)
       @audit_engine (audit_engine)
 
-      @param_pass_thru ({__MODULE__, @entity_module, @mnesia_table, @query_strategy, @audit_engine, @dirty_default, @frag_default})
+      @audit_level unquote(audit_level)
+
+      @param_pass_thru ({__MODULE__, @entity_module, @mnesia_table, @query_strategy, @audit_engine, @dirty_default, @frag_default, @audit_level})
+
+
+      if (unquote(only.entity) && !unquote(override.entity)) do
+        def entity() do
+          @entity_module
+        end # end
+      end
+
+      if (unquote(only.options) && !unquote(override.options)) do
+        def options() do
+          input = unquote(options)
+          %{
+            input: input,
+            mnesia_table: @mnesia_table,
+            entity_module: @entity_module,
+            sequencer: @sequencer,
+            query_strategy: @query_strategy,
+            audit_engine: @audit_engine,
+            audit_level: @audit_level
+          }
+        end # end
+      end
 
       #-------------------------------------------------------------------------
       # generate_identifier/1, generate_identifier!/1

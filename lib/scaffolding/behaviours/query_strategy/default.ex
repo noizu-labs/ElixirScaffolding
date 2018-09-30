@@ -12,26 +12,43 @@ defmodule Noizu.Scaffolding.QueryStrategy.Default do
   require Logger
 
 
-  def match(_match_sel, _mnesia_table, %CallingContext{} = _context, _options) do
-    throw "Match NYI"
+  def match(match_sel, mnesia_table, %CallingContext{} = _context, options) do
+    if options[:match][:lock] do
+      T.match(mnesia_table, options[:match][:lock], match_sel)
+    else
+      T.match(mnesia_table, match_sel)
+    end
   end
 
   def list(mnesia_table, %CallingContext{} = _context, options) do
     pg = options[:pg] || 1
     rpp = options[:rpp] || 5000
 
-    qspec = if options[:filter] do
-      index = Enum.find_index(Keyword.keys(mnesia_table.attributes()), &( &1 == options[:filter][:field]))
-      f = cond do
-        index != nil -> :"$#{index + 1}"
-        true ->
-          Logger.warn("Attempting to filter query by nonexistent field #{options[:filter][:field]}")
-          nil
-      end
-      v = is_tuple(options[:filter][:value]) && {options[:filter][:value]} || options[:filter][:value]
-      {options[:filter][:comparison] || :==, f, v}
-    else
-      {:==, true, true}
+    qspec = cond do
+      filters = options[:filters] ->
+        Enum.map(filters, fn(filter) ->
+          index = Enum.find_index(Keyword.keys(mnesia_table.attributes()), &( &1 == filter[:field]))
+          f = cond do
+            index != nil -> :"$#{index + 1}"
+            true ->
+              Logger.warn("Attempting to filter query by nonexistent field #{filter[:field]}")
+              nil
+          end
+          v = is_tuple(filter[:value]) && {filter[:value]} || filter[:value]
+          {filter[:comparison] || :==, f, v}
+        end)
+
+      filter = options[:filter] ->
+        index = Enum.find_index(Keyword.keys(mnesia_table.attributes()), &( &1 == filter[:field]))
+        f = cond do
+          index != nil -> :"$#{index + 1}"
+          true ->
+            Logger.warn("Attempting to filter query by nonexistent field #{filter[:field]}")
+            nil
+        end
+        v = is_tuple(filter[:value]) && {filter[:value]} || filter[:value]
+        [{filter[:comparison] || :==, f, v}]
+      true -> [{:==, true, true}]
     end
 
     a = for index <- 1..Enum.count(mnesia_table.attributes()) do
@@ -39,7 +56,7 @@ defmodule Noizu.Scaffolding.QueryStrategy.Default do
     end
 
     t = List.to_tuple([mnesia_table] ++ a)
-    spec = [{t, [qspec], [:"$_"]}]
+    spec = [{t, qspec, [:"$_"]}]
 
     raw = T.select(mnesia_table, rpp, spec)
     case raw do

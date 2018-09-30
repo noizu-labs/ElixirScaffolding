@@ -34,9 +34,9 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
   #-----------------------------------------------------------------------------
   # Behaviour methods
   #-----------------------------------------------------------------------------
-  def match({_mod, entity_module, mnesia_table, query_strategy, audit_engine, _dirty, _frag} = _indicator, match_sel, %CallingContext{} = context, options) do
+  def match({_mod, entity_module, mnesia_table, query_strategy, audit_engine, _dirty, _frag, audit_level} = _indicator, match_sel, %CallingContext{} = context, options) do
     strategy = options[:query_strategy] || query_strategy
-    if options[:audit] do
+    if options[:audit] || Enum.member?([:verbose], audit_level) do
       audit_engine = options[:audit_engine] || audit_engine
       audit_engine.audit(:match, :scaffolding, entity_module, context, options)
     end
@@ -54,7 +54,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
     end
   end # end list/3
 
-  def match!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine, dirty, frag} = _indicator, match_sel, %CallingContext{} = context, options) do
+  def match!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine, dirty, frag, _audit_level} = _indicator, match_sel, %CallingContext{} = context, options) do
     options = options || %{}
     dirty = Map.get(options, :dirty, dirty)
     frag = Map.get(options, :frag, frag)
@@ -69,9 +69,9 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
     end # end cond do
   end
 
-  def list({_mod, entity_module, mnesia_table, query_strategy, audit_engine, _dirty, _frag} = _indicator, %CallingContext{} = context, options) do
+  def list({_mod, entity_module, mnesia_table, query_strategy, audit_engine, _dirty, _frag, audit_level} = _indicator, %CallingContext{} = context, options) do
     strategy = options[:query_strategy] || query_strategy
-    if options[:audit] do
+    if options[:audit] || Enum.member?([:verbose], audit_level) do
       audit_engine = options[:audit_engine] || audit_engine
       audit_engine.audit(:list, :scaffolding, entity_module, context, options)
     end
@@ -89,7 +89,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
     end
   end # end list/3
 
-  def list!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine, dirty, frag} = _indicator, %CallingContext{} = context, options) do
+  def list!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine, dirty, frag, _audit_level} = _indicator, %CallingContext{} = context, options) do
     dirty = Map.get(options, :dirty, dirty)
     frag = Map.get(options, :frag, frag)
     options = options |> Map.delete(:frag) |> Map.delete(:dirty)
@@ -104,11 +104,11 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
     end # end cond do
   end
 
-  def get({mod, entity_module, mnesia_table, query_strategy, audit_engine, _dirty, _frag} = _indicator, identifier, %CallingContext{} = context, options) do
+  def get({mod, entity_module, mnesia_table, query_strategy, audit_engine, _dirty, _frag, audit_level} = _indicator, identifier, %CallingContext{} = context, options) do
     strategy = options[:query_strategy] || query_strategy
     record = strategy.get(identifier, mnesia_table, context, options)
 
-    if options[:audit] do
+    if options[:audit] || Enum.member?([:very_verbose], audit_level) do
       ref = case record do
         nil -> nil
         _ -> EntityReferenceProtocol.ref(record)
@@ -122,7 +122,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
   end # end get/3
   def post_get_callback(_indicator, entity, _context, _options), do: entity
 
-  def get!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine, dirty, frag} = _indicator, identifier, %CallingContext{} = context, options) do
+  def get!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine, dirty, frag, _audit_level} = _indicator, identifier, %CallingContext{} = context, options) do
     options = options || %{}
     dirty = Map.get(options, :dirty, dirty)
     frag = Map.get(options, :frag, frag)
@@ -141,7 +141,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
 
   def pre_update_callback(_indicator, entity, _context, _options), do: entity
   def post_update_callback(_indicator, entity, _context, _options), do: entity
-  def update({mod, entity_module, mnesia_table, query_strategy, audit_engine, _dirty, _frag} = _indicator, entity, %CallingContext{} = context, options) do
+  def update({mod, entity_module, mnesia_table, query_strategy, audit_engine, _dirty, _frag, audit_level} = _indicator, entity, %CallingContext{} = context, options) do
     strategy = options[:query_strategy] || query_strategy
     if entity.identifier == nil, do: throw "Cannot Update #{inspect entity_module} with out identifier field set."
     entity = mod.pre_update_callback(entity, context, options)
@@ -153,6 +153,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
 
     cond do
       options[:audit] == false -> :skip
+      !Enum.member?([:very_verbose, :verbose, :core], audit_level) -> :skip
       true ->
         audit_engine = options[:audit_engine] || audit_engine
         audit_engine.audit(:update!, :scaffolding, ref, context, options)
@@ -162,7 +163,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
       |> mod.post_update_callback(context, options)
   end # end update/3
 
-  def update!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine, dirty, frag} = _indicator, entity, %CallingContext{} = context, options) do
+  def update!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine, dirty, frag, _audit_level} = _indicator, entity, %CallingContext{} = context, options) do
     options = options || %{}
     dirty = Map.get(options, :dirty, dirty)
     frag = Map.get(options, :frag, frag)
@@ -179,7 +180,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
 
   def pre_delete_callback(_indicator, entity, _context, _options), do: entity
   def post_delete_callback(_indicator, entity, _context, _options), do: entity
-  def delete({mod, entity_module, mnesia_table, query_strategy, audit_engine, _dirty, _frag} = _indicator, entity, %CallingContext{} = context, options) do
+  def delete({mod, entity_module, mnesia_table, query_strategy, audit_engine, _dirty, _frag, audit_level} = _indicator, entity, %CallingContext{} = context, options) do
     strategy = options[:query_strategy] || query_strategy
     if entity.identifier == nil do
       throw "Cannot Delete #{inspect entity_module} with out identiifer field set."
@@ -193,6 +194,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
 
     cond do
       options[:audit] == false -> :skip
+      !Enum.member?([:very_verbose, :verbose, :core], audit_level) -> :skip
       true ->
         audit_engine = options[:audit_engine] || audit_engine
         audit_engine.audit(:delete!, :scaffolding, ref, context, options)
@@ -201,7 +203,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
     true
   end # end delete/3
 
-  def delete!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine, dirty, frag} = _indicator, entity, %CallingContext{} = context, options) do
+  def delete!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine, dirty, frag, _audit_level} = _indicator, entity, %CallingContext{} = context, options) do
     options = options || %{}
     dirty = Map.get(options, :dirty, dirty)
     frag = Map.get(options, :frag, frag)
@@ -216,7 +218,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
     end # end cond do
   end
 
-  def pre_create_callback({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine, _dirty, _frag} = _indicator, entity, _context, _options) do
+  def pre_create_callback({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine, _dirty, _frag, _audit_level} = _indicator, entity, _context, _options) do
     if entity.identifier == nil do
       %{entity| identifier: mod.generate_identifier}
     else
@@ -229,7 +231,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
   end
 
   def post_create_callback(_indicator, entity, _context, _options), do: entity
-  def create({mod, entity_module, mnesia_table, query_strategy, audit_engine, _dirty, _frag} = _indicator, entity, context = %CallingContext{}, options) do
+  def create({mod, entity_module, mnesia_table, query_strategy, audit_engine, _dirty, _frag, audit_level} = _indicator, entity, context = %CallingContext{}, options) do
     strategy = options[:query_strategy] || query_strategy
     entity = mod.pre_create_callback(entity, context, options)
     if (entity.identifier == nil) do
@@ -242,6 +244,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
 
     cond do
       options[:audit] == false -> :skip
+      !Enum.member?([:very_verbose, :verbose, :core], audit_level) -> :skip
       true ->
         audit_engine = options[:audit_engine] || audit_engine
         audit_engine.audit(:create!, :scaffolding, ref, context, options)
@@ -252,7 +255,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
       |> mod.post_create_callback(context, options)
   end # end create/3
 
-  def create!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine, dirty, frag} = _indicator, entity, %CallingContext{} = context, options) do
+  def create!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine, dirty, frag, _audit_level} = _indicator, entity, %CallingContext{} = context, options) do
     options = options || %{}
     dirty = Map.get(options, :dirty, dirty)
     frag = Map.get(options, :frag, frag)

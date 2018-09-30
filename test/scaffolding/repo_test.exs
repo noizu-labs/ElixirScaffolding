@@ -3,7 +3,7 @@
 # Copyright (C) 2018 Noizu Labs, Inc. All rights reserved.
 #-------------------------------------------------------------------------------
 
-defmodule Noizu.Scaffolding.RepTest do
+defmodule Noizu.Scaffolding.RepoTest do
   use ExUnit.Case
   use Amnesia
   use  Noizu.Database.Scaffolding.Test.Fixture.FooTable
@@ -19,6 +19,13 @@ defmodule Noizu.Scaffolding.RepTest do
     Amnesia.Schema.create()
     Amnesia.start
     if !Amnesia.Table.exists?(FooTable), do: FooTable.create(memory: [node()])
+  end
+
+  test "Repo Options and Entity Type" do
+    assert FooRepo.entity() == FooEntity
+    options = FooRepo.options()
+    assert options.audit_level == :silent
+    assert options.sequencer == FooEntity
   end
 
   test "Create Entity" do

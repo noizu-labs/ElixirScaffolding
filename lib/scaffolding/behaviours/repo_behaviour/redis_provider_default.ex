@@ -31,7 +31,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault do
   #-------------------------------
   # match/4
   #-------------------------------
-  def match({_mod, entity_module, _mnesia_table, query_strategy, _audit_engine, _dirty, _frag} = _indicator, match_sel, %CallingContext{} = context, options) do
+  def match({_mod, entity_module, _mnesia_table, query_strategy, _audit_engine, _dirty, _frag, _audit_level} = _indicator, match_sel, %CallingContext{} = context, options) do
     strategy = options[:query_strategy] || query_strategy
     #if options[:audit] do
     #  audit_engine = options[:audit_engine] || audit_engine
@@ -51,7 +51,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault do
     match(indicator, match_sel, context, options)
   end
 
-  def list({_mod, entity_module, _mnesia_table, query_strategy, _audit_engine, _dirty, _frag} = _indicator, %CallingContext{} = context, options) do
+  def list({_mod, entity_module, _mnesia_table, query_strategy, _audit_engine, _dirty, _frag, _audit_level} = _indicator, %CallingContext{} = context, options) do
     strategy = options[:query_strategy] || query_strategy
     #if options[:audit] do
     #  audit_engine = options[:audit_engine] || audit_engine
@@ -71,7 +71,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault do
     list(indicator, context, options)
   end
 
-  def get({mod, entity_module, _mnesia_table, query_strategy, _audit_engine, _dirty, _frag} = _indicator, identifier, %CallingContext{} = context, options) do
+  def get({mod, entity_module, _mnesia_table, query_strategy, _audit_engine, _dirty, _frag, _audit_level} = _indicator, identifier, %CallingContext{} = context, options) do
     strategy = options[:query_strategy] || query_strategy
     case strategy.get(identifier, entity_module, context, options) do
       {:ok, encoded} ->
@@ -90,7 +90,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault do
 
   def post_update_callback(_indicator, entity, _context, _options), do: entity
 
-  def update({mod, entity_module, _mnesia_table, query_strategy, _audit_engine, _dirty, _frag} = _indicator, entity, %CallingContext{} = context, options) do
+  def update({mod, entity_module, _mnesia_table, query_strategy, _audit_engine, _dirty, _frag, _audit_level} = _indicator, entity, %CallingContext{} = context, options) do
     strategy = options[:query_strategy] || query_strategy
     if entity.identifier == nil, do: throw "Cannot Update #{inspect entity_module} with out identifier field set."
     entity = mod.pre_update_callback(entity, context, options)
@@ -118,7 +118,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault do
 
   def post_delete_callback(_indicator, entity, _context, _options), do: entity
 
-  def delete({mod, entity_module, _mnesia_table, query_strategy, _audit_engine, _dirty, _frag} = _indicator, entity, %CallingContext{} = context, options) do
+  def delete({mod, entity_module, _mnesia_table, query_strategy, _audit_engine, _dirty, _frag, _audit_level} = _indicator, entity, %CallingContext{} = context, options) do
     strategy = options[:query_strategy] || query_strategy
     if entity.identifier == nil do
       throw "Cannot Delete #{inspect entity_module} with out identiifer field set."
@@ -149,7 +149,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault do
     delete(indicator, entity, context, options)
   end
 
-  def pre_create_callback({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine, _dirty, _frag} = _indicator, entity, _context, _options) do
+  def pre_create_callback({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine, _dirty, _frag, _audit_level} = _indicator, entity, _context, _options) do
     if entity.identifier == nil do
       %{entity| identifier: mod.generate_identifier}
     else
@@ -162,7 +162,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.RedisProviderDefault do
   end
 
   def post_create_callback(_indicator, entity, _context, _options), do: entity
-  def create({mod, entity_module, _mnesia_table, query_strategy, _audit_engine, _dirty, _frag} = _indicator, entity, context = %CallingContext{}, options) do
+  def create({mod, entity_module, _mnesia_table, query_strategy, _audit_engine, _dirty, _frag, _audit_level} = _indicator, entity, context = %CallingContext{}, options) do
     strategy = options[:query_strategy] || query_strategy
     entity = mod.pre_create_callback(entity, context, options)
     if (entity.identifier == nil) do

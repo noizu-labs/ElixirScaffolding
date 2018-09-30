@@ -8,7 +8,7 @@ defmodule Noizu.Scaffolding.Mixfile do
 
   def project do
     [app: :noizu_scaffolding,
-     version: "1.1.35",
+     version: "1.1.36",
      elixir: "~> 1.4",
      package: package(),
      deps: deps(),
@@ -35,7 +35,7 @@ defmodule Noizu.Scaffolding.Mixfile do
       {:uuid, "~> 1.1" },
       {:ex_doc, "~> 0.16.2", only: [:dev], optional: true}, # Documentation Provider
       {:markdown, github: "devinus/markdown", only: [:dev], optional: true}, # Markdown processor for ex_doc
-      {:noizu_core, github: "noizu/ElixirCore", tag: "1.0.5"},
+      {:noizu_core, github: "noizu/ElixirCore", tag: "1.0.6"},
       {:redix, github: "whatyouhide/redix", tag: "v0.7.0", optional: true},
       {:plug, "~> 1.0", optional: true}
     ]

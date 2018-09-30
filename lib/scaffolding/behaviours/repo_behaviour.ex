@@ -9,6 +9,15 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
   @type ref :: tuple
   @type opts :: Map.t
 
+  @doc """
+    Entity repo manages.
+  """
+  @callback entity() :: Map.t
+
+  @doc """
+    Compile time options.
+  """
+  @callback options() :: Module
 
   @doc """
     Match Records.
@@ -124,9 +133,9 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
   @callback from_json(Map.t, CallingContext.t) :: any
 
   @methods ([
-    :generate_identifier!, :generate_identifier,
+    :entity, :options, :generate_identifier!, :generate_identifier,
     :update, :update!, :delete, :delete!, :create, :create!, :get, :get!,
-    :match, :match!, :list, :list!, :pre_create_callback, :pre_update_callback, :pre_delete_callback,
+    :match, :match!, :list, :list!, :post_get_callback, :pre_create_callback, :pre_update_callback, :pre_delete_callback,
     :post_create_callback, :post_get_callback, :post_update_callback, :post_delete_callback,
     :from_json, :extract_date])
 
