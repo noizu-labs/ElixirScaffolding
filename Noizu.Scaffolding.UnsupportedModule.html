@@ -5,10 +5,10 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.16.2">
-    <title>Noizu.Scaffolding.UnsupportedModule – noizu_scaffolding v1.1.7</title>
+    <title>Noizu.Scaffolding.UnsupportedModule – noizu_scaffolding v1.1.36</title>
     <link rel="stylesheet" href="dist/app-268c9dc719.css" />
     
-    <script src="dist/sidebar_items-2d67701d94.js"></script>
+    <script src="dist/sidebar_items-cd9aaeea6f.js"></script>
   </head>
   <body data-type="modules">
     <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
@@ -27,7 +27,7 @@
         noizu_scaffolding
       </h1>
       <h2 class="sidebar-projectVersion">
-        v1.1.7
+        v1.1.36
       </h2>
     </div>
     
@@ -63,10 +63,10 @@
 
 
       <h1>
-        <small class="visible-xs">noizu_scaffolding v1.1.7</small>
+        <small class="visible-xs">noizu_scaffolding v1.1.36</small>
         Noizu.Scaffolding.UnsupportedModule
         
-          <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L1" title="View Source" class="view-source" rel="help">
+          <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L6" title="View Source" class="view-source" rel="help">
             <span class="icon-code" aria-hidden="true"></span>
             <span class="sr-only">View Source</span>
           </a>
@@ -106,7 +106,7 @@
     </h2>
     <div class="summary-row">
   <div class="summary-signature">
-    <a href="#as_record/1">as_record(item)</a>
+    <a href="#as_record/2">as_record(item, options)</a>
   </div>
   
     <div class="summary-synopsis"><p>Converts entity into record format. Aka extracts any fields used for indexing with the expected database table looking something like
@@ -128,6 +128,24 @@
 </div>
 <div class="summary-row">
   <div class="summary-signature">
+    <a href="#compress/1">compress(entity)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Compress entity, default options</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#compress/2">compress(entity, options)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Compress entity</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
     <a href="#entity/2">entity(item, options)</a>
   </div>
   
@@ -143,6 +161,51 @@
   
     <div class="summary-synopsis"><p>Returns entity, given an identifier, ref tuple, ref string or other known identifier type. Wrapping call in transaction if required.
   Where an entity is a EntityBehaviour implementing struct</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#expand/1">expand(entity)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Expand entity, default options</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#expand/2">expand(entity, options)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Expand entity</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#from_json/2">from_json(json, options)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Cast from json to struct</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#has_permission/4">has_permission(_, _, _, _)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Callback implementation for <a href="Noizu.Scaffolding.EntityBehaviour.html#c:has_permission/4"><code>Noizu.Scaffolding.EntityBehaviour.has_permission/4</code></a></p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#has_permission!/4">has_permission!(_, _, _, _)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Callback implementation for <a href="Noizu.Scaffolding.EntityBehaviour.html#c:has_permission!/4"><code>Noizu.Scaffolding.EntityBehaviour.has_permission!/4</code></a></p>
 </div>
   
 </div>
@@ -181,6 +244,15 @@
   </div>
   
     <div class="summary-synopsis"><p>Returns appropriate {:ref|:ext_ref, module, identifier} reference tuple</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#repo/0">repo()</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>get entitie&#39;s repo module</p>
 </div>
   
 </div>
@@ -231,7 +303,7 @@
     </a>
     <span class="signature">t()</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L2" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L7" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -263,16 +335,16 @@
             </a>
             Functions
           </h1>
-          <div class="detail" id="as_record/1">
+          <div class="detail" id="as_record/2">
   
   <div class="detail-header">
-    <a href="#as_record/1" class="detail-link" title="Link to this function">
+    <a href="#as_record/2" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this function</span>
     </a>
-    <span class="signature">as_record(item)</span>
+    <span class="signature">as_record(item, options)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L19" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L24" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -296,7 +368,55 @@
   that will insert expected fields and (if indicated) do simple type casting such as transforming DateTime.t fields into utc time stamps or
   <code>{time_zone, year, month, day, hour, minute, second}</code> tuples for efficient range querying.</p>
 
-<p>Callback implementation for <a href="Noizu.Scaffolding.EntityBehaviour.html#c:as_record/1"><code>Noizu.Scaffolding.EntityBehaviour.as_record/1</code></a>.</p>
+<p>Callback implementation for <a href="Noizu.Scaffolding.EntityBehaviour.html#c:as_record/2"><code>Noizu.Scaffolding.EntityBehaviour.as_record/2</code></a>.</p>
+
+  </section>
+</div>
+<div class="detail" id="compress/1">
+  
+  <div class="detail-header">
+    <a href="#compress/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">compress(entity)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L28" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p>Compress entity, default options</p>
+
+<p>Callback implementation for <a href="Noizu.Scaffolding.EntityBehaviour.html#c:compress/1"><code>Noizu.Scaffolding.EntityBehaviour.compress/1</code></a>.</p>
+
+  </section>
+</div>
+<div class="detail" id="compress/2">
+  
+  <div class="detail-header">
+    <a href="#compress/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">compress(entity, options)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L29" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p>Compress entity</p>
+
+<p>Callback implementation for <a href="Noizu.Scaffolding.EntityBehaviour.html#c:compress/2"><code>Noizu.Scaffolding.EntityBehaviour.compress/2</code></a>.</p>
 
   </section>
 </div>
@@ -309,7 +429,7 @@
     </a>
     <span class="signature">entity(item, options)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L15" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L20" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -334,7 +454,7 @@
     </a>
     <span class="signature">entity!(item, options)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L16" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L21" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -350,6 +470,122 @@
 
   </section>
 </div>
+<div class="detail" id="expand/1">
+  
+  <div class="detail-header">
+    <a href="#expand/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">expand(entity)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L30" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p>Expand entity, default options</p>
+
+<p>Callback implementation for <a href="Noizu.Scaffolding.EntityBehaviour.html#c:expand/1"><code>Noizu.Scaffolding.EntityBehaviour.expand/1</code></a>.</p>
+
+  </section>
+</div>
+<div class="detail" id="expand/2">
+  
+  <div class="detail-header">
+    <a href="#expand/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">expand(entity, options)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L31" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p>Expand entity</p>
+
+<p>Callback implementation for <a href="Noizu.Scaffolding.EntityBehaviour.html#c:expand/2"><code>Noizu.Scaffolding.EntityBehaviour.expand/2</code></a>.</p>
+
+  </section>
+</div>
+<div class="detail" id="from_json/2">
+  
+  <div class="detail-header">
+    <a href="#from_json/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">from_json(json, options)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L32" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p>Cast from json to struct.</p>
+
+<p>Callback implementation for <a href="Noizu.Scaffolding.EntityBehaviour.html#c:from_json/2"><code>Noizu.Scaffolding.EntityBehaviour.from_json/2</code></a>.</p>
+
+  </section>
+</div>
+<div class="detail" id="has_permission/4">
+  
+  <div class="detail-header">
+    <a href="#has_permission/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">has_permission(_, _, _, _)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L26" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p>Callback implementation for <a href="Noizu.Scaffolding.EntityBehaviour.html#c:has_permission/4"><code>Noizu.Scaffolding.EntityBehaviour.has_permission/4</code></a>.</p>
+
+  </section>
+</div>
+<div class="detail" id="has_permission!/4">
+  
+  <div class="detail-header">
+    <a href="#has_permission!/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">has_permission!(_, _, _, _)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L27" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p>Callback implementation for <a href="Noizu.Scaffolding.EntityBehaviour.html#c:has_permission!/4"><code>Noizu.Scaffolding.EntityBehaviour.has_permission!/4</code></a>.</p>
+
+  </section>
+</div>
 <div class="detail" id="id/1">
   
   <div class="detail-header">
@@ -359,7 +595,7 @@
     </a>
     <span class="signature">id(item)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L12" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L17" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -383,7 +619,7 @@
     </a>
     <span class="signature">record(item, options)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L17" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L22" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -408,7 +644,7 @@
     </a>
     <span class="signature">record!(item, options)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L18" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L23" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -433,7 +669,7 @@
     </a>
     <span class="signature">ref(item)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L13" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L18" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -448,6 +684,30 @@
 
   </section>
 </div>
+<div class="detail" id="repo/0">
+  
+  <div class="detail-header">
+    <a href="#repo/0" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">repo()</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L33" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p>get entitie&#39;s repo module</p>
+
+<p>Callback implementation for <a href="Noizu.Scaffolding.EntityBehaviour.html#c:repo/0"><code>Noizu.Scaffolding.EntityBehaviour.repo/0</code></a>.</p>
+
+  </section>
+</div>
 <div class="detail" id="sref/1">
   
   <div class="detail-header">
@@ -457,7 +717,7 @@
     </a>
     <span class="signature">sref(item)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L14" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L19" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -481,7 +741,7 @@
     </a>
     <span class="signature">sref_module()</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L20" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/structs/unsupported_module.ex#L25" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>

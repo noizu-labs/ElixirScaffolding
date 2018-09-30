@@ -5,10 +5,10 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.16.2">
-    <title>Noizu.Scaffolding.QueryBehaviour – noizu_scaffolding v1.1.7</title>
+    <title>Noizu.Scaffolding.QueryBehaviour – noizu_scaffolding v1.1.36</title>
     <link rel="stylesheet" href="dist/app-268c9dc719.css" />
     
-    <script src="dist/sidebar_items-2d67701d94.js"></script>
+    <script src="dist/sidebar_items-cd9aaeea6f.js"></script>
   </head>
   <body data-type="modules">
     <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
@@ -27,7 +27,7 @@
         noizu_scaffolding
       </h1>
       <h2 class="sidebar-projectVersion">
-        v1.1.7
+        v1.1.36
       </h2>
     </div>
     
@@ -63,7 +63,7 @@
 
 
       <h1>
-        <small class="visible-xs">noizu_scaffolding v1.1.7</small>
+        <small class="visible-xs">noizu_scaffolding v1.1.36</small>
         Noizu.Scaffolding.QueryBehaviour <small>behaviour</small>
         
           <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/query_behaviour.ex#L6" title="View Source" class="view-source" rel="help">
@@ -133,6 +133,12 @@
 <div class="summary-row">
   <div class="summary-signature">
     <a href="#c:list/3">list(mnesia_table, arg1, opts)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#c:match/4">match(any, mnesia_table, arg2, opts)</a>
   </div>
   
 </div>
@@ -265,7 +271,7 @@
     </a>
     <span class="signature">delete(any, mnesia_table, arg2, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/query_behaviour.ex#L12" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/query_behaviour.ex#L13" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -274,11 +280,11 @@
     
       <div class="specs">
         
-          <pre>delete(any, <a href="#t:mnesia_table/0">mnesia_table</a>, <a href="Noizu.Scaffolding.CallingContext.html#t:t/0">Noizu.Scaffolding.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) ::
+          <pre>delete(any, <a href="#t:mnesia_table/0">mnesia_table</a>, Noizu.Scaffolding.CallingContext.t, <a href="#t:opts/0">opts</a>) ::
   any |
   {:error, any}</pre>
         
-          <pre>delete(any, <a href="#t:mnesia_table/0">mnesia_table</a>, <a href="Noizu.Scaffolding.CallingContext.html#t:t/0">Noizu.Scaffolding.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) ::
+          <pre>delete(any, <a href="#t:mnesia_table/0">mnesia_table</a>, Noizu.Scaffolding.CallingContext.t, <a href="#t:opts/0">opts</a>) ::
   :ok |
   {:error, any}</pre>
         
@@ -298,7 +304,7 @@
     </a>
     <span class="signature">get(any, mnesia_table, arg2, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/query_behaviour.ex#L11" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/query_behaviour.ex#L12" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -307,7 +313,7 @@
     
       <div class="specs">
         
-          <pre>get(any, <a href="#t:mnesia_table/0">mnesia_table</a>, <a href="Noizu.Scaffolding.CallingContext.html#t:t/0">Noizu.Scaffolding.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) ::
+          <pre>get(any, <a href="#t:mnesia_table/0">mnesia_table</a>, Noizu.Scaffolding.CallingContext.t, <a href="#t:opts/0">opts</a>) ::
   any |
   {:error, any}</pre>
         
@@ -327,6 +333,35 @@
     </a>
     <span class="signature">list(mnesia_table, arg1, opts)</span>
     
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/query_behaviour.ex#L11" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>list(<a href="#t:mnesia_table/0">mnesia_table</a>, Noizu.Scaffolding.CallingContext.t, <a href="#t:opts/0">opts</a>) ::
+  list |
+  {:error, any}</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="c:match/4">
+  
+  <div class="detail-header">
+    <a href="#c:match/4" class="detail-link" title="Link to this callback">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this callback</span>
+    </a>
+    <span class="signature">match(any, mnesia_table, arg2, opts)</span>
+    
       <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/query_behaviour.ex#L10" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
@@ -336,7 +371,7 @@
     
       <div class="specs">
         
-          <pre>list(<a href="#t:mnesia_table/0">mnesia_table</a>, <a href="Noizu.Scaffolding.CallingContext.html#t:t/0">Noizu.Scaffolding.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) ::
+          <pre>match(any, <a href="#t:mnesia_table/0">mnesia_table</a>, Noizu.Scaffolding.CallingContext.t, <a href="#t:opts/0">opts</a>) ::
   list |
   {:error, any}</pre>
         
@@ -356,7 +391,7 @@
     </a>
     <span class="signature">update(any, mnesia_table, arg2, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/query_behaviour.ex#L13" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/query_behaviour.ex#L14" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -365,7 +400,7 @@
     
       <div class="specs">
         
-          <pre>update(any, <a href="#t:mnesia_table/0">mnesia_table</a>, <a href="Noizu.Scaffolding.CallingContext.html#t:t/0">Noizu.Scaffolding.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) ::
+          <pre>update(any, <a href="#t:mnesia_table/0">mnesia_table</a>, Noizu.Scaffolding.CallingContext.t, <a href="#t:opts/0">opts</a>) ::
   any |
   {:error, any}</pre>
         

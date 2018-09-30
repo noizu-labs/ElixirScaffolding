@@ -5,12 +5,12 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.16.2">
-    <title>Noizu.Scaffolding.AuditEngine.Default – noizu_scaffolding v1.1.36</title>
+    <title>Noizu.Permissions – noizu_scaffolding v1.1.36</title>
     <link rel="stylesheet" href="dist/app-268c9dc719.css" />
     
     <script src="dist/sidebar_items-cd9aaeea6f.js"></script>
   </head>
-  <body data-type="modules">
+  <body data-type="protocols">
     <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
 
     <div class="main">
@@ -64,9 +64,9 @@
 
       <h1>
         <small class="visible-xs">noizu_scaffolding v1.1.36</small>
-        Noizu.Scaffolding.AuditEngine.Default
+        Noizu.Permissions <small>protocol</small>
         
-          <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/audit_engine/default.ex#L6" title="View Source" class="view-source" rel="help">
+          <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/protocols/permission_protocol.ex#L6" title="View Source" class="view-source" rel="help">
             <span class="icon-code" aria-hidden="true"></span>
             <span class="sr-only">View Source</span>
           </a>
@@ -85,6 +85,19 @@
             Summary
           </h1>
           
+  <div class="summary-types summary">
+    <h2>
+      <a href="#types">Types</a>
+    </h2>
+    <div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:t/0">t()</a>
+  </div>
+  
+</div>
+
+  </div>
+
 
           
   <div class="summary-functions summary">
@@ -93,14 +106,20 @@
     </h2>
     <div class="summary-row">
   <div class="summary-signature">
-    <a href="#audit/6">audit(event, details, entity, context, options \\ nil, note \\ nil)</a>
+    <a href="#has_permission/4">has_permission(obj, permission, context, options \\ %{})</a>
   </div>
+  
+    <div class="summary-synopsis"><p>Check with object to determine if user has required permission</p>
+</div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#audit!/6">audit!(event, details, entity, context, options \\ nil, note \\ nil)</a>
+    <a href="#has_permission!/4">has_permission!(obj, permission, context, options \\ %{})</a>
   </div>
+  
+    <div class="summary-synopsis"><p>Check with object to determine if user has required permission</p>
+</div>
   
 </div>
 
@@ -113,6 +132,46 @@
       
 
       
+        <section id="types" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#types">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+            Types
+          </h1>
+          <div class="types-list">
+            <div class="detail" id="t:t/0">
+  
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <span class="signature">t()</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/protocols/permission_protocol.ex#L6" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>t() :: term</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+
+          </div>
+        </section>
+      
 
       
         <section id="functions" class="details-list">
@@ -123,20 +182,18 @@
             </a>
             Functions
           </h1>
-          <div class="detail" id="audit/6">
+          <div class="detail" id="has_permission/4">
   
-    <span id="audit/4"></span>
-  
-    <span id="audit/5"></span>
+    <span id="has_permission/3"></span>
   
   <div class="detail-header">
-    <a href="#audit/6" class="detail-link" title="Link to this function">
+    <a href="#has_permission/4" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this function</span>
     </a>
-    <span class="signature">audit(event, details, entity, context, options \\ nil, note \\ nil)</span>
+    <span class="signature">has_permission(obj, permission, context, options \\ %{})</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/audit_engine/default.ex#L10" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/protocols/permission_protocol.ex#L8" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -145,23 +202,22 @@
     
   </div>
   <section class="docstring">
-    
+    <p>Check with object to determine if user has required permission</p>
+
   </section>
 </div>
-<div class="detail" id="audit!/6">
+<div class="detail" id="has_permission!/4">
   
-    <span id="audit!/4"></span>
-  
-    <span id="audit!/5"></span>
+    <span id="has_permission!/3"></span>
   
   <div class="detail-header">
-    <a href="#audit!/6" class="detail-link" title="Link to this function">
+    <a href="#has_permission!/4" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this function</span>
     </a>
-    <span class="signature">audit!(event, details, entity, context, options \\ nil, note \\ nil)</span>
+    <span class="signature">has_permission!(obj, permission, context, options \\ %{})</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/audit_engine/default.ex#L14" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/protocols/permission_protocol.ex#L11" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -170,7 +226,8 @@
     
   </div>
   <section class="docstring">
-    
+    <p>Check with object to determine if user has required permission</p>
+
   </section>
 </div>
 

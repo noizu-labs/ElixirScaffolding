@@ -5,10 +5,10 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.16.2">
-    <title>Noizu.Scaffolding.EntityBehaviour – noizu_scaffolding v1.1.7</title>
+    <title>Noizu.Scaffolding.EntityBehaviour – noizu_scaffolding v1.1.36</title>
     <link rel="stylesheet" href="dist/app-268c9dc719.css" />
     
-    <script src="dist/sidebar_items-2d67701d94.js"></script>
+    <script src="dist/sidebar_items-cd9aaeea6f.js"></script>
   </head>
   <body data-type="modules">
     <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
@@ -27,7 +27,7 @@
         noizu_scaffolding
       </h1>
       <h2 class="sidebar-projectVersion">
-        v1.1.7
+        v1.1.36
       </h2>
     </div>
     
@@ -63,7 +63,7 @@
 
 
       <h1>
-        <small class="visible-xs">noizu_scaffolding v1.1.7</small>
+        <small class="visible-xs">noizu_scaffolding v1.1.36</small>
         Noizu.Scaffolding.EntityBehaviour <small>behaviour</small>
         
           <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/entity_behaviour.ex#L6" title="View Source" class="view-source" rel="help">
@@ -168,7 +168,7 @@
     </h2>
     <div class="summary-row">
   <div class="summary-signature">
-    <a href="#c:as_record/1">as_record(entity_obj)</a>
+    <a href="#c:as_record/2">as_record(entity_obj, options)</a>
   </div>
   
     <div class="summary-synopsis"><p>Converts entity into record format. Aka extracts any fields used for indexing with the expected database table looking something like
@@ -190,6 +190,24 @@
 </div>
 <div class="summary-row">
   <div class="summary-signature">
+    <a href="#c:compress/1">compress(entity)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Compress entity, default options</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#c:compress/2">compress(entity, options)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Compress entity</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
     <a href="#c:entity/2">entity(entity_reference, options)</a>
   </div>
   
@@ -206,6 +224,45 @@
     <div class="summary-synopsis"><p>Returns entity, given an identifier, ref tuple, ref string or other known identifier type. Wrapping call in transaction if required.
   Where an entity is a EntityBehaviour implementing struct</p>
 </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#c:expand/1">expand(entity)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Expand entity, default options</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#c:expand/2">expand(entity, options)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Expand entity</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#c:from_json/2">from_json(arg0, arg1)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Cast from json to struct</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#c:has_permission/4">has_permission(entity_reference, any, any, options)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#c:has_permission!/4">has_permission!(entity_reference, any, any, options)</a>
+  </div>
   
 </div>
 <div class="summary-row">
@@ -243,6 +300,15 @@
   </div>
   
     <div class="summary-synopsis"><p>Returns appropriate {:ref|:ext_ref, module, identifier} reference tuple</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#c:repo/0">repo()</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>get entitie&#39;s repo module</p>
 </div>
   
 </div>
@@ -545,16 +611,16 @@
             </a>
             Callbacks
           </h1>
-          <div class="detail" id="c:as_record/1">
+          <div class="detail" id="c:as_record/2">
   
   <div class="detail-header">
-    <a href="#c:as_record/1" class="detail-link" title="Link to this callback">
+    <a href="#c:as_record/2" class="detail-link" title="Link to this callback">
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this callback</span>
     </a>
-    <span class="signature">as_record(entity_obj)</span>
+    <span class="signature">as_record(entity_obj, options)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/entity_behaviour.ex#L91" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/entity_behaviour.ex#L94" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -563,7 +629,9 @@
     
       <div class="specs">
         
-          <pre>as_record(<a href="#t:entity_obj/0">entity_obj</a>) :: <a href="#t:entity_record/0">entity_record</a> | <a href="#t:error/0">error</a></pre>
+          <pre>as_record(<a href="#t:entity_obj/0">entity_obj</a>, options :: <a href="https://hexdocs.pm/elixir/Map.html#t:t/0">Map.t</a>) ::
+  <a href="#t:entity_record/0">entity_record</a> |
+  <a href="#t:error/0">error</a></pre>
         
       </div>
     
@@ -583,6 +651,62 @@
   overide this implementation if you have any indexable fields. Future versions of the entity behaviour will accept an indexable field option
   that will insert expected fields and (if indicated) do simple type casting such as transforming DateTime.t fields into utc time stamps or
   <code>{time_zone, year, month, day, hour, minute, second}</code> tuples for efficient range querying.</p>
+
+  </section>
+</div>
+<div class="detail" id="c:compress/1">
+  
+  <div class="detail-header">
+    <a href="#c:compress/1" class="detail-link" title="Link to this callback">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this callback</span>
+    </a>
+    <span class="signature">compress(entity)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/entity_behaviour.ex#L116" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>compress(entity :: any) :: any</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Compress entity, default options</p>
+
+  </section>
+</div>
+<div class="detail" id="c:compress/2">
+  
+  <div class="detail-header">
+    <a href="#c:compress/2" class="detail-link" title="Link to this callback">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this callback</span>
+    </a>
+    <span class="signature">compress(entity, options)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/entity_behaviour.ex#L121" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>compress(entity :: any, options :: <a href="https://hexdocs.pm/elixir/Map.html#t:t/0">Map.t</a>) :: any</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Compress entity</p>
 
   </section>
 </div>
@@ -642,6 +766,148 @@
     <p>Returns entity, given an identifier, ref tuple, ref string or other known identifier type. Wrapping call in transaction if required.
   Where an entity is a EntityBehaviour implementing struct.</p>
 
+  </section>
+</div>
+<div class="detail" id="c:expand/1">
+  
+  <div class="detail-header">
+    <a href="#c:expand/1" class="detail-link" title="Link to this callback">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this callback</span>
+    </a>
+    <span class="signature">expand(entity)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/entity_behaviour.ex#L126" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>expand(entity :: any) :: any</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Expand entity, default options</p>
+
+  </section>
+</div>
+<div class="detail" id="c:expand/2">
+  
+  <div class="detail-header">
+    <a href="#c:expand/2" class="detail-link" title="Link to this callback">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this callback</span>
+    </a>
+    <span class="signature">expand(entity, options)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/entity_behaviour.ex#L131" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>expand(entity :: any, options :: <a href="https://hexdocs.pm/elixir/Map.html#t:t/0">Map.t</a>) :: any</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Expand entity</p>
+
+  </section>
+</div>
+<div class="detail" id="c:from_json/2">
+  
+  <div class="detail-header">
+    <a href="#c:from_json/2" class="detail-link" title="Link to this callback">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this callback</span>
+    </a>
+    <span class="signature">from_json(arg0, arg1)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/entity_behaviour.ex#L105" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>from_json(<a href="https://hexdocs.pm/elixir/Map.html#t:t/0">Map.t</a>, <a href="https://hexdocs.pm/noizu_core/1.0.6/Noizu.ElixirCore.CallingContext.html#t:t/0">Noizu.ElixirCore.CallingContext.t</a>) :: any</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Cast from json to struct.</p>
+
+  </section>
+</div>
+<div class="detail" id="c:has_permission/4">
+  
+  <div class="detail-header">
+    <a href="#c:has_permission/4" class="detail-link" title="Link to this callback">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this callback</span>
+    </a>
+    <span class="signature">has_permission(entity_reference, any, any, options)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/entity_behaviour.ex#L75" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>has_permission(<a href="#t:entity_reference/0">entity_reference</a>, any, any, <a href="#t:options/0">options</a>) ::
+  boolean |
+  <a href="#t:error/0">error</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="c:has_permission!/4">
+  
+  <div class="detail-header">
+    <a href="#c:has_permission!/4" class="detail-link" title="Link to this callback">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this callback</span>
+    </a>
+    <span class="signature">has_permission!(entity_reference, any, any, options)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/entity_behaviour.ex#L76" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>has_permission!(<a href="#t:entity_reference/0">entity_reference</a>, any, any, <a href="#t:options/0">options</a>) ::
+  boolean |
+  <a href="#t:error/0">error</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    
   </section>
 </div>
 <div class="detail" id="c:id/1">
@@ -758,6 +1024,34 @@
 
   </section>
 </div>
+<div class="detail" id="c:repo/0">
+  
+  <div class="detail-header">
+    <a href="#c:repo/0" class="detail-link" title="Link to this callback">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this callback</span>
+    </a>
+    <span class="signature">repo()</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/entity_behaviour.ex#L110" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>repo() :: atom</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>get entitie&#39;s repo module</p>
+
+  </section>
+</div>
 <div class="detail" id="c:sref/1">
   
   <div class="detail-header">
@@ -795,7 +1089,7 @@
     </a>
     <span class="signature">sref_module()</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/entity_behaviour.ex#L97" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/entity_behaviour.ex#L100" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>

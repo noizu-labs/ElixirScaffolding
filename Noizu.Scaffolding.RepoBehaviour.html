@@ -5,10 +5,10 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.16.2">
-    <title>Noizu.Scaffolding.RepoBehaviour – noizu_scaffolding v1.1.7</title>
+    <title>Noizu.Scaffolding.RepoBehaviour – noizu_scaffolding v1.1.36</title>
     <link rel="stylesheet" href="dist/app-268c9dc719.css" />
     
-    <script src="dist/sidebar_items-2d67701d94.js"></script>
+    <script src="dist/sidebar_items-cd9aaeea6f.js"></script>
   </head>
   <body data-type="modules">
     <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
@@ -27,7 +27,7 @@
         noizu_scaffolding
       </h1>
       <h2 class="sidebar-projectVersion">
-        v1.1.7
+        v1.1.36
       </h2>
     </div>
     
@@ -63,7 +63,7 @@
 
 
       <h1>
-        <small class="visible-xs">noizu_scaffolding v1.1.7</small>
+        <small class="visible-xs">noizu_scaffolding v1.1.36</small>
         Noizu.Scaffolding.RepoBehaviour <small>behaviour</small>
         
           <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L6" title="View Source" class="view-source" rel="help">
@@ -150,6 +150,15 @@
 </div>
 <div class="summary-row">
   <div class="summary-signature">
+    <a href="#c:entity/0">entity()</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Entity repo manages</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
     <a href="#c:from_json/2">from_json(arg0, arg1)</a>
   </div>
   
@@ -213,6 +222,33 @@
 </div>
 <div class="summary-row">
   <div class="summary-signature">
+    <a href="#c:match/3">match(any, arg1, opts)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Match Records</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#c:match!/3">match!(any, arg1, opts)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Match Records. Transaction Wrapped</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#c:options/0">options()</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Compile time options</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
     <a href="#c:post_create_callback/3">post_create_callback(any, arg1, opts)</a>
   </div>
   
@@ -227,6 +263,15 @@
   </div>
   
     <div class="summary-synopsis"><p>Hook for any post delete steps</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#c:post_get_callback/3">post_get_callback(any, arg1, opts)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Hook for any post get steps. (such as versioning)</p>
 </div>
   
 </div>
@@ -381,7 +426,7 @@
     </a>
     <span class="signature">create(any, arg1, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L55" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L75" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -390,7 +435,7 @@
     
       <div class="specs">
         
-          <pre>create(any, <a href="Noizu.Scaffolding.CallingContext.html#t:t/0">Noizu.Scaffolding.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: any</pre>
+          <pre>create(any, <a href="https://hexdocs.pm/noizu_core/1.0.6/Noizu.ElixirCore.CallingContext.html#t:t/0">Noizu.ElixirCore.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: any</pre>
         
       </div>
     
@@ -409,7 +454,7 @@
     </a>
     <span class="signature">create!(any, arg1, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L60" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L80" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -418,7 +463,7 @@
     
       <div class="specs">
         
-          <pre>create!(any, <a href="Noizu.Scaffolding.CallingContext.html#t:t/0">Noizu.Scaffolding.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: any</pre>
+          <pre>create!(any, <a href="https://hexdocs.pm/noizu_core/1.0.6/Noizu.ElixirCore.CallingContext.html#t:t/0">Noizu.ElixirCore.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: any</pre>
         
       </div>
     
@@ -437,7 +482,7 @@
     </a>
     <span class="signature">delete(any, arg1, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L45" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L65" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -446,7 +491,7 @@
     
       <div class="specs">
         
-          <pre>delete(any, <a href="Noizu.Scaffolding.CallingContext.html#t:t/0">Noizu.Scaffolding.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: boolean</pre>
+          <pre>delete(any, <a href="https://hexdocs.pm/noizu_core/1.0.6/Noizu.ElixirCore.CallingContext.html#t:t/0">Noizu.ElixirCore.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: boolean</pre>
         
       </div>
     
@@ -465,7 +510,7 @@
     </a>
     <span class="signature">delete!(any, arg1, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L50" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L70" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -474,13 +519,41 @@
     
       <div class="specs">
         
-          <pre>delete!(any, <a href="Noizu.Scaffolding.CallingContext.html#t:t/0">Noizu.Scaffolding.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: boolean</pre>
+          <pre>delete!(any, <a href="https://hexdocs.pm/noizu_core/1.0.6/Noizu.ElixirCore.CallingContext.html#t:t/0">Noizu.ElixirCore.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: boolean</pre>
         
       </div>
     
   </div>
   <section class="docstring">
     <p>Delete record. Transaction Wrapped</p>
+
+  </section>
+</div>
+<div class="detail" id="c:entity/0">
+  
+  <div class="detail-header">
+    <a href="#c:entity/0" class="detail-link" title="Link to this callback">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this callback</span>
+    </a>
+    <span class="signature">entity()</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L15" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>entity() :: <a href="https://hexdocs.pm/elixir/Map.html#t:t/0">Map.t</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Entity repo manages.</p>
 
   </section>
 </div>
@@ -493,7 +566,7 @@
     </a>
     <span class="signature">from_json(arg0, arg1)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L107" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L133" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -502,7 +575,7 @@
     
       <div class="specs">
         
-          <pre>from_json(<a href="https://hexdocs.pm/elixir/Map.html#t:t/0">Map.t</a>, <a href="Noizu.Scaffolding.CallingContext.html#t:t/0">Noizu.Scaffolding.CallingContext.t</a>) :: any</pre>
+          <pre>from_json(<a href="https://hexdocs.pm/elixir/Map.html#t:t/0">Map.t</a>, <a href="https://hexdocs.pm/noizu_core/1.0.6/Noizu.ElixirCore.CallingContext.html#t:t/0">Noizu.ElixirCore.CallingContext.t</a>) :: any</pre>
         
       </div>
     
@@ -521,7 +594,7 @@
     </a>
     <span class="signature">generate_identifier(any)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L97" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L123" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -549,7 +622,7 @@
     </a>
     <span class="signature">generate_identifier!(any)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L102" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L128" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -577,7 +650,7 @@
     </a>
     <span class="signature">get(arg0, arg1, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L25" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L45" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -586,7 +659,7 @@
     
       <div class="specs">
         
-          <pre>get(integer | atom, <a href="Noizu.Scaffolding.CallingContext.html#t:t/0">Noizu.Scaffolding.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: any</pre>
+          <pre>get(integer | atom, <a href="https://hexdocs.pm/noizu_core/1.0.6/Noizu.ElixirCore.CallingContext.html#t:t/0">Noizu.ElixirCore.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: any</pre>
         
       </div>
     
@@ -605,7 +678,7 @@
     </a>
     <span class="signature">get!(arg0, arg1, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L30" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L50" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -614,7 +687,7 @@
     
       <div class="specs">
         
-          <pre>get!(integer | atom, <a href="Noizu.Scaffolding.CallingContext.html#t:t/0">Noizu.Scaffolding.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: any</pre>
+          <pre>get!(integer | atom, <a href="https://hexdocs.pm/noizu_core/1.0.6/Noizu.ElixirCore.CallingContext.html#t:t/0">Noizu.ElixirCore.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: any</pre>
         
       </div>
     
@@ -633,7 +706,7 @@
     </a>
     <span class="signature">list(arg0, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L15" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L35" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -642,7 +715,7 @@
     
       <div class="specs">
         
-          <pre>list(<a href="Noizu.Scaffolding.CallingContext.html#t:t/0">Noizu.Scaffolding.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: list</pre>
+          <pre>list(<a href="https://hexdocs.pm/noizu_core/1.0.6/Noizu.ElixirCore.CallingContext.html#t:t/0">Noizu.ElixirCore.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: list</pre>
         
       </div>
     
@@ -661,6 +734,90 @@
     </a>
     <span class="signature">list!(arg0, opts)</span>
     
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L40" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>list!(<a href="https://hexdocs.pm/noizu_core/1.0.6/Noizu.ElixirCore.CallingContext.html#t:t/0">Noizu.ElixirCore.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: list</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>List Records. Transaction Wrapped</p>
+
+  </section>
+</div>
+<div class="detail" id="c:match/3">
+  
+  <div class="detail-header">
+    <a href="#c:match/3" class="detail-link" title="Link to this callback">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this callback</span>
+    </a>
+    <span class="signature">match(any, arg1, opts)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L25" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>match(any, <a href="https://hexdocs.pm/noizu_core/1.0.6/Noizu.ElixirCore.CallingContext.html#t:t/0">Noizu.ElixirCore.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: list</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Match Records.</p>
+
+  </section>
+</div>
+<div class="detail" id="c:match!/3">
+  
+  <div class="detail-header">
+    <a href="#c:match!/3" class="detail-link" title="Link to this callback">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this callback</span>
+    </a>
+    <span class="signature">match!(any, arg1, opts)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L30" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>match!(any, <a href="https://hexdocs.pm/noizu_core/1.0.6/Noizu.ElixirCore.CallingContext.html#t:t/0">Noizu.ElixirCore.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: list</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Match Records. Transaction Wrapped</p>
+
+  </section>
+</div>
+<div class="detail" id="c:options/0">
+  
+  <div class="detail-header">
+    <a href="#c:options/0" class="detail-link" title="Link to this callback">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this callback</span>
+    </a>
+    <span class="signature">options()</span>
+    
       <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L20" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
@@ -670,13 +827,13 @@
     
       <div class="specs">
         
-          <pre>list!(<a href="Noizu.Scaffolding.CallingContext.html#t:t/0">Noizu.Scaffolding.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: list</pre>
+          <pre>options() :: Module</pre>
         
       </div>
     
   </div>
   <section class="docstring">
-    <p>List Records. Transaction Wrapped</p>
+    <p>Compile time options.</p>
 
   </section>
 </div>
@@ -689,7 +846,7 @@
     </a>
     <span class="signature">post_create_callback(any, arg1, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L82" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L102" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -698,7 +855,7 @@
     
       <div class="specs">
         
-          <pre>post_create_callback(any, <a href="Noizu.Scaffolding.CallingContext.html#t:t/0">Noizu.Scaffolding.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: any</pre>
+          <pre>post_create_callback(any, <a href="https://hexdocs.pm/noizu_core/1.0.6/Noizu.ElixirCore.CallingContext.html#t:t/0">Noizu.ElixirCore.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: any</pre>
         
       </div>
     
@@ -718,7 +875,7 @@
     </a>
     <span class="signature">post_delete_callback(any, arg1, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L92" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L118" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -727,13 +884,41 @@
     
       <div class="specs">
         
-          <pre>post_delete_callback(any, <a href="Noizu.Scaffolding.CallingContext.html#t:t/0">Noizu.Scaffolding.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: any</pre>
+          <pre>post_delete_callback(any, <a href="https://hexdocs.pm/noizu_core/1.0.6/Noizu.ElixirCore.CallingContext.html#t:t/0">Noizu.ElixirCore.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: any</pre>
         
       </div>
     
   </div>
   <section class="docstring">
     <p>Hook for any post delete steps.</p>
+
+  </section>
+</div>
+<div class="detail" id="c:post_get_callback/3">
+  
+  <div class="detail-header">
+    <a href="#c:post_get_callback/3" class="detail-link" title="Link to this callback">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this callback</span>
+    </a>
+    <span class="signature">post_get_callback(any, arg1, opts)</span>
+    
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L108" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>post_get_callback(any, <a href="https://hexdocs.pm/noizu_core/1.0.6/Noizu.ElixirCore.CallingContext.html#t:t/0">Noizu.ElixirCore.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: any</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Hook for any post get steps. (such as versioning)</p>
 
   </section>
 </div>
@@ -746,7 +931,7 @@
     </a>
     <span class="signature">post_update_callback(any, arg1, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L87" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L113" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -755,7 +940,7 @@
     
       <div class="specs">
         
-          <pre>post_update_callback(any, <a href="Noizu.Scaffolding.CallingContext.html#t:t/0">Noizu.Scaffolding.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: any</pre>
+          <pre>post_update_callback(any, <a href="https://hexdocs.pm/noizu_core/1.0.6/Noizu.ElixirCore.CallingContext.html#t:t/0">Noizu.ElixirCore.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: any</pre>
         
       </div>
     
@@ -774,7 +959,7 @@
     </a>
     <span class="signature">pre_create_callback(any, arg1, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L66" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L86" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -783,7 +968,7 @@
     
       <div class="specs">
         
-          <pre>pre_create_callback(any, <a href="Noizu.Scaffolding.CallingContext.html#t:t/0">Noizu.Scaffolding.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: any</pre>
+          <pre>pre_create_callback(any, <a href="https://hexdocs.pm/noizu_core/1.0.6/Noizu.ElixirCore.CallingContext.html#t:t/0">Noizu.ElixirCore.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: any</pre>
         
       </div>
     
@@ -803,7 +988,7 @@
     </a>
     <span class="signature">pre_delete_callback(any, arg1, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L76" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L96" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -812,7 +997,7 @@
     
       <div class="specs">
         
-          <pre>pre_delete_callback(any, <a href="Noizu.Scaffolding.CallingContext.html#t:t/0">Noizu.Scaffolding.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: any</pre>
+          <pre>pre_delete_callback(any, <a href="https://hexdocs.pm/noizu_core/1.0.6/Noizu.ElixirCore.CallingContext.html#t:t/0">Noizu.ElixirCore.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: any</pre>
         
       </div>
     
@@ -831,7 +1016,7 @@
     </a>
     <span class="signature">pre_update_callback(any, arg1, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L71" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L91" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -840,7 +1025,7 @@
     
       <div class="specs">
         
-          <pre>pre_update_callback(any, <a href="Noizu.Scaffolding.CallingContext.html#t:t/0">Noizu.Scaffolding.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: any</pre>
+          <pre>pre_update_callback(any, <a href="https://hexdocs.pm/noizu_core/1.0.6/Noizu.ElixirCore.CallingContext.html#t:t/0">Noizu.ElixirCore.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: any</pre>
         
       </div>
     
@@ -859,7 +1044,7 @@
     </a>
     <span class="signature">update(any, arg1, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L35" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L55" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -868,7 +1053,7 @@
     
       <div class="specs">
         
-          <pre>update(any, <a href="Noizu.Scaffolding.CallingContext.html#t:t/0">Noizu.Scaffolding.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: any</pre>
+          <pre>update(any, <a href="https://hexdocs.pm/noizu_core/1.0.6/Noizu.ElixirCore.CallingContext.html#t:t/0">Noizu.ElixirCore.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: any</pre>
         
       </div>
     
@@ -887,7 +1072,7 @@
     </a>
     <span class="signature">update!(any, arg1, opts)</span>
     
-      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L40" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/noizu/ElixirScaffolding/blob/master/lib/scaffolding/behaviours/repo_behaviour.ex#L60" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -896,7 +1081,7 @@
     
       <div class="specs">
         
-          <pre>update!(any, <a href="Noizu.Scaffolding.CallingContext.html#t:t/0">Noizu.Scaffolding.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: any</pre>
+          <pre>update!(any, <a href="https://hexdocs.pm/noizu_core/1.0.6/Noizu.ElixirCore.CallingContext.html#t:t/0">Noizu.ElixirCore.CallingContext.t</a>, <a href="#t:opts/0">opts</a>) :: any</pre>
         
       </div>
     
