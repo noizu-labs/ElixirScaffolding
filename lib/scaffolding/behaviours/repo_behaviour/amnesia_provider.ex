@@ -74,7 +74,11 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
 
       @audit_level unquote(audit_level)
 
+      @nmid_generator unquote(nmid_generator)
+
       @param_pass_thru ({__MODULE__, @entity_module, @mnesia_table, @query_strategy, @audit_engine, @dirty_default, @frag_default, @audit_level})
+
+
 
       if (unquote(only.entity) && !unquote(override.entity)) do
         def entity() do
@@ -102,15 +106,13 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
       #-------------------------------------------------------------------------
       if (unquote(only.generate_identifier) && !unquote(override.generate_identifier)) do
         def generate_identifier(options \\ nil) do
-          seq = unquote(sequencer)
-          unquote(nmid_generator).generate(seq, options)
+          @nmid_generator.generate(@sequencer, options)
         end # end generate_identifier/1
       end
 
       if (unquote(only.generate_identifier!) && !unquote(override.generate_identifier!)) do
         def generate_identifier!(options \\ nil) do
-          seq = unquote(sequencer)
-          unquote(nmid_generator).generate!(seq, options)
+          @nmid_generator.generate!(@sequencer, options)
         end # end generate_identifier/1
       end
 

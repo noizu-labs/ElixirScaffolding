@@ -8,7 +8,7 @@ defmodule Noizu.Scaffolding.Mixfile do
 
   def project do
     [app: :noizu_scaffolding,
-     version: "1.1.36",
+     version: "1.1.37",
      elixir: "~> 1.4",
      package: package(),
      deps: deps(),
