@@ -8,14 +8,19 @@ defmodule Noizu.Scaffolding.Mixfile do
 
   def project do
     [app: :noizu_scaffolding,
-     version: "1.1.37",
+     version: "1.1.38",
      elixir: "~> 1.4",
      package: package(),
      deps: deps(),
+     elixirc_paths: elixirc_paths(Mix.env),
      description: "Noizu Scaffolding",
      docs: docs()
    ]
   end # end procject
+
+  # Specifies which paths to compile per environment.
+  defp elixirc_paths(:test), do: ["lib", "test/fixtures"]
+  defp elixirc_paths(_),     do: ["lib"]
 
   defp package do
     [
@@ -32,8 +37,6 @@ defmodule Noizu.Scaffolding.Mixfile do
   defp deps do
     [
       {:amnesia, git: "https://github.com/noizu/amnesia.git", ref: "9266002", optional: true}, # Mnesia Wrapper
-
-
       {:uuid, "~> 1.1" },
       {:ex_doc, "~> 0.16.2", only: [:dev], optional: true}, # Documentation Provider
       {:markdown, github: "devinus/markdown", only: [:dev], optional: true}, # Markdown processor for ex_doc

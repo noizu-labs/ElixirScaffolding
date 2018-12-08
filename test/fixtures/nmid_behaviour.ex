@@ -3,9 +3,12 @@
 # Copyright (C) 2018 Noizu Labs, Inc. All rights reserved.
 #-------------------------------------------------------------------------------
 
-if (Mix.env == :test) do
-  defmodule Noizu.Scaffolding.Test.Fixture.FooRepo do
-    use Noizu.Scaffolding.RepoBehaviour,
-      nmid_generator: Noizu.Scaffolding.Test.Fixture.NmidGenerator
+defmodule Noizu.Scaffolding.Test.Fixture.NmidGenerator do
+  def generate(_seq, _opts) do
+    :os.system_time(:micro_seconds)
+  end
+  def generate!(seq, opts) do
+    generate(seq, opts)
   end
 end
+

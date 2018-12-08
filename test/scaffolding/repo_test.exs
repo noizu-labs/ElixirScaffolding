@@ -8,17 +8,14 @@ defmodule Noizu.Scaffolding.RepoTest do
   use Amnesia
   use  Noizu.Database.Scaffolding.Test.Fixture.FooTable
 
-  alias Noizu.Database.Scaffolding.Test.Fixture.FooTable
+
   alias Noizu.Scaffolding.Test.Fixture.FooRepo
   alias Noizu.Scaffolding.Test.Fixture.FooEntity
+  alias Noizu.Database.Scaffolding.Test.Fixture.FooTable
   alias Noizu.ElixirCore.CallingContext
 
   setup do
-    Amnesia.stop
-    Amnesia.Schema.destroy
-    Amnesia.Schema.create()
-    Amnesia.start
-    if !Amnesia.Table.exists?(FooTable), do: FooTable.create(memory: [node()])
+    FooTable.clear
   end
 
   test "Repo Options and Entity Type" do
@@ -188,7 +185,7 @@ defmodule Noizu.Scaffolding.RepoTest do
     entity_two = %FooEntity{entity| identifier: entity.identifier + 1} |> FooRepo.create!(context)
     entity_three = %FooEntity{entity| identifier: entity.identifier + 2} |> FooRepo.create!(context)
 
-    r = Amnesia.Fragment.transaction do
+    _r = Amnesia.Fragment.transaction do
       Noizu.Database.Scaffolding.Test.Fixture.FooTable.where true == true
     end
 
