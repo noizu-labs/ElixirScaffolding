@@ -141,13 +141,6 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
   """
   @callback from_json(Map.t, CallingContext.t) :: any
 
-  @methods ([
-    :entity, :options, :generate_identifier!, :generate_identifier,
-    :update, :update!, :delete, :delete!, :create, :create!, :get, :get!,
-    :match, :match!, :list, :list!, :post_get_callback, :pre_create_callback, :pre_update_callback, :pre_delete_callback,
-    :post_create_callback, :post_get_callback, :post_update_callback, :post_delete_callback,
-    :from_json, :extract_date])
-
   defmacro __using__(options) do
     # Implementation for Persistance layer interactions.
     implementation_provider = Keyword.get(options, :implementation_provider,  Noizu.Scaffolding.V2.RepoBehaviour.AmnesiaProvider)

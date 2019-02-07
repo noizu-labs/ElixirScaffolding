@@ -13,8 +13,22 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviour do
   - Repos     MyApp.(Path.To.Entity).MyFooRepo
 
   If the above conventions are not used a framework user must provide the appropriate `mnesia_table`, and `repo_module` `use` options.
+
+
+
+   @NOTE To avoid interlocking code a master defimpl should be defined for all tables and entities as follows.
+   defimpl Noizu.ERP, for: [FooEntity, FooTable, ...] do
+      defdelegate id(o), to: Noizu.Scaffolding.V2.ERPResolver
+      defdelegate ref(o), to: Noizu.Scaffolding.V2.ERPResolver
+      defdelegate sref(o), to: Noizu.Scaffolding.V2.ERPResolver
+      defdelegate entity(o, options \\ nil), to: Noizu.Scaffolding.V2.ERPResolver
+      defdelegate entity!(o, options \\ nil), to: Noizu.Scaffolding.V2.ERPResolver
+      defdelegate record(o, options \\ nil), to: Noizu.Scaffolding.V2.ERPResolver
+      defdelegate record!(o, options \\ nil), to: Noizu.Scaffolding.V2.ERPResolver
+   end
+
   """
-  alias Noizu.ElixirCore.CallingContext
+  #alias Noizu.ElixirCore.CallingContext
   #-----------------------------------------------------------------------------
   # aliases, imports, uses,
   #-----------------------------------------------------------------------------
@@ -32,6 +46,14 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviour do
   @type details :: any
   @type error :: {:error, details}
   @type options :: Map.t | nil
+
+  @callback erp_handler() :: any
+  @callback shallow(any) :: any
+  @callback string_to_id(any) :: any
+  @callback id_to_string(any) :: any
+  @callback miss_cb(any, any) :: any
+  @callback miss_cb!(any, any) :: any
+
 
   @doc """
     Return identifier of ref, sref, entity or record
@@ -93,6 +115,9 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviour do
   """
   @callback as_record(entity_obj, options :: Map.t) :: entity_record | error
 
+  @callback as_record!(entity_obj, options :: Map.t) :: entity_record | error
+
+
   @doc """
     Returns the string used for preparing sref format strings. E.g. a `User` struct might use the string ``"user"`` as it's sref_module resulting in
     sref strings like `ref.user.1234`.
@@ -136,33 +161,92 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviour do
     # Repo module (entity/record implementation), Module name with "Repo" appeneded if :auto
     repo_module = Keyword.get(options, :repo_module, :auto)
     mnesia_table = Keyword.get(options, :mnesia_table, :auto)
+    poly_base = Keyword.get(options, :poly_base, :auto)
+    poly_support = Keyword.get(options, :poly_support, :auto)
+
+
+
     as_record_options = Keyword.get(options, :as_record_options, Macro.escape(%{}))
     # Default Implementation Provider
-    default_implementation = Keyword.get(options, :default_implementation, Noizu.Scaffolding.V2.EntityBehaviourDefault)
-    sm = Keyword.get(options, :sref_module, "unsupported")
-    sref_prefix = "ref." <> sm <> "."
+    default_implementation = Keyword.get(options, :default_implementation, :auto)
+
+    sm = Keyword.get(options, :sref_module, :auto)
+
 
     quote do
       import unquote(__MODULE__)
       @behaviour Noizu.Scaffolding.EntityBehaviour
 
-      @default_implementation unquote(default_implementation)
       @repo_module unquote(repo_module)
-      @expanded_repo @default_implementation.expand_repo(__MODULE__, @repo_module)
       @sref_module unquote(sm)
       @mnesia_table unquote(mnesia_table)
-      @expanded_table @default_implementation.expand_table(__MODULE__, @mnesia_table)
-      @sref_prefix unquote(sref_prefix)
-      @as_record_options unquote(as_record_options)
 
+      @as_record_options unquote(as_record_options)
       @module __MODULE__
+
+      @poly_base (case unquote(poly_base) do
+        :auto -> @module
+        v -> v
+      end)
+
+      @poly_support (case unquote(poly_support) do
+        :auto -> :auto
+        v when is_list(v) -> MapSet.new(v)
+        v -> v
+      end)
+
+      @poly_type? ((@poly_base != @module) || (@poly_support != :auto) || false)
+
+
+      @default_implementation (case unquote(default_implementation) do
+        :auto ->
+          if @poly_type? do
+            Noizu.Scaffolding.V2.EntityBehaviourPolySupport
+          else
+            Noizu.Scaffolding.V2.EntityBehaviourDefault
+          end
+        v -> v
+      end)
+
+      @sref_prefix (case unquote(sm) do
+        :auto ->
+          if @poly_type? do
+            cond do
+              @module != @poly_base -> @poly_base.sref_prefix()
+              true -> "ref.#{__MODULE__}."
+            end
+          else
+            "ref.#{__MODULE__}."
+          end
+        v -> "ref.#{v}."
+      end)
+
+      @expanded_repo @default_implementation.expand_repo(@poly_base, @repo_module)
+      @expanded_table @default_implementation.expand_table(@poly_base, @mnesia_table)
 
       def sref_module(), do: @sref_module
       def sref_prefix(), do: @sref_prefix
+      def poly_base(), do: @poly_base
 
 
+
+      if (@module != @poly_base && @poly_support == :auto) do
+        def poly_support() do
+          @poly_base.poly_support()
+        end
+      else
+        def poly_support() do
+          @poly_support
+        end
+      end
+
+
+
+      def poly_type?(), do: @poly_type?
       def repo(), do: @expanded_repo
       def table(), do: @expanded_table
+
+
       def erp_handler(), do: @module
 
       def _int_entity?(), do: true
@@ -184,86 +268,99 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviour do
       #------------
       #
       #------------
-      def compress(entity, options \\ %{}), do: compress_implementation(@module, entity, options)
-      defdelegate compress_implementation(m, entity, options), to: @default_implementation
+      def compress(entity, options \\ %{}), do: compress(@module, entity, options)
+      defdelegate compress(m, entity, options), to: @default_implementation
 
       #------------
       #
       #------------
-      def expand(entity, options \\ %{}), do: expand_implementation(@module, entity, options)
-      defdelegate expand_implementation(m, entity, options), to: @default_implementation
+      def expand(entity, options \\ %{}), do: expand(@module, entity, options)
+      defdelegate expand(m, entity, options), to: @default_implementation
 
       #------------
       #
       #------------
-      def id(@sref_prefix <> identifier), do: id_implementation(@module, identifier)
-      def id(ref), do: id_implementation(@module, ref)
-      defdelegate id_implementation(m, ref), to: @default_implementation
+      def string_to_id(identifier), do: string_to_id(@module, identifier)
+      defdelegate  string_to_id(m, identifier), to: @default_implementation
 
       #------------
       #
       #------------
-      def ref(ref), do: ref_implementation(@module, ref)
-      defdelegate ref_implementation(m, ref), to: @default_implementation
+      def id_to_string(identifier), do: id_to_string(@module, identifier)
+      defdelegate id_to_string(m, identifier), to: @default_implementation
 
       #------------
       #
       #------------
-      def sref(ref), do: sref_implementation(@module, ref)
-      defdelegate sref_implementation(m, ref), to: @default_implementation
+      def id(@sref_prefix <> identifier), do: id(@module, identifier)
+      def id(ref), do: id(@module, ref)
+      defdelegate id(m, ref), to: @default_implementation
 
       #------------
       #
       #------------
-      def miss_cb(ref, options \\ %{}), do: miss_cb_implementation(@module, ref, options)
-      defdelegate miss_cb_implementation(m, ref, options), to: @default_implementation
+      def ref(ref), do: ref(@module, ref)
+      defdelegate ref(m, ref), to: @default_implementation
 
       #------------
       #
       #------------
-      def entity(ref, options \\ %{}), do: entity_implementation(@module, ref, options)
-      defdelegate entity_implementation(m, ref, options), to: @default_implementation
+      def sref(ref), do: sref(@module, ref)
+      defdelegate sref(m, ref), to: @default_implementation
 
       #------------
       #
       #------------
-      def entity!(ref, options \\ %{}), do: entity_txn_implementation(@module, ref, options)
-      defdelegate entity_txn_implementation(m, ref, options), to: @default_implementation
+      def miss_cb(ref, options \\ %{}), do: miss_cb(@module, ref, options)
+      defdelegate miss_cb(m, ref, options), to: @default_implementation
 
       #------------
       #
       #------------
-      def record(ref, options \\ %{}), do: record_implementation(@module, ref, options)
-      defdelegate record_implementation(m, ref, options), to: @default_implementation
+      def miss_cb!(ref, options \\ %{}), do: miss_cb!(@module, ref, options)
+      defdelegate miss_cb!(m, ref, options), to: @default_implementation
 
       #------------
       #
       #------------
-      def record!(ref, options \\ %{}), do: record_txn_implementation(@module, ref, options)
-      defdelegate record_txn_implementation(m, ref, options), to: @default_implementation
+      def entity(ref, options \\ %{}), do: entity(@module, ref, options)
+      defdelegate entity(m, ref, options), to: @default_implementation
 
       #------------
       #
       #------------
-      def as_record(ref, options \\ %{}), do: as_record_implementation(@module, ref, options)
-      defdelegate as_record_implementation(m, ref, options), to: @default_implementation
+      def entity!(ref, options \\ %{}), do: entity!(@module, ref, options)
+      defdelegate entity!(m, ref, options), to: @default_implementation
 
-      def has_permission(ref, permission, context, options \\ %{}), do: has_permission_implementation(@module, ref, permission, context, options)
-      defdelegate has_permission_implementation(m, ref, permission, context, options), to: @default_implementation
+      #------------
+      #
+      #------------
+      def record(ref, options \\ %{}), do: record(@module, ref, options)
+      defdelegate record(m, ref, options), to: @default_implementation
 
-      def has_permission!(ref, permission, context, options \\ %{}), do: has_permission_txn_implementation(@module, ref, permission, context, options)
-      defdelegate has_permission_txn_implementation(m, ref, permission, context, options), to: @default_implementation
+      #------------
+      #
+      #------------
+      def record!(ref, options \\ %{}), do: record!(@module, ref, options)
+      defdelegate record!(m, ref, options), to: @default_implementation
 
-      # To avoid interlocking code a master defimpl should be defined for all tables and entities as follows.
-      #defimpl Noizu.ERP, for: [FooEntity, FooTable, ...] do
-      #  defdelegate id(o), to: Noizu.Scaffolding.V2.ERPResolver
-      #  defdelegate ref(o), to: Noizu.Scaffolding.V2.ERPResolver
-      #  defdelegate sref(o), to: Noizu.Scaffolding.V2.ERPResolver
-      #  defdelegate entity(o, options \\ nil), to: Noizu.Scaffolding.V2.ERPResolver
-      #  defdelegate entity!(o, options \\ nil), to: Noizu.Scaffolding.V2.ERPResolver
-      #  defdelegate record(o, options \\ nil), to: Noizu.Scaffolding.V2.ERPResolver
-      #  defdelegate record!(o, options \\ nil), to: Noizu.Scaffolding.V2.ERPResolver
-      #end
+      #------------
+      #
+      #------------
+      def as_record(ref, options \\ %{}), do: as_record(@module, ref, options)
+      defdelegate as_record(m, ref, options), to: @default_implementation
+
+      #------------
+      #
+      #------------
+      def as_record!(ref, options \\ %{}), do: as_record!(@module, ref, options)
+      defdelegate as_record!(m, ref, options), to: @default_implementation
+
+      def has_permission(ref, permission, context, options \\ %{}), do: has_permission(@module, ref, permission, context, options)
+      defdelegate has_permission(m, ref, permission, context, options), to: @default_implementation
+
+      def has_permission!(ref, permission, context, options \\ %{}), do: has_permission!(@module, ref, permission, context, options)
+      defdelegate has_permission!(m, ref, permission, context, options), to: @default_implementation
 
       defoverridable [
         sref_module: 0,
@@ -283,15 +380,20 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviour do
         compress: 2,
         expand: 2,
 
+        string_to_id: 1,
+        id_to_string: 1,
+
         id: 1,
         ref: 1,
         sref: 1,
         miss_cb: 2,
+        miss_cb!: 2,
         entity: 2,
         entity!: 2,
         record: 2,
         record!: 2,
         as_record: 2,
+        as_record!: 2,
 
         has_permission: 4,
         has_permission!: 4,
