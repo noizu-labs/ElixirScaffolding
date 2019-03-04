@@ -231,34 +231,50 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviourPolySupport do
     #-----------------
     # expand_table
     #-------------------
-    def expand_table(module, table) do
-      # Apply Schema Naming Convention if not specified
-      if (table == :auto) do
-        path = Module.split(module)
-        default_database = Module.concat([List.first(path), "Database"])
-        root_table =
-          Application.get_env(:noizu_scaffolding, :default_database, default_database)
-          |> Module.split()
-        entity_name = path |> List.last()
-        table_name = String.slice(entity_name, 0..-7) <> "Table"
-        inner_path = Enum.slice(path, 1..-2)
-        Module.concat(root_table ++ inner_path ++ [table_name])
+    def expand_table(is_base, module, table) do
+      if is_base do
+        # Apply Schema Naming Convention if not specified
+        if (table == :auto) do
+          path = Module.split(module)
+          default_database = Module.concat([List.first(path), "Database"])
+          root_table =
+            Application.get_env(:noizu_scaffolding, :default_database, default_database)
+            |> Module.split()
+          entity_name = path |> List.last()
+          table_name = String.slice(entity_name, 0..-7) <> "Table"
+          inner_path = Enum.slice(path, 1..-2)
+          Module.concat(root_table ++ inner_path ++ [table_name])
+        else
+          table
+        end
       else
-        table
+        if (table == :auto) do
+          module.table()
+        else
+          table
+        end
       end
     end #end expand_table
 
     #-----------------
     # expand_repo
     #-------------------
-    def expand_repo(module, repo) do
-      if (repo == :auto) do
-        rm = Module.split(module) |> Enum.slice(0..-2) |> Module.concat
-        m = (Module.split(module) |> List.last())
-        t = String.slice(m, 0..-7) <> "Repo"
-        Module.concat([rm, t])
+    def expand_repo(is_base, module, repo) do
+      if is_base do
+        if (repo == :auto) do
+          rm = Module.split(module) |> Enum.slice(0..-2) |> Module.concat
+          m = (Module.split(module) |> List.last())
+          t = String.slice(m, 0..-7) <> "Repo"
+          Module.concat([rm, t])
+        else
+          repo
+        end
       else
-        repo
+        if (repo == :auto) do
+          module.repo()
+        else
+          repo
+        end
       end
     end # end expand_repo
 

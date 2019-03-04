@@ -221,8 +221,8 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviour do
         v -> "ref.#{v}."
       end)
 
-      @expanded_repo @default_implementation.expand_repo(@poly_base, @repo_module)
-      @expanded_table @default_implementation.expand_table(@poly_base, @mnesia_table)
+      @expanded_repo @default_implementation.expand_repo(@poly_base == @module, @poly_base, @repo_module)
+      @expanded_table @default_implementation.expand_table(@poly_base == @module, @poly_base, @mnesia_table)
 
       def sref_module(), do: @sref_module
       def sref_prefix(), do: @sref_prefix

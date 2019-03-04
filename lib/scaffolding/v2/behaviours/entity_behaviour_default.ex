@@ -235,7 +235,7 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviourDefault do
     #-----------------
     # expand_table
     #-------------------
-    def expand_table(module, table) do
+    def expand_table(_, module, table) do
       # Apply Schema Naming Convention if not specified
       if (table == :auto) do
         path = Module.split(module)
@@ -255,7 +255,7 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviourDefault do
     #-----------------
     # expand_repo
     #-------------------
-    def expand_repo(module, repo) do
+    def expand_repo(_, module, repo) do
       if (repo == :auto) do
         rm = Module.split(module) |> Enum.slice(0..-2) |> Module.concat
         m = (Module.split(module) |> List.last())
