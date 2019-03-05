@@ -11,7 +11,13 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour.AmnesiaProvider do
   #
   #--------------
   def expand_options(m, o) do
-    entity_table = expand_table(m, Keyword.get(o, :entity_table, :auto))
+
+    entity_table = case Keyword.get(o, :entity_table, :auto) do
+      :auto -> Keyword.get(o, :mnesia_table, :auto)
+      v -> v
+    end
+    entity_table = expand_table(m, entity_table)
+
     entity_module = expand_entity(m, Keyword.get(o, :entity_module, :auto))
     sequencer = case Keyword.get(o, :sequencer, :auto) do
       :auto -> entity_module

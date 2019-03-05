@@ -160,7 +160,11 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviour do
   defmacro __using__(options) do
     # Repo module (entity/record implementation), Module name with "Repo" appeneded if :auto
     repo_module = Keyword.get(options, :repo_module, :auto)
-    mnesia_table = Keyword.get(options, :mnesia_table, :auto)
+    entity_table = case Keyword.get(options, :entity_table, :auto) do
+      :auto -> Keyword.get(options, :mnesia_table, :auto)
+      v -> v
+    end
+
     poly_base = Keyword.get(options, :poly_base, :auto)
     poly_support = Keyword.get(options, :poly_support, :auto)
 
@@ -179,7 +183,7 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviour do
 
       @repo_module unquote(repo_module)
       @sref_module unquote(sm)
-      @mnesia_table unquote(mnesia_table)
+      @mnesia_table unquote(entity_table)
 
       @as_record_options unquote(as_record_options)
       @module __MODULE__
