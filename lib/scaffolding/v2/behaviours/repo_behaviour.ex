@@ -151,6 +151,11 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
     # Implementation for Persistance layer interactions.
     implementation_provider = Keyword.get(options, :implementation_provider,  Noizu.Scaffolding.V2.RepoBehaviour.AmnesiaProvider)
 
+    options = case Keyword.get(options, :entity_table, :auto) do
+      :auto -> Keyword.put(options, :entity_table, Keyword.get(options, :mnesia_table, :auto))
+      _ -> options
+    end
+
     quote do
       @behaviour Noizu.Scaffolding.RepoBehaviour
       import unquote(__MODULE__)

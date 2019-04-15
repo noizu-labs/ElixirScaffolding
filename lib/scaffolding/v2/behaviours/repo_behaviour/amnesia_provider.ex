@@ -83,7 +83,7 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour.AmnesiaProvider do
   #-----------------
   # from_json_version
   #-------------------
-  def from_json_version(m, _version, _json, _context), do: throw "#{m} must override from_json/2 or from_json/3"
+  def from_json_version(m, _version, _json, _context, _options), do: throw "#{m} must override from_json/2 or from_json/3"
 
   #--------------
   # match
