@@ -22,6 +22,7 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
   @callback query_strategy() :: any
   @callback sequencer() :: any
   @callback nmid_generator() :: any
+  @callback implementation() :: any
 
   @doc """
     Compile time options.
@@ -139,12 +140,17 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
   @doc """
   Cast from json to struct.
   """
-  @callback from_json(Map.t, CallingContext.t) :: any
+  @callback from_json(Map.t, CallingContext.t, opts) :: any
+
+  @doc """
+  Cast from json to struct.
+  """
+  @callback from_json_version(any, Map.t, CallingContext.t, opts) :: any
 
   defmacro __using__(options) do
     # Implementation for Persistance layer interactions.
     implementation_provider = Keyword.get(options, :implementation_provider,  Noizu.Scaffolding.V2.RepoBehaviour.AmnesiaProvider)
-    
+
     quote do
       @behaviour Noizu.Scaffolding.RepoBehaviour
       import unquote(__MODULE__)
@@ -171,6 +177,7 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
       def sequencer(), do: @sequencer
       def nmid_generator(), do: @nmid_generator
 
+      def implementation(), do: @implementation
 
       # @deprecated
       def entity(), do: @entity_module
@@ -178,9 +185,9 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
       #-------------------------------------------------------------------------
       # from_json/2, from_json/3
       #-------------------------------------------------------------------------
-      def from_json(json, context), do: from_json(:default, json, context)
-      def from_json(version, json, context), do: _imp_from_json(@module, version, json, context)
-      defdelegate _imp_from_json(m, version, json, context), to: @implementation
+      def from_json(json, context, options \\ %{}), do: from_json_version(:default, json, context, options)
+      def from_json_version(version, json, context, options \\ %{}), do: _imp_from_json_version(@module, version, json, context, options)
+      defdelegate _imp_from_json_version(m, version, json, context, options), to: @implementation, as: :from_json_version
 
       #-------------------------------------------------------------------------
       # extract_date/3
@@ -190,13 +197,12 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
       #-------------------------------------------------------------------------
       # generate_identifier/1
       #-------------------------------------------------------------------------
-      def generate_identifier(options \\ nil), do: @nmid_generator.generate(sequencer(), options)
+      def generate_identifier(options \\ nil), do: @nmid_generator.generate(sequencer(), options) # todo - defdelegate
 
       #-------------------------------------------------------------------------
       # generate_identifier!/1
       #-------------------------------------------------------------------------
-      def generate_identifier!(options \\ nil), do: @nmid_generator.generate!(sequencer(), options)
-
+      def generate_identifier!(options \\ nil), do: @nmid_generator.generate!(sequencer(), options) # todo - defdelegate
 
       #==============================
       # @match
@@ -206,14 +212,13 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
       # match/3
       #-------------------------------------------------------------------------
       def match(match_sel, context, options \\ %{}), do: _imp_match(@module, match_sel, context, options)
-      defdelegate _imp_match(module, match_sel, context, options), to: @implementation
+      defdelegate _imp_match(module, match_sel, context, options), to: @implementation, as: :match
 
       #-------------------------------------------------------------------------
       # match!/3
       #-------------------------------------------------------------------------
       def match!(match_sel, context, options \\ %{}), do: _imp_match!(@module, match_sel, context, options)
-      defdelegate _imp_match!(module, match_sel, context, options), to: @implementation
-
+      defdelegate _imp_match!(module, match_sel, context, options), to: @implementation, as: :match!
 
       #==============================
       # @list
@@ -223,37 +228,40 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
       # list/2
       #-------------------------------------------------------------------------
       def list(context, options \\ %{}), do: _imp_list(@module, context, options)
-      defdelegate _imp_list(module, context, options), to: @implementation
+      defdelegate _imp_list(module, context, options), to: @implementation, as: :list
 
       #-------------------------------------------------------------------------
       # list!/2
       #-------------------------------------------------------------------------
       def list!(context, options \\ %{}), do: _imp_list!(@module, context, options)
-      defdelegate _imp_list!(module, context, options), to: @implementation
-
+      defdelegate _imp_list!(module, context, options), to: @implementation, as: :list!
 
       #==============================
       # @get
       #==============================
 
       #-------------------------------------------------------------------------
+      # inner_get_callback/3
+      #-------------------------------------------------------------------------
+      def inner_get_callback(identifier, context, options \\ %{}), do: _imp_inner_get_callback(@module, identifier, context, options)
+      defdelegate _imp_inner_get_callback(module, identifier, context, options), to: @implementation, as: :inner_get_callback
+
+      #-------------------------------------------------------------------------
       # post_get_callback/3
       #-------------------------------------------------------------------------
-      def post_get_callback(identifier, context, options \\ %{}), do: _imp_post_get_callback(@module, identifier, context, options)
-      defdelegate _imp_post_get_callback(module, identifier, context, options), to: @implementation
+      defdelegate post_get_callback(entity, context, options \\ %{}), to: @implementation
 
       #-------------------------------------------------------------------------
       # get/3
       #-------------------------------------------------------------------------
       def get(identifier, context, options \\ %{}), do: _imp_get(@module, identifier, context, options)
-      defdelegate _imp_get(module, identifier, context, options), to: @implementation
+      defdelegate _imp_get(module, identifier, context, options), to: @implementation, as: :get
 
       #-------------------------------------------------------------------------
       # get!/3
       #-------------------------------------------------------------------------
       def get!(identifier, context, options \\ %{}), do: _imp_get!(@module, identifier, context, options)
-      defdelegate _imp_get!(module, identifier, context, options), to: @implementation
-
+      defdelegate _imp_get!(module, identifier, context, options), to: @implementation, as: :get!
 
       #==============================
       # @create
@@ -262,26 +270,28 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
       #-------------------------------------------------------------------------
       # pre_create_callback/3
       #-------------------------------------------------------------------------
-      def pre_create_callback(entity, context, options \\ %{}), do: _imp_pre_create_callback(@module, entity, context, options)
-      defdelegate _imp_pre_create_callback(module, entity, context, options), to: @implementation
+      defdelegate pre_create_callback(entity, context, options \\ %{}), to: @implementation
+
+      #-------------------------------------------------------------------------
+      # inner_create_callback/3
+      #-------------------------------------------------------------------------
+      defdelegate inner_create_callback(entity, context, options \\ %{}), to: @implementation
 
       #-------------------------------------------------------------------------
       # post_create_callback/3
       #-------------------------------------------------------------------------
-      def post_create_callback(entity, context, options \\ %{}), do: _imp_post_create_callback(@module, entity, context, options)
-      defdelegate _imp_post_create_callback(module, entity, context, options), to: @implementation
+      defdelegate post_create_callback(entity, context, options \\ %{}), to: @implementation
 
       #-------------------------------------------------------------------------
       # create/3
       #-------------------------------------------------------------------------
-      def create(entity, context, options \\ %{}), do: _imp_create(@module, entity, context, options)
-      defdelegate _imp_create(module, entity, context, options), to: @implementation
+      defdelegate create(entity, context, options \\ %{}), to: @implementation
 
       #-------------------------------------------------------------------------
       # create!/3
       #-------------------------------------------------------------------------
-      def create!(entity, context, options \\ %{}), do: _imp_create!(@module, entity, context, options)
-      defdelegate _imp_create!(module, entity, context, options), to: @implementation
+      defdelegate create!(entity, context, options \\ %{}), to: @implementation
+
 
       #==============================
       # @update
@@ -290,26 +300,27 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
       #-------------------------------------------------------------------------
       # pre_update_callback/3
       #-------------------------------------------------------------------------
-      def pre_update_callback(entity, context, options \\ %{}), do: _imp_pre_update_callback(@module, entity, context, options)
-      defdelegate _imp_pre_update_callback(module, entity, context, options), to: @implementation
+      defdelegate pre_update_callback(entity, context, options \\ %{}), to: @implementation
+
+      #-------------------------------------------------------------------------
+      # inner_update_callback/3
+      #-------------------------------------------------------------------------
+      defdelegate inner_update_callback(entity, context, options \\ %{}), to: @implementation
 
       #-------------------------------------------------------------------------
       # post_update_callback/3
       #-------------------------------------------------------------------------
-      def post_update_callback(entity, context, options \\ %{}), do: _imp_post_update_callback(@module, entity, context, options)
-      defdelegate _imp_post_update_callback(module, entity, context, options), to: @implementation
+      defdelegate post_update_callback(entity, context, options \\ %{}), to: @implementation
 
       #-------------------------------------------------------------------------
       # update/3
       #-------------------------------------------------------------------------
-      def update(entity, context, options \\ %{}), do: _imp_update(@module, entity, context, options)
-      defdelegate _imp_update(module, entity, context, options), to: @implementation
+      defdelegate update(entity, context, options \\ %{}), to: @implementation
 
       #-------------------------------------------------------------------------
       # update!/3
       #-------------------------------------------------------------------------
-      def update!(entity, context, options \\ %{}), do: _imp_update!(@module, entity, context, options)
-      defdelegate _imp_update!(module, entity, context, options), to: @implementation
+      defdelegate update!(entity, context, options \\ %{}), to: @implementation
 
       #==============================
       # @delete
@@ -318,26 +329,27 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
       #-------------------------------------------------------------------------
       # pre_delete_callback/3
       #-------------------------------------------------------------------------
-      def pre_delete_callback(entity, context, options \\ %{}), do: _imp_pre_delete_callback(@module, entity, context, options)
-      defdelegate _imp_pre_delete_callback(module, entity, context, options), to: @implementation
+      defdelegate pre_delete_callback(entity, context, options \\ %{}), to: @implementation
+
+      #-------------------------------------------------------------------------
+      # inner_delete_callback/3
+      #-------------------------------------------------------------------------
+      defdelegate inner_delete_callback(entity, context, options \\ %{}), to: @implementation
 
       #-------------------------------------------------------------------------
       # post_delete_callback/3
       #-------------------------------------------------------------------------
-      def post_delete_callback(entity, context, options \\ %{}), do: _imp_post_delete_callback(@module, entity, context, options)
-      defdelegate _imp_post_delete_callback(module, entity, context, options), to: @implementation
+      defdelegate post_delete_callback(entity, context, options \\ %{}), to: @implementation
 
       #-------------------------------------------------------------------------
       # delete/3
       #-------------------------------------------------------------------------
-      def delete(entity, context, options \\ %{}), do: _imp_delete(@module, entity, context, options)
-      defdelegate _imp_delete(module, entity, context, options), to: @implementation
+      defdelegate delete(entity, context, options \\ %{}), to: @implementation
 
       #-------------------------------------------------------------------------
       # delete!/3
       #-------------------------------------------------------------------------
-      def delete!(entity, context, options \\ %{}), do: _imp_delete!(@module, entity, context, options)
-      defdelegate _imp_delete!(module, entity, context, options), to: @implementation
+      defdelegate delete!(entity, context, options \\ %{}), to: @implementation
 
 
       defoverridable [
@@ -353,8 +365,8 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
         entity: 0, # deprecated
 
 
-        from_json: 2,
         from_json: 3,
+        from_json_version: 4,
         extract_date: 1,
 
         generate_identifier: 1,
@@ -364,18 +376,25 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
         list: 2,
         list!: 2,
 
+        inner_get_callback: 3,
+        post_get_callback: 3,
+        get: 3,
+        get!: 3,
 
         pre_create_callback: 3,
+        inner_create_callback: 3,
         post_create_callback: 3,
         create: 3,
         create!: 3,
 
         pre_update_callback: 3,
+        inner_update_callback: 3,
         post_update_callback: 3,
         update: 3,
         update!: 3,
 
         pre_delete_callback: 3,
+        inner_delete_callback: 3,
         post_delete_callback: 3,
         delete: 3,
         delete!: 3,

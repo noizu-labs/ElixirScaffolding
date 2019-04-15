@@ -81,14 +81,14 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour.AmnesiaProvider do
   end
 
   #-----------------
-  # _imp_from_json
+  # from_json_version
   #-------------------
-  def _imp_from_json(m, _version, _json, _context), do: throw "#{m} must override from_json/2 or from_json/3"
+  def from_json_version(m, _version, _json, _context), do: throw "#{m} must override from_json/2 or from_json/3"
 
   #--------------
-  # _imp_match
+  # match
   #--------------
-  def _imp_match(module, match_sel, context, options) do
+  def match(module, match_sel, context, options) do
     strategy = options[:query_strategy] || module.query_strategy()
     if options[:audit] || Enum.member?([:verbose], module.audit_level()) do
       audit_engine = options[:audit_engine] || module.audit_engine()
@@ -110,9 +110,9 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour.AmnesiaProvider do
   end
 
   #--------------
-  # _imp_match!
+  # match!
   #--------------
-  def _imp_match!(module, match_sel, context, options) do
+  def match!(module, match_sel, context, options) do
     m_opt = module.options()
     options = options || %{}
     dirty = Map.get(options, :dirty, m_opt[:dirty])
@@ -130,9 +130,9 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour.AmnesiaProvider do
   end
 
   #--------------
-  # _imp_list
+  # list
   #--------------
-  def _imp_list(module, context, options)  do
+  def list(module, context, options)  do
     strategy = options[:query_strategy] || module.query_strategy()
     if options[:audit] || Enum.member?([:verbose], module.audit_level()) do
       audit_engine = options[:audit_engine] || module.audit_engine()
@@ -154,9 +154,9 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour.AmnesiaProvider do
   end # end list/3
 
   #--------------
-  # _imp_list!
+  # list!
   #--------------
-  def _imp_list!(module, context, options) do
+  def list!(module, context, options) do
     m_opt = module.options()
     options = options || %{}
     dirty = Map.get(options, :dirty, m_opt[:dirty])
@@ -173,14 +173,14 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour.AmnesiaProvider do
   end
 
   #--------------
-  # _imp_post_get_callback
+  # post_get_callback
   #--------------
-  def _imp_post_get_callback(_module, entity, _context, _options), do: entity
+  def post_get_callback(entity, _context, _options), do: entity
 
   #--------------
-  # _imp_get
+  # inner_get_callback
   #--------------
-  def _imp_get(module, identifier, context, options) do
+  def inner_get_callback(module, identifier, context, options) do
     strategy = options[:query_strategy] || module.query_strategy()
     record = strategy.get(identifier, module.entity_table(), context, options)
 
@@ -196,13 +196,20 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour.AmnesiaProvider do
     end
     record
     |> em.entity(options)
+  end
+
+  #--------------
+  # get
+  #--------------
+  def get(module, identifier, context, options) do
+    module.inner_get_callback(identifier, context, options)
     |> module.post_get_callback(context, options)
   end # end get/3
 
   #--------------
-  # _imp_get!
+  # get!
   #--------------
-  def _imp_get!(module, identifier, context, options) do
+  def get!(module, identifier, context, options) do
     m_opt = module.options()
     options = options || %{}
     dirty = Map.get(options, :dirty, m_opt[:dirty])
@@ -219,22 +226,18 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour.AmnesiaProvider do
   end
 
   #--------------
-  # _imp_pre_create_callback
+  # pre_create_callback
   #--------------
-  def _imp_pre_create_callback(module, %{identifier: nil} = entity, _context, _options), do: %{entity| identifier: module.generate_identifier()}
-  def _imp_pre_create_callback(_module, entity, _context, _options), do: entity
+  def pre_create_callback(%{identifier: nil} = entity, _context, _options), do: %{entity| identifier: entity.__struct__.repo().generate_identifier()}
+  def pre_create_callback(entity, _context, _options), do: entity
 
   #--------------
-  # _imp_post_create_callback
+  # inner_create_callback
   #--------------
-  def _imp_post_create_callback(_module, entity, _context, _options), do: entity
-
-  #--------------
-  # _imp_create
-  #--------------
-  def _imp_create(module, entity, context, options) do
+  def inner_create_callback(entity, context, options) do
+    module = entity.__struct__.repo()
     strategy = options[:query_strategy] || module.query_strategy()
-    entity = module.pre_create_callback(entity, context, options)
+
     if (entity.identifier == nil) do
       throw "Cannot Create #{inspect module.entity_module()} with out identifier field set."
     end
@@ -253,14 +256,30 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour.AmnesiaProvider do
         audit_engine.audit(:create!, :scaffolding, ref, context, options)
     end
 
-    # No need to return actual record as to_mnesia should not be modifying it in a way that would impact the final structure.
-    module.post_create_callback(entity, context, options)
+    entity
+  end
+
+  #--------------
+  # post_create_callback
+  #--------------
+  def post_create_callback(entity, _context, _options), do: entity
+
+  #--------------
+  # create
+  #--------------
+  def create(entity, context, options) do
+    module = entity.__struct__.repo()
+    entity
+    |> module.pre_create_callback(context, options)
+    |> module.inner_create_callback(context, options)
+    |> module.post_create_callback(context, options)
   end # end create/3
 
   #--------------
-  # _imp_create!
+  # create!
   #--------------
-  def _imp_create!(module, entity, context, options) do
+  def create!(entity, context, options) do
+    module = entity.__struct__.repo()
     m_opt = module.options()
     options = options || %{}
     dirty = Map.get(options, :dirty, m_opt[:dirty])
@@ -278,22 +297,19 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour.AmnesiaProvider do
 
 
   #--------------
-  # _imp_pre_update_callback
+  # pre_update_callback
   #--------------
-  def _imp_pre_update_callback(_module, entity, _context, _options), do: entity
+  def pre_update_callback(entity, _context, _options) do
+    if entity.identifier == nil, do: throw "Cannot Update #{inspect entity.__struct__} with out identifier field set."
+    entity
+  end
 
   #--------------
-  # _imp_post_update_callback
+  # inner_update_callback
   #--------------
-  def _imp_post_update_callback(_module, entity, _context, _options), do: entity
-
-  #--------------
-  # _imp_update
-  #--------------
-  def _imp_update(module, entity, context, options) do
+  def inner_update_callback(entity, context, options) do
+    module = entity.__struct__.repo()
     strategy = options[:query_strategy] || module.query_strategy()
-    if entity.identifier == nil, do: throw "Cannot Update #{inspect module.entity_module()} with out identifier field set."
-    entity = module.pre_update_callback(entity, context, options)
 
     em = module.entity_module()
     ref = entity
@@ -309,13 +325,31 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour.AmnesiaProvider do
         audit_engine.audit(:update!, :scaffolding, ref, context, options)
     end
 
-    module.post_update_callback(entity, context, options)
+    entity
+  end
+
+
+  #--------------
+  # post_update_callback
+  #--------------
+  def post_update_callback(entity, _context, _options), do: entity
+
+  #--------------
+  # update
+  #--------------
+  def update(entity, context, options) do
+    module = entity.__struct__.repo()
+    entity
+    |>  module.pre_update_callback(context, options)
+    |>  module.inner_update_callback(context, options)
+    |>  module.post_update_callback(context, options)
   end # end update/3
 
   #--------------
-  # _imp_update!
+  # update!
   #--------------
-  def _imp_update!(module, entity, context, options) do
+  def update!(entity, context, options) do
+    module = entity.__struct__.repo()
     m_opt = module.options()
     options = options || %{}
     dirty = Map.get(options, :dirty, m_opt[:dirty])
@@ -332,28 +366,31 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour.AmnesiaProvider do
   end
 
   #--------------
-  # _imp_pre_delete_callback
+  # pre_delete_callback
   #--------------
-  def _imp_pre_delete_callback(_module, entity, _context, _options), do: entity
-
-  #--------------
-  # _imp_post_delete_callback
-  #--------------
-  def _imp_post_delete_callback(_module, entity, _context, _options), do: entity
-
-  #--------------
-  # _imp_delete
-  #--------------
-  def _imp_delete(module, entity, context, options) do
-    strategy = options[:query_strategy] || module.query_strategy()
+  def pre_delete_callback(entity, _context, _options) do
     if entity.identifier == nil do
-      throw "Cannot Delete #{inspect module.entity_module()} with out identiifer field set."
+      throw "Cannot Delete #{inspect entity.__struct__} with out identifier field set."
     end
-    entity = module.pre_delete_callback(entity, context, options)
+    entity
+  end
 
+  #--------------
+  # inner_delete_callback
+  #--------------
+  def inner_delete_callback(entity, context, options) do
+    module = entity.__struct__.repo()
+    strategy = options[:query_strategy] || module.query_strategy()
     strategy.delete(entity.identifier, module.entity_table(), context, options)
+    entity
+  end
+
+  #--------------
+  # post_delete_callback
+  #--------------
+  def post_delete_callback(entity, context, options) do
+    module = entity.__struct__.repo()
     ref = entity
-          |> module.post_delete_callback(context, options)
           |> module.entity_module.ref()
 
     cond do
@@ -363,14 +400,26 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour.AmnesiaProvider do
         audit_engine = options[:audit_engine] || module.audit_engine()
         audit_engine.audit(:delete!, :scaffolding, ref, context, options)
     end
+    entity
+  end
 
+  #--------------
+  # delete
+  #--------------
+  def delete(entity, context, options) do
+    module = entity.__struct__.repo()
+    entity
+    |>  module.pre_delete_callback(context, options)
+    |>  module.inner_delete_callback(context, options)
+    |>  module.post_delete_callback(context, options)
     true
   end # end delete/3
 
   #--------------
-  # _imp_delete!
+  # delete!
   #--------------
-  def _imp_delete!(module, entity, context, options) do
+  def delete!(entity, context, options) do
+    module = entity.__struct__.repo()
     m_opt = module.options()
     options = options || %{}
     dirty = Map.get(options, :dirty, m_opt[:dirty])
@@ -385,5 +434,4 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour.AmnesiaProvider do
         end
     end # end cond do
   end
-
 end

@@ -179,7 +179,7 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviour do
 
     quote do
       import unquote(__MODULE__)
-      @behaviour Noizu.Scaffolding.EntityBehaviour
+      @behaviour Noizu.Scaffolding.V2.EntityBehaviour
 
       @repo_module unquote(repo_module)
       @sref_module unquote(sm)
