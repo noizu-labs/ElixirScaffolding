@@ -117,7 +117,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
       end
 
 
-      if (unquote(only.cache_key!) && !unquote(override.cache_key!)) do
+      if (unquote(only.cache_key) && !unquote(override.cache_key)) do
         def cache_key(ref, options \\ nil) do
           sref = @entity_module.sref(ref)
           sref && :"e_c:#{sref}"
