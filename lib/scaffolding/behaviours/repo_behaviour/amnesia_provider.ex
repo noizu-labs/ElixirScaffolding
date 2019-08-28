@@ -13,7 +13,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
     :update, :update!, :delete, :delete!, :create, :create!, :get, :get!,
     :match, :match!, :list, :list!, :pre_create_callback, :pre_update_callback, :pre_delete_callback,
     :post_create_callback, :post_get_callback, :post_update_callback, :post_delete_callback,
-    :extract_date
+    :extract_date, :cache_key, :delete_cache, :cached
   ])
 
   defmacro __using__(options) do
@@ -115,6 +115,61 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProvider do
           @nmid_generator.generate!(@sequencer, options)
         end # end generate_identifier/1
       end
+
+
+      if (unquote(only.cache_key!) && !unquote(override.cache_key!)) do
+        def cache_key(ref, options \\ nil) do
+          sref = @entity_module.sref(ref)
+          sref && :"e_c:#{sref}"
+        end
+      end
+
+      if (unquote(only.delete_cache) && !unquote(override.delete_cache)) do
+        def delete_cache(ref, context, options \\ nil) do
+          # @todo use noizu cluster and meta to track applicable servers.
+          key = cache_key(ref, options)
+          if key do
+            FastGlobal.delete(key)
+            spawn fn ->
+              (options[:nodes] || Node.list())
+              |> Task.async_stream(fn(n) -> :rpc.cast(n, FastGlobal, :delete, [key]) end)
+              |> Enum.map(&(&1))
+            end
+            # return
+            :ok
+          else
+            {:error, :ref}
+          end
+        end
+      end
+
+      if (unquote(only.cached) && !unquote(override.cached)) do
+        def cached(ref, context, options \\ nil)
+        def cached(nil, _context, _options), do: nil
+        def cached(%{__struct__: @entity_module} = entity, _context, _options), do: entity
+        def cached(ref, context, options) do
+          cache_key = cache_key(ref, options)
+          if cache_key do
+            ts = :os.system_time(:second)
+            identifier = @entity_module.id(ref)
+            # @todo setup invalidation scheme
+            Noizu.FastGlobal.Cluster.get(cache_key,
+              fn() ->
+                if Amnesia.Table.wait([@mnesia_table], 500) == :ok do
+                  case get!(identifier, context, options) do
+                    entity = %{} -> entity
+                    nil -> nil
+                    _ -> {:fast_global, :no_cache, nil}
+                  end
+                else
+                  {:fast_global, :no_cache, nil}
+                end
+              end
+            )
+          end
+        end
+      end
+
 
       #-------------------------------------------------------------------------
       # @match

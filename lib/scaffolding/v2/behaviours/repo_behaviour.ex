@@ -187,6 +187,53 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
       # @deprecated
       def entity(), do: @entity_module
 
+      def cache_key(ref, options \\ nil) do
+        sref = @entity_module.sref(ref)
+        sref && :"e_c:#{sref}"
+      end
+
+      def delete_cache(ref, context, options \\ nil) do
+        # @todo use noizu cluster and meta to track applicable servers.
+        key = cache_key(ref, options)
+        if key do
+          FastGlobal.delete(key)
+          spawn fn ->
+            (options[:nodes] || Node.list())
+            |> Task.async_stream(fn(n) -> :rpc.cast(n, FastGlobal, :delete, [key]) end)
+            |> Enum.map(&(&1))
+          end
+          # return
+          :ok
+        else
+          {:error, :ref}
+        end
+      end
+
+      def cached(ref, context, options \\ nil)
+      def cached(nil, _context, _options), do: nil
+      def cached(%{__struct__: @entity_module} = entity, _context, _options), do: entity
+      def cached(ref, context, options) do
+        cache_key = cache_key(ref, options)
+        if cache_key do
+          ts = :os.system_time(:second)
+          identifier = @entity_module.id(ref)
+          # @todo setup invalidation scheme
+          Noizu.FastGlobal.Cluster.get(cache_key,
+            fn() ->
+              if Amnesia.Table.wait([@entity_table], 500) == :ok do
+                case get!(identifier, context, options) do
+                  entity = %{} -> entity
+                  nil -> nil
+                  _ -> {:fast_global, :no_cache, nil}
+                end
+              else
+                {:fast_global, :no_cache, nil}
+              end
+            end
+          )
+        end
+      end
+
       #-------------------------------------------------------------------------
       # from_json/2, from_json/3
       #-------------------------------------------------------------------------
@@ -356,7 +403,6 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
       #-------------------------------------------------------------------------
       defdelegate delete!(entity, context, options \\ %{}), to: @implementation
 
-
       defoverridable [
         audit_engine: 0,
         audit_level: 0,
@@ -368,6 +414,10 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
         nmid_generator: 0,
 
         entity: 0, # deprecated
+
+        cache_key: 2,
+        delete_cache: 3,
+        cached: 3,
 
 
         from_json: 3,
