@@ -369,10 +369,13 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviour do
       defoverridable [
         sref_module: 0,
         sref_prefix: 0,
-
+        poly_base: 0,
+        poly_type?: 0,
         repo: 0,
         table: 0,
+
         erp_handler: 0,
+
         _int_entity?: 0,
         _int_as_record_options: 0,
         _int_expanded_repo: 0,
@@ -381,25 +384,36 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviour do
         _int_empty_record: 0,
 
         shallow: 1,
+        compress: 1,
         compress: 2,
+        expand: 1,
         expand: 2,
-
         string_to_id: 1,
         id_to_string: 1,
-
         id: 1,
         ref: 1,
         sref: 1,
+        miss_cb: 1,
         miss_cb: 2,
+        miss_cb!: 1,
         miss_cb!: 2,
+
+        entity: 1,
         entity: 2,
+        entity!: 1,
         entity!: 2,
+        record: 1,
         record: 2,
+        record!: 1,
         record!: 2,
+        as_record: 1,
         as_record: 2,
+        as_record!: 1,
         as_record!: 2,
 
+        has_permission: 3,
         has_permission: 4,
+        has_permission!: 3,
         has_permission!: 4,
       ]
 

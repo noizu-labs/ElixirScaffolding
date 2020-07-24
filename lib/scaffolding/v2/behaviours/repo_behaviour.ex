@@ -415,43 +415,98 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
 
         entity: 0, # deprecated
 
+
+        cache_key: 1,
         cache_key: 2,
+
+        delete_cache: 2,
         delete_cache: 3,
+
+        cached: 2,
         cached: 3,
 
 
+        from_json: 2,
         from_json: 3,
+
+        from_json_version: 3,
         from_json_version: 4,
+
         extract_date: 1,
 
+        generate_identifier: 0,
         generate_identifier: 1,
+
+        generate_identifier!: 0,
         generate_identifier!: 1,
+
+        match: 2,
         match: 3,
+
+        match!: 2,
         match!: 3,
+
+        list: 1,
         list: 2,
+
+        list!: 1,
         list!: 2,
 
+        inner_get_callback: 2,
         inner_get_callback: 3,
+
+        post_get_callback: 2,
         post_get_callback: 3,
+
+        get: 2,
         get: 3,
+
+        get!: 2,
         get!: 3,
 
+        pre_create_callback: 2,
         pre_create_callback: 3,
+
+        inner_create_callback: 2,
         inner_create_callback: 3,
+
+        post_create_callback: 2,
         post_create_callback: 3,
+
+        create: 2,
         create: 3,
+
+        create!: 2,
         create!: 3,
 
+        pre_update_callback: 2,
         pre_update_callback: 3,
+
+        inner_update_callback: 2,
         inner_update_callback: 3,
+
+        post_update_callback: 2,
         post_update_callback: 3,
+
+        update: 2,
         update: 3,
+
+        update!: 2,
         update!: 3,
 
+        pre_delete_callback: 2,
         pre_delete_callback: 3,
+
+        inner_delete_callback: 2,
         inner_delete_callback: 3,
+
+        post_delete_callback: 2,
         post_delete_callback: 3,
+
+        delete: 2,
         delete: 3,
+
+        delete!: 2,
         delete!: 3,
       ]
 
