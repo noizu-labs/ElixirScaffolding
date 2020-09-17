@@ -384,37 +384,62 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviour do
         _int_empty_record: 0,
 
         shallow: 1,
+
         compress: 1,
         compress: 2,
+        compress: 3,
+
         expand: 1,
         expand: 2,
+        expand: 3,
+
         string_to_id: 1,
+        string_to_id: 2,
+
         id_to_string: 1,
+        id_to_string: 2,
+
         id: 1,
+        id: 2,
+
         ref: 1,
+        ref: 2,
+
         sref: 1,
+        sref: 2,
+
         miss_cb: 1,
         miss_cb: 2,
+        miss_cb: 3,
         miss_cb!: 1,
         miss_cb!: 2,
+        miss_cb!: 3,
 
         entity: 1,
         entity: 2,
+        entity: 3,
         entity!: 1,
         entity!: 2,
+        entity!: 3,
         record: 1,
         record: 2,
+        record: 3,
         record!: 1,
         record!: 2,
+        record!: 3,
         as_record: 1,
         as_record: 2,
+        as_record: 3,
         as_record!: 1,
         as_record!: 2,
+        as_record!: 3,
 
         has_permission: 3,
         has_permission: 4,
+        has_permission: 5,
         has_permission!: 3,
         has_permission!: 4,
+        has_permission!: 5,
       ]
 
     end # end quote

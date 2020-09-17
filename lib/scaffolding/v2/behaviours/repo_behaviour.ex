@@ -431,6 +431,7 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
 
         from_json_version: 3,
         from_json_version: 4,
+        _imp_from_json_version: 5,
 
         extract_date: 1,
 
@@ -442,27 +443,34 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
 
         match: 2,
         match: 3,
+        _imp_match: 4,
 
         match!: 2,
         match!: 3,
+        _imp_match!: 4,
 
         list: 1,
         list: 2,
+        _imp_list: 3,
 
         list!: 1,
         list!: 2,
+        _imp_list!: 3,
 
         inner_get_callback: 2,
         inner_get_callback: 3,
+        _imp_inner_get_callback: 4,
 
         post_get_callback: 2,
         post_get_callback: 3,
 
         get: 2,
         get: 3,
+        _imp_get: 4,
 
         get!: 2,
         get!: 3,
+        _imp_get!: 4,
 
         pre_create_callback: 2,
         pre_create_callback: 3,
