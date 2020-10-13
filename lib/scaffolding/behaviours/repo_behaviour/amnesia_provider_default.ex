@@ -36,8 +36,8 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
   #-----------------------------------------------------------------------------
   def match({_mod, entity_module, mnesia_table, query_strategy, audit_engine, _dirty, _frag, audit_level} = _indicator, match_sel, %CallingContext{} = context, options) do
     strategy = options[:query_strategy] || query_strategy
-    if options[:audit] || Enum.member?([:verbose], audit_level) do
-      audit_engine = options[:audit_engine] || audit_engine
+    if options[:audit] || Enum.member?([:verbose], audit_level) || (context.options[:audit] == :verbose) do
+      audit_engine = context.options[:audit_engine] || options[:audit_engine] || audit_engine
       audit_engine.audit(:match, :scaffolding, entity_module, context, options)
     end
 
@@ -71,8 +71,8 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
 
   def list({_mod, entity_module, mnesia_table, query_strategy, audit_engine, _dirty, _frag, audit_level} = _indicator, %CallingContext{} = context, options) do
     strategy = options[:query_strategy] || query_strategy
-    if options[:audit] || Enum.member?([:verbose], audit_level) do
-      audit_engine = options[:audit_engine] || audit_engine
+    if options[:audit] || Enum.member?([:verbose], audit_level) || (context.options[:audit] == :verbose) do
+      audit_engine = context.options[:audit_engine] || options[:audit_engine] || audit_engine
       audit_engine.audit(:list, :scaffolding, entity_module, context, options)
     end
 
@@ -108,12 +108,12 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
     strategy = options[:query_strategy] || query_strategy
     record = strategy.get(identifier, mnesia_table, context, options)
 
-    if options[:audit] || Enum.member?([:very_verbose], audit_level) do
+    if options[:audit] || Enum.member?([:very_verbose], audit_level) || (context.options[:audit] == :verbose) do
       ref = case record do
         nil -> nil
         _ -> EntityReferenceProtocol.ref(record)
       end
-      audit_engine = options[:audit_engine] || audit_engine
+      audit_engine = context.options[:audit_engine] || options[:audit_engine] || audit_engine
       audit_engine.audit(:get, :scaffolding, ref, context, options)
     end
 
@@ -152,10 +152,13 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
       |> entity_module.ref()
 
     cond do
+      context.options[:audit] ->
+        audit_engine = context.options[:audit_engine] || options[:audit_engine] || audit_engine
+        audit_engine.audit(:update!, :scaffolding, ref, context, options)
       options[:audit] == false -> :skip
       !Enum.member?([:very_verbose, :verbose, :core], audit_level) -> :skip
       true ->
-        audit_engine = options[:audit_engine] || audit_engine
+        audit_engine = context.options[:audit_engine] || options[:audit_engine] || audit_engine
         audit_engine.audit(:update!, :scaffolding, ref, context, options)
     end
 
@@ -193,6 +196,9 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
       |> entity_module.ref()
 
     cond do
+      context.options[:audit] ->
+        audit_engine = context.options[:audit_engine] || options[:audit_engine] || audit_engine
+        audit_engine.audit(:update!, :scaffolding, ref, context, options)
       options[:audit] == false -> :skip
       !Enum.member?([:very_verbose, :verbose, :core], audit_level) -> :skip
       true ->
@@ -243,10 +249,13 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
       |> entity_module.ref()
 
     cond do
+      context.options[:audit] ->
+        audit_engine = context.options[:audit_engine] || options[:audit_engine] || audit_engine
+        audit_engine.audit(:update!, :scaffolding, ref, context, options)
       options[:audit] == false -> :skip
       !Enum.member?([:very_verbose, :verbose, :core], audit_level) -> :skip
       true ->
-        audit_engine = options[:audit_engine] || audit_engine
+        audit_engine = context.options[:audit_engine] || options[:audit_engine] || audit_engine
         audit_engine.audit(:create!, :scaffolding, ref, context, options)
     end
 
