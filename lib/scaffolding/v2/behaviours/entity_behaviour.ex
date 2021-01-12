@@ -182,7 +182,6 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviour do
       @behaviour Noizu.Scaffolding.V2.EntityBehaviour
 
       @repo_module unquote(repo_module)
-      @sref_module unquote(sm)
       @mnesia_table unquote(entity_table)
 
       @as_record_options unquote(as_record_options)
@@ -224,6 +223,20 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviour do
           end
         v -> "ref.#{v}."
       end)
+
+
+      @sref_module  (case unquote(sm) do
+                       :auto ->
+                         if @poly_type? do
+                           cond do
+                             @module != @poly_base -> @poly_base.sref_module()
+                             true -> "#{__MODULE__}"
+                           end
+                         else
+                           "#{__MODULE__}"
+                         end
+                       v -> "#{v}"
+                     end)
 
       @expanded_repo @default_implementation.expand_repo(@poly_base == @module, @poly_base, @repo_module)
       @expanded_table @default_implementation.expand_table(@poly_base == @module, @poly_base, @mnesia_table)
