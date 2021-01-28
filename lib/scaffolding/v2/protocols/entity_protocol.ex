@@ -12,7 +12,7 @@ defimpl Noizu.EntityProtocol, for: List do
     {max_concurrency, options} = cond do
       options[:sync] -> {1, options}
       is_integer(options[:async]) && length(entity) < options[:async] -> {1, options}
-      :else -> Noizu.Scaffolding.Helper.expand_concurrency(options)
+      :else -> Noizu.Scaffolding.Helpers.expand_concurrency(options)
     end
     if max_concurrency == 1 do
       entity
@@ -40,14 +40,14 @@ defimpl Noizu.EntityProtocol, for: Tuple do
   def expand!(ref, options \\ %{})
   def expand!({:ext_ref, m, _} = ref, options) when is_atom(m) do
     cond do
-      Noizu.Scaffolding.Helper.expand_ref?(Noizu.Scaffolding.Helper.update_expand_options(m, options)) ->
+      Noizu.Scaffolding.Helpers.expand_ref?(Noizu.Scaffolding.Helpers.update_expand_options(m, options)) ->
         Noizu.EntityProtocol.expand!(m.entity!(ref, options))
       :else -> ref
     end
   end
   def expand!({:ref, m, _} = ref, options) when is_atom(m) do
       cond do
-        Noizu.Scaffolding.Helper.expand_ref?(Noizu.Scaffolding.Helper.update_expand_options(m, options)) ->
+        Noizu.Scaffolding.Helpers.expand_ref?(Noizu.Scaffolding.Helpers.update_expand_options(m, options)) ->
             Noizu.EntityProtocol.expand!(m.entity!(ref, options))
         :else -> ref
       end
@@ -61,7 +61,7 @@ defimpl Noizu.EntityProtocol, for: Map do
   def expand!(entity, options \\ %{})
 
   def expand!(%{__struct__: m} = entity, %{structs: true} = options) do
-    options = Noizu.Scaffolding.Helper.update_expand_options(m, options)
+    options = Noizu.Scaffolding.Helpers.update_expand_options(m, options)
     Enum.reduce(entity, entity,
       fn({k,v}, acc) ->
         Map.put(acc, k, Noizu.EntityProtocol.expand!(v, options))
@@ -76,7 +76,7 @@ defimpl Noizu.EntityProtocol, for: Map do
     {max_concurrency, options} = cond do
       options[:sync] -> {1, options}
       is_integer(options[:async]) && length(Map.keys(entity)) < options[:async] -> {1, options}
-      :else -> Noizu.Scaffolding.Helper.expand_concurrency(options)
+      :else -> Noizu.Scaffolding.Helpers.expand_concurrency(options)
     end
     if max_concurrency == 1 do
       entity

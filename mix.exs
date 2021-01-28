@@ -42,6 +42,7 @@ defmodule Noizu.Scaffolding.Mixfile do
       {:markdown, github: "devinus/markdown", only: [:dev], optional: true}, # Markdown processor for ex_doc
       {:noizu_core, github: "noizu/ElixirCore", tag: "1.0.6"},
       {:redix, github: "whatyouhide/redix", tag: "v0.7.0", optional: true},
+      {:poison, "~> 3.1.0", optional: true},
       {:plug, "~> 1.0", optional: true}
     ]
   end # end deps

@@ -3,7 +3,7 @@
 # Copyright (C) 2020 Noizu Labs, Inc.
 #-------------------------------------------------------------------------------
 
-defmodule Noizu.Scaffolding.Helper do
+defmodule Noizu.Scaffolding.Helpers do
   alias Noizu.ElixirCore.CallingContext
   #-------------------------
   # banner_text
@@ -111,7 +111,7 @@ defmodule Noizu.Scaffolding.Helper do
     |> update_in([:depth], &((&1 || 1) + 1))
     |> update_in([:path], &(sm <> (&1 && ("." <> &1) || "")))
   end
-  def update_expand_options(%{__struct__: m} = entity, options) do
+  def update_expand_options(%{__struct__: m} = _entity, options) do
     sm = try do
       m.sref_module()
     rescue _e -> "[error]"
@@ -120,7 +120,7 @@ defmodule Noizu.Scaffolding.Helper do
     |> update_in([:depth], &((&1 || 1) + 1))
     |> update_in([:path], &(sm <> (&1 && ("." <> &1) || "")))
   end
-  def update_expand_options(entity, options) do
+  def update_expand_options(_entity, options) do
     sm = "[error]"
     (options || %{})
     |> update_in([:depth], &((&1 || 1) + 1))
@@ -183,21 +183,28 @@ defmodule Noizu.Scaffolding.Helper do
               |> update_in([:depth], &(&1 || 1))
               |> Enum.map(&(&1))
 
+    # Preprocess response data.
+    response = cond do
+      options[:expand] && options[:restricted] -> Noizu.RestrictedProtocol.restricted_view(Noizu.EntityProtocol.expand!(response, options), context, options[:restrict_options])
+      options[:expand] -> Noizu.EntityProtocol.expand!(response, options)
+      options[:restricted] -> Noizu.RestrictedProtocol.restricted_view(response, context, options[:restrict_options])
+      :else -> response
+    end
+
     # Injecting Useful content from calling context into headers for api client's consumption.
-    (case Plug.Conn.get_resp_header(conn, "x-request-id") do
-       [request|_] ->
-         if request != context.token do
-           conn
-           |> Plug.Conn.put_resp_header("x-request-id", context.token)
-           |> Plug.Conn.put_resp_header("x-orig-request-id", request)
-         else
-           conn
-         end
-       [] ->
-         conn
-         |> Plug.Conn.put_resp_header("x-request-id", context.token)
-     end)
-    |> send_resp(200, "application/json", Poison.encode_to_iodata!(response, options))
+    case Plug.Conn.get_resp_header(conn, "x-request-id") do
+      [request|_] ->
+        if request != context.token do
+          conn
+          |> Plug.Conn.put_resp_header("x-request-id", context.token)
+          |> Plug.Conn.put_resp_header("x-orig-request-id", request)
+        else
+          conn
+        end
+      [] ->
+        conn
+        |> Plug.Conn.put_resp_header("x-request-id", context.token)
+    end |> send_resp(200, "application/json", Poison.encode_to_iodata!(response, options))
   end
 
   #-------------------------
@@ -353,6 +360,23 @@ defmodule Noizu.Scaffolding.Helper do
         |> Enum.filter(&(&1))
       nil -> nil
     end
+  end
+
+  def default_get_context__token_reason_options(conn, params, get_context_provider, opts) do
+    token = CallingContext.get_token(conn)
+    reason = CallingContext.get_reason(conn)
+    json_format = default_get_context__json_format(conn, params, get_context_provider, opts)
+    json_formats = default_get_context__json_formats(conn, params, get_context_provider, opts)
+    expand_all_refs = default_get_context__expand_all_refs(conn, params, get_context_provider, opts)
+    expand_refs = default_get_context__expand_refs(conn, params, get_context_provider, opts)
+
+    context_options = %{
+      expand_refs: expand_refs,
+      expand_all_refs: expand_all_refs,
+      json_format: json_format,
+      json_formats: json_formats,
+    }
+    {token, reason, context_options}
   end
 
   #-------------------------
