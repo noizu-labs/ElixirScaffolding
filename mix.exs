@@ -8,7 +8,7 @@ defmodule Noizu.Scaffolding.Mixfile do
 
   def project do
     [app: :noizu_scaffolding,
-     version: "1.1.47",
+     version: "1.2.0",
      elixir: "~> 1.4",
      package: package(),
      deps: deps(),
@@ -16,7 +16,7 @@ defmodule Noizu.Scaffolding.Mixfile do
      description: "Noizu Scaffolding",
      docs: docs()
    ]
-  end # end procject
+  end # end project
 
   # Specifies which paths to compile per environment.
   defp elixirc_paths(:test), do: ["lib", "test/fixtures"]

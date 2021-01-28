@@ -130,11 +130,10 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
   """
   @callback expand(entity :: any, options :: Map.t) :: any
 
-
   #-----------------------------------------------------------------------------
   # Defines
   #-----------------------------------------------------------------------------
-  @methods [:id, :ref, :sref, :entity, :entity!, :record, :record!, :erp_imp, :as_record, :sref_module, :as_record, :from_json, :repo, :shallow, :miss_cb, :compress, :expand, :has_permission, :has_permission!]
+  @methods [:id, :ref, :sref, :entity, :entity!, :record, :record!, :erp_imp, :as_record, :sref_module, :as_record, :from_json, :repo, :shallow, :miss_cb, :compress, :expand, :has_permission, :has_permission!, :poly_base]
 
   #-----------------------------------------------------------------------------
   # Using Implementation
@@ -171,6 +170,10 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
 
       if unquote(required?.sref_module) do
         def sref_module(), do: unquote(sm)
+      end
+
+      if unquote(required?.poly_base) do
+        def poly_base(), do: __MODULE__
       end
 
       if unquote(required?.repo) do
