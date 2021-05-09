@@ -18,7 +18,7 @@ defimpl Noizu.RestrictedProtocol, for: List do
       entity
       |> Enum.map(
            fn(v) ->
-             Noizu.RestrictedProtocol.restricted_view!(v, context, options)
+             Noizu.RestrictedProtocol.restricted_view(v, context, options)
            end
          )
     else
@@ -27,7 +27,7 @@ defimpl Noizu.RestrictedProtocol, for: List do
       entity
       |> Task.async_stream(
            fn(v) ->
-             Noizu.RestrictedProtocol.restricted_view!(v, context, options)
+             Noizu.RestrictedProtocol.restricted_view(v, context, options)
            end,
            max_concurrency: max_concurrency, timeout: timeout, ordered: ordered
          )
@@ -49,7 +49,7 @@ defimpl Noizu.RestrictedProtocol, for: List do
       entity
       |> Enum.map(
            fn(v) ->
-             Noizu.RestrictedProtocol.restricted_create!(v, context, options)
+             Noizu.RestrictedProtocol.restricted_create(v, context, options)
            end
          )
     else
@@ -58,7 +58,7 @@ defimpl Noizu.RestrictedProtocol, for: List do
       entity
       |> Task.async_stream(
            fn(v) ->
-             Noizu.RestrictedProtocol.restricted_create!(v, context, options)
+             Noizu.RestrictedProtocol.restricted_create(v, context, options)
            end,
            max_concurrency: max_concurrency, timeout: timeout, ordered: ordered
          )
