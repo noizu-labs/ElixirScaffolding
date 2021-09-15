@@ -26,7 +26,7 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviourPolySupport do
     @doc """
       override this if your entity type uses string values, nested refs, etc. for it's identifier.
     """
-    defdelegate string_to_id(m, id), to: Noizu.Scaffolding.V2.EntityBehaviourDefault
+   def string_to_id(m, id), do: Noizu.Scaffolding.V2.EntityBehaviourDefault.string_to_id(m, id)
 
     #------------------------------
     # id_to_string
@@ -34,7 +34,7 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviourPolySupport do
     @doc """
       override this if your entity type uses string values, nested refs, etc. for it's identifier.
     """
-    defdelegate id_to_string(m, id), to: Noizu.Scaffolding.V2.EntityBehaviourDefault
+   def id_to_string(m, id), do: Noizu.Scaffolding.V2.EntityBehaviourDefault.id_to_string(m, id)
 
 
     #-----------------
@@ -211,22 +211,22 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviourPolySupport do
     #-----------------
     # has_permission
     #-----------------
-    defdelegate has_permission(m, ref, permission, context, options), to: Noizu.Scaffolding.V2.EntityBehaviourDefault
+   def has_permission(m, ref, permission, context, options), do: Noizu.Scaffolding.V2.EntityBehaviourDefault.has_permission(m, ref, permission, context, options)
 
     #-----------------
     # has_permission!
     #-------------------
-    defdelegate has_permission!(m, ref, permission, context, options), to: Noizu.Scaffolding.V2.EntityBehaviourDefault
+   def has_permission!(m, ref, permission, context, options), do: Noizu.Scaffolding.V2.EntityBehaviourDefault.has_permission!(m, ref, permission, context, options)
 
     #-----------------
     # as_record
     #-------------------
-    defdelegate as_record(m, entity, options), to: Noizu.Scaffolding.V2.EntityBehaviourDefault
+   def as_record(m, entity, options), do: Noizu.Scaffolding.V2.EntityBehaviourDefault.as_record(m, entity, options)
 
     #-----------------
     # as_record!
     #-------------------
-    defdelegate as_record!(m, entity, options), to: Noizu.Scaffolding.V2.EntityBehaviourDefault
+   def as_record!(m, entity, options), do: Noizu.Scaffolding.V2.EntityBehaviourDefault.as_record!(m, entity, options)
 
     #-----------------
     # expand_table

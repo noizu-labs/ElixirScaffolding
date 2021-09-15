@@ -18,13 +18,13 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviour do
 
    @NOTE To avoid interlocking code a master defimpl should be defined for all tables and entities as follows.
    defimpl Noizu.ERP, for: [FooEntity, FooTable, ...] do
-      defdelegate id(o), to: Noizu.Scaffolding.V2.ERPResolver
-      defdelegate ref(o), to: Noizu.Scaffolding.V2.ERPResolver
-      defdelegate sref(o), to: Noizu.Scaffolding.V2.ERPResolver
-      defdelegate entity(o, options \\ nil), to: Noizu.Scaffolding.V2.ERPResolver
-      defdelegate entity!(o, options \\ nil), to: Noizu.Scaffolding.V2.ERPResolver
-      defdelegate record(o, options \\ nil), to: Noizu.Scaffolding.V2.ERPResolver
-      defdelegate record!(o, options \\ nil), to: Noizu.Scaffolding.V2.ERPResolver
+     def id(o), do: Noizu.Scaffolding.V2.ERPResolver.id(o)
+     def ref(o), do: Noizu.Scaffolding.V2.ERPResolver.ref(o)
+     def sref(o), do: Noizu.Scaffolding.V2.ERPResolver.sref(o)
+     def entity(o, options \\ nil), do: Noizu.Scaffolding.V2.ERPResolver.entity(o, options)
+     def entity!(o, options \\ nil), do: Noizu.Scaffolding.V2.ERPResolver.entity!(o, options)
+     def record(o, options \\ nil), do: Noizu.Scaffolding.V2.ERPResolver.record(o, options)
+      def record!(o, options \\ nil), do: Noizu.Scaffolding.V2.ERPResolver.record!(o, options)
    end
 
   """
@@ -271,7 +271,7 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviour do
       def _int_expanded_repo(), do: @expanded_repo
       def _int_repo_module(), do: @repo_module
       def _int_implementation(), do: @default_implementation
-      def _int_empty_record(), do: %@expanded_table{}
+      def _int_empty_record(), do: @expanded_table.__struct__([])
 
       #-------------------------------------------------------------------------
       # Default Implementation from default_implementation behaviour
@@ -286,98 +286,98 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviour do
       #
       #------------
       def compress(entity, options \\ %{}), do: compress(@module, entity, options)
-      defdelegate compress(m, entity, options), to: @default_implementation
+      def compress(m, entity, options), to: @default_implementation
 
       #------------
       #
       #------------
       def expand(entity, options \\ %{}), do: expand(@module, entity, options)
-      defdelegate expand(m, entity, options), to: @default_implementation
+      def expand(m, entity, options), do: @default_implementation.expand(m, entity, options)
 
       #------------
       #
       #------------
       def string_to_id(identifier), do: string_to_id(@module, identifier)
-      defdelegate  string_to_id(m, identifier), to: @default_implementation
+      def string_to_id(m, identifier), do: @default_implementation.string_to_id(m, identifier)
 
       #------------
       #
       #------------
       def id_to_string(identifier), do: id_to_string(@module, identifier)
-      defdelegate id_to_string(m, identifier), to: @default_implementation
+      def id_to_string(m, identifier), do: @default_implementation.id_to_string(m, identifier)
 
       #------------
       #
       #------------
       def id(@sref_prefix <> identifier), do: id(@module, identifier)
       def id(ref), do: id(@module, ref)
-      defdelegate id(m, ref), to: @default_implementation
+      def id(m, ref), do: @default_implementation.id(m, ref)
 
       #------------
       #
       #------------
       def ref(ref), do: ref(@module, ref)
-      defdelegate ref(m, ref), to: @default_implementation
+      def ref(m, ref), do: @default_implementation.ref(m, ref)
 
       #------------
       #
       #------------
       def sref(ref), do: sref(@module, ref)
-      defdelegate sref(m, ref), to: @default_implementation
+      def sref(m, ref), do: @default_implementation.sref(m, ref)
 
       #------------
       #
       #------------
       def miss_cb(ref, options \\ %{}), do: miss_cb(@module, ref, options)
-      defdelegate miss_cb(m, ref, options), to: @default_implementation
+      def miss_cb(m, ref, options), do: @default_implementation.miss_cb(m, ref, options)
 
       #------------
       #
       #------------
       def miss_cb!(ref, options \\ %{}), do: miss_cb!(@module, ref, options)
-      defdelegate miss_cb!(m, ref, options), to: @default_implementation
+      def miss_cb!(m, ref, options), do: @default_implementation.miss_cb!(m, ref, options)
 
       #------------
       #
       #------------
       def entity(ref, options \\ %{}), do: entity(@module, ref, options)
-      defdelegate entity(m, ref, options), to: @default_implementation
+      def entity(m, ref, options), do: @default_implementation.entity(m, ref, options)
 
       #------------
       #
       #------------
       def entity!(ref, options \\ %{}), do: entity!(@module, ref, options)
-      defdelegate entity!(m, ref, options), to: @default_implementation
+      def entity!(m, ref, options), do: @default_implementation.entity!(m, ref, options)
 
       #------------
       #
       #------------
       def record(ref, options \\ %{}), do: record(@module, ref, options)
-      defdelegate record(m, ref, options), to: @default_implementation
+      def record(m, ref, options), do: @default_implementation.record(m, ref, options)
 
       #------------
       #
       #------------
       def record!(ref, options \\ %{}), do: record!(@module, ref, options)
-      defdelegate record!(m, ref, options), to: @default_implementation
+      def record!(m, ref, options), do: @default_implementation.record!(m, ref, options)
 
       #------------
       #
       #------------
       def as_record(ref, options \\ %{}), do: as_record(@module, ref, options)
-      defdelegate as_record(m, ref, options), to: @default_implementation
+      def as_record(m, ref, options), do: @default_implementation.as_record(m, ref, options)
 
       #------------
       #
       #------------
       def as_record!(ref, options \\ %{}), do: as_record!(@module, ref, options)
-      defdelegate as_record!(m, ref, options), to: @default_implementation
+      def as_record!(m, ref, options), do: @default_implementation.as_record!(m, ref, options)
 
       def has_permission(ref, permission, context, options \\ %{}), do: has_permission(@module, ref, permission, context, options)
-      defdelegate has_permission(m, ref, permission, context, options), to: @default_implementation
+      def has_permission(m, ref, permission, context, options), do: @default_implementation.has_permission(m, ref, permission, context, options)
 
       def has_permission!(ref, permission, context, options \\ %{}), do: has_permission!(@module, ref, permission, context, options)
-      defdelegate has_permission!(m, ref, permission, context, options), to: @default_implementation
+      def has_permission!(m, ref, permission, context, options), do: @default_implementation.has_permission!(m, ref, permission, context, options)
 
       defoverridable [
         sref_module: 0,

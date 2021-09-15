@@ -3,11 +3,11 @@ alias Noizu.Scaffolding.Test.Fixture.FooV2Entity
 alias Noizu.Database.Scaffolding.Test.Fixture.FooV2Table
 
 defimpl Noizu.ERP, for: [FooV2Entity, FooV2Table] do
-  defdelegate id(o), to: Noizu.Scaffolding.V2.ERPResolver
-  defdelegate ref(o), to: Noizu.Scaffolding.V2.ERPResolver
-  defdelegate sref(o), to: Noizu.Scaffolding.V2.ERPResolver
-  defdelegate entity(o, options \\ nil), to: Noizu.Scaffolding.V2.ERPResolver
-  defdelegate entity!(o, options \\ nil), to: Noizu.Scaffolding.V2.ERPResolver
-  defdelegate record(o, options \\ nil), to: Noizu.Scaffolding.V2.ERPResolver
-  defdelegate record!(o, options \\ nil), to: Noizu.Scaffolding.V2.ERPResolver
+ def id(o), do: Noizu.Scaffolding.V2.ERPResolver.id(o)
+ def ref(o), do: Noizu.Scaffolding.V2.ERPResolver.ref(o)
+ def sref(o), do: Noizu.Scaffolding.V2.ERPResolver.sref(o)
+ def entity(o, options \\ nil), do: Noizu.Scaffolding.V2.ERPResolver.entity(o, options)
+ def entity!(o, options \\ nil), do: Noizu.Scaffolding.V2.ERPResolver.entity!(o, options)
+ def record(o, options \\ nil), do: Noizu.Scaffolding.V2.ERPResolver.record(o, options)
+ def record!(o, options \\ nil), do: Noizu.Scaffolding.V2.ERPResolver.record!(o, options)
 end

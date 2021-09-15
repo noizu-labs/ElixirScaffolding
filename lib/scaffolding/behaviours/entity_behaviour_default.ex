@@ -27,7 +27,7 @@ defmodule Noizu.Scaffolding.EntityBehaviourDefault do
         def id({:ref, __MODULE__, identifier} = _ref), do: identifier
         def id(%__MODULE__{} = entity), do: entity.identifier
         def id(unquote(sref_prefix) <> identifier), do: __MODULE__.ref(identifier) |> __MODULE__.id()
-        def id(%@table{} = record), do: record.identifier
+        def id(%{__struct__: @table} = record), do: record.identifier
       end # end quote
     end
 
@@ -41,7 +41,7 @@ defmodule Noizu.Scaffolding.EntityBehaviourDefault do
         def ref(identifier) when is_bitstring(identifier), do: {:ref, __MODULE__, String.to_integer(identifier)}
         def ref(identifier) when is_atom(identifier), do: {:ref, __MODULE__, identifier}
         def ref(%__MODULE__{} = entity), do: {:ref, __MODULE__, entity.identifier}
-        def ref(%@table{} = record), do: {:ref, __MODULE__, record.identifier}
+        def ref(%{__struct__: @table} = record), do: {:ref, __MODULE__, record.identifier}
         def ref(any), do: throw "#{__MODULE__}.ref Unsupported item #{inspect any}"
       end # end quote
     end # end ref_implementation
@@ -55,7 +55,7 @@ defmodule Noizu.Scaffolding.EntityBehaviourDefault do
         def sref(identifier) when is_bitstring(identifier), do: ref(identifier) |> sref()
         def sref(identifier) when is_atom(identifier), do: "#{unquote(sref_prefix)}#{identifier}"
         def sref(%__MODULE__{} = this), do: "#{unquote(sref_prefix)}#{this.identifier}"
-        def sref(%@table{} = record), do: "#{unquote(sref_prefix)}#{record.identifier}"
+        def sref(%{__struct__: @table} = record), do: "#{unquote(sref_prefix)}#{record.identifier}"
         def sref(any), do: throw "#{__MODULE__}.sref Unsupported item #{inspect any}"
       end # end quote
     end # end sref_implementation
@@ -75,7 +75,7 @@ defmodule Noizu.Scaffolding.EntityBehaviourDefault do
         def entity(item, options \\ nil)
         def entity(nil, _options), do: nil
         def entity(%__MODULE__{} = this, options), do: this
-        def entity(%@table{} = record, options), do: __MODULE__.expand(record.entity, options[:compression] || %{})
+        def entity(%{__struct__: @table} = record, options), do: __MODULE__.expand(record.entity, options[:compression] || %{})
         def entity(identifier, options) do
           @repo.get(__MODULE__.id(identifier), Noizu.ElixirCore.CallingContext.internal(), options) || __MODULE__.miss_cb(identifier, options)
         end
@@ -89,7 +89,7 @@ defmodule Noizu.Scaffolding.EntityBehaviourDefault do
         def entity!(item, options \\ nil)
         def entity!(nil, _options), do: nil
         def entity!(%__MODULE__{} = this, options), do: this
-        def entity!(%@table{} = record, options), do: __MODULE__.expand(record.entity, options[:compression] || %{})
+        def entity!(%{__struct__: @table} = record, options), do: __MODULE__.expand(record.entity, options[:compression] || %{})
         def entity!(identifier, options), do: @repo.get!(__MODULE__.ref(identifier) |> __MODULE__.id(), Noizu.ElixirCore.CallingContext.internal(), options) || __MODULE__.miss_cb(identifier, options)
       end # end quote
     end # end entity_txn_implementation
@@ -101,7 +101,7 @@ defmodule Noizu.Scaffolding.EntityBehaviourDefault do
         def record(item, options \\ nil)
         def record(nil, _options), do: nil
         def record(%__MODULE__{} = this, options), do: __MODULE__.as_record(this, options)
-        def record(%@table{} = record, options), do: record
+        def record(%{__struct__: @table} = record, options), do: record
         def record(identifier, options), do:  @repo.get(__MODULE__.ref(identifier) |> __MODULE__.id(), Noizu.ElixirCore.CallingContext.internal(), options) |> __MODULE__.as_record(options)
       end # end quote
     end # end record_implementation
@@ -113,7 +113,7 @@ defmodule Noizu.Scaffolding.EntityBehaviourDefault do
         def record!(item, options \\ nil)
         def record!(nil, _options), do: nil
         def record!(%__MODULE__{} = this, options), do: __MODULE__.as_record(this, options)
-        def record!(%@table{} = record, options), do: record
+        def record!(%{__struct__: @table} = record, options), do: record
         def record!(identifier, options), do: @repo.get!(__MODULE__.ref(identifier) |> __MODULE__.id(), Noizu.ElixirCore.CallingContext.internal(), options) |> __MODULE__.as_record(options)
       end # end quote
     end # end record_txn_implementation
@@ -169,7 +169,7 @@ defmodule Noizu.Scaffolding.EntityBehaviourDefault do
         if @options != nil do
           if Map.has_key?(@options, :additional_fields) do
             def as_record(this, options) do
-              base = %@mnesia_table{identifier: this.identifier, entity: __MODULE__.compress(this, options[:compression] || %{})}
+              base = @mnesia_table.__struct__([identifier: this.identifier, entity: __MODULE__.compress(this, options[:compression] || %{})])
               List.foldl(@options[:additional_fields], base,
                 fn(field, acc) ->
                   case Map.get(this, field, :erp_imp_field_not_found) do
@@ -182,12 +182,12 @@ defmodule Noizu.Scaffolding.EntityBehaviourDefault do
             end
           else
             def as_record(this, options) do
-              %@mnesia_table{identifier: this.identifier, entity:  __MODULE__.compress(this, options[:compression] || %{})}
+              %{__struct__: @mnesia_table, identifier: this.identifier, entity:  __MODULE__.compress(this, options[:compression] || %{})}
             end
           end
         else
           def as_record(this, options) do
-            %@mnesia_table{identifier: this.identifier, entity: __MODULE__.compress(this, options[:compression] || %{})}
+            %{__struct__: @mnesia_table, identifier: this.identifier, entity: __MODULE__.compress(this, options[:compression] || %{})}
           end
         end
       end # end quote
