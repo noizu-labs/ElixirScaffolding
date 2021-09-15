@@ -32,15 +32,18 @@ defmodule Noizu.Scaffolding.Query.EntityRefFilteringBehaviour do
     end
 
     quote do
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       import unquote(__MODULE__)
       @behaviour Noizu.Scaffolding.QueryBehaviour
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       if (unquote(only.match) && !unquote(override.match)) do
         def match(_match_sel, _mnesia_table, %Noizu.ElixirCore.CallingContext{} = _context, _options) do
           throw "Match NYI"
         end
       end
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       if (unquote(only.list) && !unquote(override.list)) do
         def list(mnesia_table, %Noizu.ElixirCore.CallingContext{} = context, options) do
           if (options[:filter_caller]) do
@@ -57,6 +60,7 @@ defmodule Noizu.Scaffolding.Query.EntityRefFilteringBehaviour do
         end
       end # end conditional include
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       if (unquote(only.get) && !unquote(override.get)) do
         def get(identifier, mnesia_table, %Noizu.ElixirCore.CallingContext{} = context, options) do
           record = if options[:dirty] == true do
@@ -79,6 +83,7 @@ defmodule Noizu.Scaffolding.Query.EntityRefFilteringBehaviour do
         end
       end # end conditional include
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       if (unquote(only.create) && !unquote(override.create)) do
         def create(record, mnesia_table, %Noizu.ElixirCore.CallingContext{} = context, options) do
           if (options[:filter_caller]) do
@@ -115,6 +120,7 @@ defmodule Noizu.Scaffolding.Query.EntityRefFilteringBehaviour do
         end
       end # end conditional include
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       if (unquote(only.update) && !unquote(override.update)) do
         def update(record, mnesia_table, %Noizu.ElixirCore.CallingContext{} = context, options) do
           if (options[:filter_caller]) do
@@ -158,6 +164,7 @@ defmodule Noizu.Scaffolding.Query.EntityRefFilteringBehaviour do
         end
       end # end conditional include
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       if (unquote(only.delete) && !unquote(override.delete)) do
         def delete(identifier, %Noizu.ElixirCore.CallingContext{} = context, options) do
           if (options[:filter_caller]) do

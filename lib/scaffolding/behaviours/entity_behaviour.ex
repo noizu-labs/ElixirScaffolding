@@ -163,19 +163,24 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
     sref_prefix = "ref." <> sm <> "."
 
     quote do
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       import unquote(__MODULE__)
       @behaviour Noizu.Scaffolding.EntityBehaviour
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       @expanded_repo unquote(default_implementation).expand_repo(__MODULE__, unquote(repo_module))
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       if unquote(required?.sref_module) do
         def sref_module(), do: unquote(sm)
       end
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       if unquote(required?.poly_base) do
         def poly_base(), do: __MODULE__
       end
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       if unquote(required?.repo) do
         def repo(), do: @expanded_repo
       end
@@ -183,12 +188,14 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
       #-------------------------------------------------------------------------
       # Default Implementation from default_implementation behaviour
       #-------------------------------------------------------------------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       if unquote(required?.from_json) do
         def from_json(json, context) do
            @expanded_repo.from_json(json, context)
          end
       end
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       if unquote(required?.shallow) do
         def shallow(identifier) do
           %__MODULE__{identifier: identifier}
@@ -197,29 +204,52 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
 
       #unquote(Macro.expand(default_implementation, __CALLER__).prepare(mnesia_table, repo_module, sref_prefix))
 
-
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       if unquote(required?.compress) do
         def compress(entity), do: compress(entity, %{})
         def compress(entity, options), do: entity
       end
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       if unquote(required?.expand) do
         def expand(entity), do: expand(entity, %{})
         def expand(entity, options), do: entity
       end
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       if unquote(required?.id), do: unquote(Macro.expand(default_implementation, __CALLER__).id_implementation(mnesia_table, sref_prefix))
+
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       if unquote(required?.ref), do: unquote(Macro.expand(default_implementation, __CALLER__).ref_implementation(mnesia_table, sref_prefix))
+
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       if unquote(required?.sref), do: unquote(Macro.expand(default_implementation, __CALLER__).sref_implementation(mnesia_table, sref_prefix))
+
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       if unquote(required?.miss_cb), do: unquote(Macro.expand(default_implementation, __CALLER__).miss_cb_implementation())
+
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       if unquote(required?.entity), do: unquote(Macro.expand(default_implementation, __CALLER__).entity_implementation(mnesia_table, repo_module))
+
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       if unquote(required?.entity!), do: unquote(Macro.expand(default_implementation, __CALLER__).entity_txn_implementation(mnesia_table, repo_module))
+
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       if unquote(required?.record), do: unquote(Macro.expand(default_implementation, __CALLER__).record_implementation(mnesia_table, repo_module))
+
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       if unquote(required?.record!), do: unquote(Macro.expand(default_implementation, __CALLER__).record_txn_implementation(mnesia_table, repo_module))
+
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       if unquote(required?.erp_imp), do: unquote(Macro.expand(default_implementation, __CALLER__).erp_imp(mnesia_table))
+
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       if unquote(required?.as_record), do: unquote(Macro.expand(default_implementation, __CALLER__).as_record_implementation(mnesia_table, as_record_options))
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       if unquote(required?.has_permission), do: unquote(Macro.expand(default_implementation, __CALLER__).has_permission_implementation())
+
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       if unquote(required?.has_permission!), do: unquote(Macro.expand(default_implementation, __CALLER__).has_permission_txn_implementation())
 
       #@before_compile unquote(__MODULE__)

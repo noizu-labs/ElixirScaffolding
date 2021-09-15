@@ -22,6 +22,7 @@ defmodule Noizu.Scaffolding.EntityBehaviourDefault do
 
     def id_implementation(table, sref_prefix) do
       quote do
+        @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
         @table unquote(__MODULE__).expand_table(__MODULE__, unquote(table))
         def id(nil), do: nil
         def id({:ref, __MODULE__, identifier} = _ref), do: identifier
@@ -33,6 +34,7 @@ defmodule Noizu.Scaffolding.EntityBehaviourDefault do
 
     def ref_implementation(table, sref_prefix) do
       quote do
+        @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
         @table unquote(__MODULE__).expand_table(__MODULE__, unquote(table))
         def ref(nil), do: nil
         def ref({:ref, __MODULE__, _identifier} = ref), do: ref
@@ -48,6 +50,7 @@ defmodule Noizu.Scaffolding.EntityBehaviourDefault do
 
     def sref_implementation(table, sref_prefix) do
       quote do
+        @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
         @table unquote(__MODULE__).expand_table(__MODULE__, unquote(table))
         def sref(nil), do: nil
         def sref(identifier) when is_integer(identifier), do: "#{unquote(sref_prefix)}#{identifier}"
@@ -63,6 +66,7 @@ defmodule Noizu.Scaffolding.EntityBehaviourDefault do
 
     def miss_cb_implementation() do
       quote do
+        @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
         def miss_cb(id, options \\ nil)
         def miss_cb(id, _options), do: nil
       end # end quote
@@ -70,6 +74,7 @@ defmodule Noizu.Scaffolding.EntityBehaviourDefault do
 
     def entity_implementation(table, repo) do
       quote do
+        @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
         @table unquote(__MODULE__).expand_table(__MODULE__, unquote(table))
         @repo unquote(__MODULE__).expand_repo(__MODULE__, unquote(repo))
         def entity(item, options \\ nil)
@@ -84,6 +89,7 @@ defmodule Noizu.Scaffolding.EntityBehaviourDefault do
 
     def entity_txn_implementation(table, repo) do
       quote do
+        @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
         @table unquote(__MODULE__).expand_table(__MODULE__, unquote(table))
         @repo unquote(__MODULE__).expand_repo(__MODULE__, unquote(repo))
         def entity!(item, options \\ nil)
@@ -96,6 +102,7 @@ defmodule Noizu.Scaffolding.EntityBehaviourDefault do
 
     def record_implementation(table, repo) do
       quote do
+        @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
         @table unquote(__MODULE__).expand_table(__MODULE__, unquote(table))
         @repo unquote(__MODULE__).expand_repo(__MODULE__, unquote(repo))
         def record(item, options \\ nil)
@@ -108,6 +115,7 @@ defmodule Noizu.Scaffolding.EntityBehaviourDefault do
 
     def record_txn_implementation(table, repo) do
       quote do
+        @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
         @table unquote(__MODULE__).expand_table(__MODULE__, unquote(table))
         @repo unquote(__MODULE__).expand_repo(__MODULE__, unquote(repo))
         def record!(item, options \\ nil)
@@ -120,12 +128,15 @@ defmodule Noizu.Scaffolding.EntityBehaviourDefault do
 
     def has_permission_implementation() do
       quote do
+        @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
         def has_permission(ref, permission, %Noizu.ElixirCore.CallingContext{} = context, options) do
           context.auth[:permissions][:admin] || context.auth[:permissions][:system] || false
         end
+        @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
         def has_permission(ref, permission, %{auth: _auth} = context, options) do
           context.auth[:permissions][:admin] || context.auth[:permissions][:system] || false
         end
+        @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
         def has_permission(ref, permission, context, options) do
           false
         end
@@ -134,6 +145,7 @@ defmodule Noizu.Scaffolding.EntityBehaviourDefault do
 
     def has_permission_txn_implementation() do
       quote do
+        @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
         def has_permission!(ref, permission, context, options) do
           __MODULE__.has_permission(ref, permission, context, options)
         end
@@ -142,8 +154,10 @@ defmodule Noizu.Scaffolding.EntityBehaviourDefault do
 
     def erp_imp(table) do
       quote do
+        @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
         parent_module = __MODULE__
         mnesia_table = unquote(__MODULE__).expand_table(parent_module, unquote(table))
+        @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
         defimpl Noizu.ERP, for: [__MODULE__, mnesia_table] do
           @parent_module parent_module
           def id(o), do: @parent_module.id(o)
@@ -159,13 +173,17 @@ defmodule Noizu.Scaffolding.EntityBehaviourDefault do
 
     def as_record_implementation(table, opts) do
       quote do
+        @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
         @mnesia_table unquote(__MODULE__).expand_table(__MODULE__, unquote(table))
         @options unquote(opts)
 
+        @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
         def as_record(entity, options \\ %{})
 
+        @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
         def as_record(nil, _options), do: nil
 
+        @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
         if @options != nil do
           if Map.has_key?(@options, :additional_fields) do
             def as_record(this, options) do

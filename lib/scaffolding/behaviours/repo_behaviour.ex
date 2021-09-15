@@ -158,14 +158,17 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
     audit_engine = Keyword.get(options, :audit_engine, Application.get_env(:noizu_scaffolding, :default_audit_engine, Noizu.Scaffolding.AuditEngine.Default))
 
     quote do
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       @behaviour Noizu.Scaffolding.RepoBehaviour
       @implementation (unquote(implementation_provider))
       use unquote(implementation_provider), unquote(options)
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def audit_engine, do: unquote(audit_engine)
       #-------------------------------------------------------------------------
       # from_json
       #-------------------------------------------------------------------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       if unquote(required?.from_json) do
         def from_json(_json, _context) do
           throw "From Json Not Implemented For #{__MODULE__}.  use override: from_json and provide your implementation."

@@ -178,29 +178,36 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviour do
 
 
     quote do
+
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       import unquote(__MODULE__)
       @behaviour Noizu.Scaffolding.V2.EntityBehaviour
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       @repo_module unquote(repo_module)
       @mnesia_table unquote(entity_table)
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       @as_record_options unquote(as_record_options)
       @module __MODULE__
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       @poly_base (case unquote(poly_base) do
         :auto -> @module
         v -> v
       end)
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       @poly_support (case unquote(poly_support) do
         :auto -> :auto
         v when is_list(v) -> MapSet.new(v)
         v -> v
       end)
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       @poly_type? ((@poly_base != @module) || (@poly_support != :auto) || false)
 
-
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       @default_implementation (case unquote(default_implementation) do
         :auto ->
           if @poly_type? do
@@ -211,6 +218,7 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviour do
         v -> v
       end)
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       @sref_prefix (case unquote(sm) do
         :auto ->
           if @poly_type? do
@@ -224,7 +232,7 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviour do
         v -> "ref.#{v}."
       end)
 
-
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       @sref_module  (case unquote(sm) do
                        :auto ->
                          if @poly_type? do
@@ -238,15 +246,21 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviour do
                        v -> "#{v}"
                      end)
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       @expanded_repo @default_implementation.expand_repo(@poly_base == @module, @poly_base, @repo_module)
       @expanded_table @default_implementation.expand_table(@poly_base == @module, @poly_base, @mnesia_table)
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def sref_module(), do: @sref_module
+
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def sref_prefix(), do: @sref_prefix
+
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def poly_base(), do: @poly_base
 
 
-
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       if (@module != @poly_base && @poly_support == :auto) do
         def poly_support() do
           @poly_base.poly_support()
@@ -257,20 +271,34 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviour do
         end
       end
 
-
-
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def poly_type?(), do: @poly_type?
+
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def repo(), do: @expanded_repo
+
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def table(), do: @expanded_table
 
-
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def erp_handler(), do: @module
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def _int_entity?(), do: true
+
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def _int_as_record_options(), do: @as_record_options
+
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def _int_expanded_repo(), do: @expanded_repo
+
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def _int_repo_module(), do: @repo_module
+
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def _int_implementation(), do: @default_implementation
+
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def _int_empty_record(), do: @expanded_table.__struct__([])
 
       #-------------------------------------------------------------------------
@@ -280,35 +308,41 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviour do
       #------------
       #
       #------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def shallow(identifier), do: %@module{identifier: identifier}
 
       #------------
       #
       #------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def compress(entity, options \\ %{}), do: compress(@module, entity, options)
-      def compress(m, entity, options), to: @default_implementation
+      def compress(m, entity, options), do: @default_implementation.compress(m, entity, options)
 
       #------------
       #
       #------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def expand(entity, options \\ %{}), do: expand(@module, entity, options)
       def expand(m, entity, options), do: @default_implementation.expand(m, entity, options)
 
       #------------
       #
       #------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def string_to_id(identifier), do: string_to_id(@module, identifier)
       def string_to_id(m, identifier), do: @default_implementation.string_to_id(m, identifier)
 
       #------------
       #
       #------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def id_to_string(identifier), do: id_to_string(@module, identifier)
       def id_to_string(m, identifier), do: @default_implementation.id_to_string(m, identifier)
 
       #------------
       #
       #------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def id(@sref_prefix <> identifier), do: id(@module, identifier)
       def id(ref), do: id(@module, ref)
       def id(m, ref), do: @default_implementation.id(m, ref)
@@ -316,66 +350,78 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviour do
       #------------
       #
       #------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def ref(ref), do: ref(@module, ref)
       def ref(m, ref), do: @default_implementation.ref(m, ref)
 
       #------------
       #
       #------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def sref(ref), do: sref(@module, ref)
       def sref(m, ref), do: @default_implementation.sref(m, ref)
 
       #------------
       #
       #------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def miss_cb(ref, options \\ %{}), do: miss_cb(@module, ref, options)
       def miss_cb(m, ref, options), do: @default_implementation.miss_cb(m, ref, options)
 
       #------------
       #
       #------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def miss_cb!(ref, options \\ %{}), do: miss_cb!(@module, ref, options)
       def miss_cb!(m, ref, options), do: @default_implementation.miss_cb!(m, ref, options)
 
       #------------
       #
       #------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def entity(ref, options \\ %{}), do: entity(@module, ref, options)
       def entity(m, ref, options), do: @default_implementation.entity(m, ref, options)
 
       #------------
       #
       #------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def entity!(ref, options \\ %{}), do: entity!(@module, ref, options)
       def entity!(m, ref, options), do: @default_implementation.entity!(m, ref, options)
 
       #------------
       #
       #------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def record(ref, options \\ %{}), do: record(@module, ref, options)
       def record(m, ref, options), do: @default_implementation.record(m, ref, options)
 
       #------------
       #
       #------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def record!(ref, options \\ %{}), do: record!(@module, ref, options)
       def record!(m, ref, options), do: @default_implementation.record!(m, ref, options)
 
       #------------
       #
       #------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def as_record(ref, options \\ %{}), do: as_record(@module, ref, options)
       def as_record(m, ref, options), do: @default_implementation.as_record(m, ref, options)
 
       #------------
       #
       #------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def as_record!(ref, options \\ %{}), do: as_record!(@module, ref, options)
       def as_record!(m, ref, options), do: @default_implementation.as_record!(m, ref, options)
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def has_permission(ref, permission, context, options \\ %{}), do: has_permission(@module, ref, permission, context, options)
       def has_permission(m, ref, permission, context, options), do: @default_implementation.has_permission(m, ref, permission, context, options)
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def has_permission!(ref, permission, context, options \\ %{}), do: has_permission!(@module, ref, permission, context, options)
       def has_permission!(m, ref, permission, context, options), do: @default_implementation.has_permission!(m, ref, permission, context, options)
 
