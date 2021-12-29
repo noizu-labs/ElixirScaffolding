@@ -234,6 +234,18 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
         end
       end
 
+      def update_cache(ref, context, options \\ nil)
+      def update_cache(nil, _context, _options), do: nil
+      def update_cache(%{__struct__: @entity_module} = entity, _context, options) do
+        cache_key = cache_key(entity, options)
+        Noizu.FastGlobal.Cluster.put(cache_key, entity, options)
+        entity
+      end
+      def update_cache(ref, context, options) do
+        entity = @entity_module.entity!(ref)
+        update_cache(entity, context, options)
+      end
+
       #-------------------------------------------------------------------------
       # from_json/2, from_json/3
       #-------------------------------------------------------------------------
