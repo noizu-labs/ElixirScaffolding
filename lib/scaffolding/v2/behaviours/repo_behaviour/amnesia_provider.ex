@@ -11,6 +11,9 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour.AmnesiaProvider do
   #
   #--------------
   def expand_options(m, o) do
+    dirty_default = Keyword.get(o, :dirty_default, true)
+    sync_default = Keyword.get(o, :sync_default, :async)
+    frag_default = Keyword.get(o, :frag_default, false)
 
     entity_table = case Keyword.get(o, :entity_table, :auto) do
       :auto -> Keyword.get(o, :mnesia_table, :auto)
@@ -30,6 +33,9 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour.AmnesiaProvider do
 
     %{
       input: o,
+      dirty: dirty_default,
+      sync: sync_default,
+      frag: frag_default,
       entity_table: entity_table,
       entity_module: entity_module,
       nmid_generator: nmid_generator,
@@ -117,16 +123,36 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour.AmnesiaProvider do
     options = options || %{}
     dirty = Map.get(options, :dirty, m_opt[:dirty])
     frag = Map.get(options, :frag, m_opt[:frag])
-    options_b = options |> Map.delete(:frag) |> Map.delete(:dirty)
-
+    sync = Map.get(options, :sync, m_opt[:sync])
+    options_b = options
+                |> Map.delete(:frag)
+                |> Map.delete(:dirty)
     cond do
-      dirty && frag == :sync -> Amnesia.Fragment.sync(fn ->  module.match(match_sel, context, options_b) end)
-      dirty -> Amnesia.Fragment.async(fn ->  module.match(match_sel, context, options_b) end)
-      true ->
-        Amnesia.Fragment.transaction do
-          module.match(match_sel, context, options_b)
+      frag ->
+        cond do
+          dirty ->
+            cond do
+              sync == :sync -> Amnesia.Fragment.sync(fn -> module.match(match_sel, context, options) end)
+              :else -> Amnesia.Fragment.async(fn -> module.match(match_sel, context, options) end)
+            end
+          :else ->
+            Amnesia.Fragment.transaction do
+              module.match(match_sel, context, options_b)
+            end
         end
-    end # end cond do
+      :else ->
+        cond do
+          dirty ->
+            cond do
+              sync == :sync -> Amnesia.sync(fn -> module.match(match_sel, context, options) end)
+              :else -> Amnesia.async(fn -> module.match(match_sel, context, options) end)
+            end
+          :else ->
+            Amnesia.transaction do
+              module.match(match_sel, context, options_b)
+            end
+        end
+    end
   end
 
   #--------------
@@ -161,15 +187,36 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour.AmnesiaProvider do
     options = options || %{}
     dirty = Map.get(options, :dirty, m_opt[:dirty])
     frag = Map.get(options, :frag, m_opt[:frag])
-    options_b = options |> Map.delete(:frag) |> Map.delete(:dirty)
+    sync = Map.get(options, :sync, m_opt[:sync])
+    options_b = options
+                |> Map.delete(:frag)
+                |> Map.delete(:dirty)
     cond do
-      dirty && frag == :sync -> Amnesia.Fragment.sync(fn ->  module.list(context, options_b) end)
-      dirty -> Amnesia.Fragment.async(fn ->  module.list(context, options_b) end)
-      true ->
-        Amnesia.Fragment.transaction do
-          module.list(context, options_b)
+      frag ->
+        cond do
+          dirty ->
+            cond do
+              sync == :sync -> Amnesia.Fragment.sync(fn -> module.list(context, options) end)
+              :else -> Amnesia.Fragment.async(fn -> module.list(context, options) end)
+            end
+          :else ->
+            Amnesia.Fragment.transaction do
+              module.list(context, options_b)
+            end
         end
-    end # end cond do
+      :else ->
+        cond do
+          dirty ->
+            cond do
+              sync == :sync -> Amnesia.sync(fn -> module.list(context, options) end)
+              :else -> Amnesia.async(fn -> module.list(context, options) end)
+            end
+          :else ->
+            Amnesia.transaction do
+              module.list(context, options_b)
+            end
+        end
+    end
   end
 
   #--------------
@@ -182,20 +229,8 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour.AmnesiaProvider do
   #--------------
   def inner_get_callback(module, identifier, context, options) do
     strategy = options[:query_strategy] || module.query_strategy()
-    record = strategy.get(identifier, module.entity_table(), context, options)
-
-    em = module.entity_module()
-
-    if options[:audit] || Enum.member?([:very_verbose], module.audit_level()) do
-      ref = case record do
-        nil -> nil
-        _ -> em.ref(record)
-      end
-      audit_engine = options[:audit_engine] || module.audit_engine()
-      audit_engine.audit(:get, :scaffolding, ref, context, options)
-    end
-    record
-    |> em.entity(options)
+    strategy.get(identifier, module.entity_table(), context, options)
+    |> module.entity_module().entity(options)
   end
 
   #--------------
@@ -214,15 +249,36 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour.AmnesiaProvider do
     options = options || %{}
     dirty = Map.get(options, :dirty, m_opt[:dirty])
     frag = Map.get(options, :frag, m_opt[:frag])
-    options = options |> Map.delete(:frag) |> Map.delete(:dirty)
+    sync = Map.get(options, :sync, m_opt[:sync])
+    options_b = options
+                |> Map.delete(:frag)
+                |> Map.delete(:dirty)
     cond do
-      dirty && frag == :sync -> Amnesia.Fragment.sync(fn -> module.get(identifier, context, options) end)
-      dirty -> Amnesia.Fragment.async(fn -> module.get(identifier, context, options) end)
-      true ->
-        Amnesia.Fragment.transaction do
-          module.get(identifier, context, options)
+      frag ->
+        cond do
+          dirty ->
+            cond do
+              sync == :sync -> Amnesia.Fragment.sync(fn -> module.get(identifier, context, options) end)
+              :else -> Amnesia.Fragment.async(fn -> module.get(identifier, context, options) end)
+            end
+          :else ->
+            Amnesia.Fragment.transaction do
+              module.get(identifier, context, options_b)
+            end
         end
-    end # end cond do
+      :else ->
+        cond do
+          dirty ->
+            cond do
+              sync == :sync -> Amnesia.sync(fn -> module.get(identifier, context, options) end)
+              :else -> Amnesia.async(fn -> module.get(identifier, context, options) end)
+            end
+          :else ->
+            Amnesia.transaction do
+              module.get(identifier, context, options_b)
+            end
+        end
+    end
   end
 
   #--------------
@@ -284,15 +340,36 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour.AmnesiaProvider do
     options = options || %{}
     dirty = Map.get(options, :dirty, m_opt[:dirty])
     frag = Map.get(options, :frag, m_opt[:frag])
-    options = options |> Map.delete(:frag) |> Map.delete(:dirty)
+    sync = Map.get(options, :sync, m_opt[:sync])
+    options_b = options
+                |> Map.delete(:frag)
+                |> Map.delete(:dirty)
     cond do
-      dirty && frag == :sync -> Amnesia.Fragment.sync(fn -> module.create(entity, context, options) end)
-      dirty -> Amnesia.Fragment.async(fn -> module.create(entity, context, options) end)
-      true ->
-        Amnesia.Fragment.transaction do
-          module.create(entity, context, options)
+      frag ->
+        cond do
+          dirty ->
+            cond do
+              sync == :sync -> Amnesia.Fragment.sync(fn -> module.create(entity, context, options) end)
+              :else -> Amnesia.Fragment.async(fn -> module.create(entity, context, options) end)
+            end
+          :else ->
+            Amnesia.Fragment.transaction do
+              module.create(entity, context, options_b)
+            end
         end
-    end # end cond do
+      :else ->
+        cond do
+          dirty ->
+            cond do
+              sync == :sync -> Amnesia.sync(fn -> module.create(entity, context, options) end)
+              :else -> Amnesia.async(fn -> module.create(entity, context, options) end)
+            end
+          :else ->
+            Amnesia.transaction do
+              module.create(entity, context, options_b)
+            end
+        end
+    end
   end
 
 
@@ -327,8 +404,6 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour.AmnesiaProvider do
 
     entity
   end
-
-
   #--------------
   # post_update_callback
   #--------------
@@ -354,15 +429,36 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour.AmnesiaProvider do
     options = options || %{}
     dirty = Map.get(options, :dirty, m_opt[:dirty])
     frag = Map.get(options, :frag, m_opt[:frag])
-    options = options |> Map.delete(:frag) |> Map.delete(:dirty)
+    sync = Map.get(options, :sync, m_opt[:sync])
+    options_b = options
+                |> Map.delete(:frag)
+                |> Map.delete(:dirty)
     cond do
-      dirty && frag == :sync -> Amnesia.Fragment.sync(fn -> module.update(entity, context, options) end)
-      dirty -> Amnesia.Fragment.async(fn -> module.update(entity, context, options) end)
-      true ->
-        Amnesia.Fragment.transaction do
-          module.update(entity, context, options)
+      frag ->
+        cond do
+          dirty ->
+            cond do
+              sync == :sync -> Amnesia.Fragment.sync(fn -> module.update(entity, context, options) end)
+              :else -> Amnesia.Fragment.async(fn -> module.update(entity, context, options) end)
+            end
+          :else ->
+            Amnesia.Fragment.transaction do
+              module.update(entity, context, options_b)
+            end
         end
-    end # end cond do
+      :else ->
+        cond do
+          dirty ->
+            cond do
+              sync == :sync -> Amnesia.sync(fn -> module.update(entity, context, options) end)
+              :else -> Amnesia.async(fn -> module.update(entity, context, options) end)
+            end
+          :else ->
+            Amnesia.transaction do
+              module.update(entity, context, options_b)
+            end
+        end
+    end
   end
 
   #--------------
@@ -424,14 +520,35 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour.AmnesiaProvider do
     options = options || %{}
     dirty = Map.get(options, :dirty, m_opt[:dirty])
     frag = Map.get(options, :frag, m_opt[:frag])
-    options = options |> Map.delete(:frag) |> Map.delete(:dirty)
+    sync = Map.get(options, :sync, m_opt[:sync])
+    options_b = options
+                |> Map.delete(:frag)
+                |> Map.delete(:dirty)
     cond do
-      dirty && frag == :sync -> Amnesia.Fragment.sync(fn -> module.delete(entity, context, options) end)
-      dirty -> Amnesia.Fragment.async(fn -> module.delete(entity, context, options) end)
-      true ->
-        Amnesia.Fragment.transaction do
-          module.delete(entity, context, options)
+      frag ->
+        cond do
+          dirty ->
+            cond do
+              sync == :sync -> Amnesia.Fragment.sync(fn -> module.delete(entity, context, options) end)
+              :else -> Amnesia.Fragment.async(fn -> module.delete(entity, context, options) end)
+            end
+          :else ->
+            Amnesia.Fragment.transaction do
+              module.delete(entity, context, options_b)
+            end
         end
-    end # end cond do
+      :else ->
+        cond do
+          dirty ->
+            cond do
+              sync == :sync -> Amnesia.sync(fn -> module.delete(entity, context, options) end)
+              :else -> Amnesia.async(fn -> module.delete(entity, context, options) end)
+            end
+          :else ->
+            Amnesia.transaction do
+              module.delete(entity, context, options_b)
+            end
+        end
+    end
   end
 end

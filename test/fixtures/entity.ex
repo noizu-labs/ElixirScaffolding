@@ -26,6 +26,7 @@ defmodule Noizu.Scaffolding.Test.Fixture.FooEntity do
 
   use Noizu.Scaffolding.EntityBehaviour,
       sref_module: "foo-test",
-      additional_mnesia_fields: :second
+      as_record_options: %{additional_fields: [:second]}
+
 end
 
