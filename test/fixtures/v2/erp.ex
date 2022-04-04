@@ -11,3 +11,4 @@ defimpl Noizu.ERP, for: [FooV2Entity, FooV2Table] do
  def record(o, options \\ nil), do: Noizu.Scaffolding.V2.ERPResolver.record(o, options)
  def record!(o, options \\ nil), do: Noizu.Scaffolding.V2.ERPResolver.record!(o, options)
 end
+

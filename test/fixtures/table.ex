@@ -10,6 +10,11 @@ defdatabase Noizu.Database.Scaffolding.Test.Fixture do
     @type t :: %FooTable{ identifier: any, second: any, entity: any}
   end # end table
 
+  deftable FooV1_1Table, [:identifier, :second, :entity], type: :set, index: [] do
+    @type t :: %FooV1_1Table{ identifier: any, second: any, entity: any}
+    def __erp__(), do: Noizu.Scaffolding.Test.Fixture.FooV1_1Entity
+  end # end table
+
   deftable FooV2Table, [:identifier, :second, :entity], type: :set, index: [] do
     @type t :: %FooV2Table{ identifier: any, second: any, entity: any}
     def erp_handler(), do: Noizu.Scaffolding.Test.Fixture.FooV2Entity

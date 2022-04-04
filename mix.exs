@@ -40,7 +40,7 @@ defmodule Noizu.Scaffolding.Mixfile do
       {:uuid, "~> 1.1" },
       {:ex_doc, "~> 0.16.2", only: [:dev], optional: true}, # Documentation Provider
       {:markdown, github: "devinus/markdown", only: [:dev], optional: true}, # Markdown processor for ex_doc
-      {:noizu_core, github: "noizu/ElixirCore", tag: "1.0.6"},
+      {:noizu_core, github: "noizu/ElixirCore", tag: "1.0.11"},
       {:redix, github: "whatyouhide/redix", tag: "v0.7.0", optional: true},
       {:poison, "~> 3.1.0", optional: true},
       {:fastglobal, "~> 1.0"}, # https://github.com/discordapp/fastglobal
