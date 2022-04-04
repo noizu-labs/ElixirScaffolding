@@ -3,7 +3,7 @@
 # Copyright (C) 2018 Noizu Labs, Inc. All rights reserved.
 #-------------------------------------------------------------------------------
 
-defmodule Noizu.Scaffolding.RepoTest do
+defmodule Noizu.Scaffolding.RepoV1Test do
   use ExUnit.Case
   use Amnesia
   use  Noizu.Database.Scaffolding.Test.Fixture.FooTable
