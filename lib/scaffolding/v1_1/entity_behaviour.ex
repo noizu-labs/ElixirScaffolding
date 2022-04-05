@@ -133,23 +133,23 @@ defmodule Noizu.Scaffolding.V1_1.EntityBehaviour do
   #-----------------------------------------------------------------------------
   # Defines
   #-----------------------------------------------------------------------------
-  @methods [:id, :ref, :sref, :entity, :entity!, :record, :record!, :erp_imp, :as_record, :sref_module, :as_record, :from_json, :repo, :shallow, :miss_cb, :compress, :expand, :has_permission, :has_permission!, :poly_base]
+  #@methods [:id, :ref, :sref, :entity, :entity!, :record, :record!, :erp_imp, :as_record, :sref_module, :as_record, :from_json, :repo, :shallow, :miss_cb, :compress, :expand, :has_permission, :has_permission!, :poly_base]
 
   #-----------------------------------------------------------------------------
   # Using Implementation
   #-----------------------------------------------------------------------------
   defmacro __using__(options) do
     # Only include implementation for these methods.
-    option_arg = Keyword.get(options, :only, @methods)
-    only = List.foldl(@methods, %{}, fn(method, acc) -> Map.put(acc, method, Enum.member?(option_arg, method)) end)
+    #option_arg = Keyword.get(options, :only, @methods)
+    #only = List.foldl(@methods, %{}, fn(method, acc) -> Map.put(acc, method, Enum.member?(option_arg, method)) end)
 
     nmid_index = options[:nmid] || 0
 
     # Don't include implementation for these methods.
-    option_arg = Keyword.get(options, :override, [])
-    override = List.foldl(@methods, %{}, fn(method, acc) -> Map.put(acc, method, Enum.member?(option_arg, method)) end)
+    #option_arg = Keyword.get(options, :override, [])
+    #override = List.foldl(@methods, %{}, fn(method, acc) -> Map.put(acc, method, Enum.member?(option_arg, method)) end)
 
-    required? = List.foldl(@methods, %{}, fn(method, acc) -> Map.put(acc, method, only[method] && !override[method]) end)
+    #required? = List.foldl(@methods, %{}, fn(method, acc) -> Map.put(acc, method, only[method] && !override[method]) end)
 
     # Repo module (entity/record implementation), Module name with "Repo" appeneded if :auto
     repo_module = Keyword.get(options, :repo_module, :auto)

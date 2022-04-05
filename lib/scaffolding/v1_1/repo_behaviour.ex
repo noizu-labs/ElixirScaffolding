@@ -132,24 +132,24 @@ defmodule Noizu.Scaffolding.V1_1.RepoBehaviour do
   """
   @callback from_json(Map.t, CallingContext.t) :: any
 
-  @methods ([
-    :entity, :options, :generate_identifier!, :generate_identifier,
-    :update, :update!, :delete, :delete!, :create, :create!, :get, :get!,
-    :match, :match!, :list, :list!, :post_get_callback, :pre_create_callback, :pre_update_callback, :pre_delete_callback,
-    :post_create_callback, :post_get_callback, :post_update_callback, :post_delete_callback,
-    :from_json, :extract_date])
+#  @methods ([
+#    :entity, :options, :generate_identifier!, :generate_identifier,
+#    :update, :update!, :delete, :delete!, :create, :create!, :get, :get!,
+#    :match, :match!, :list, :list!, :post_get_callback, :pre_create_callback, :pre_update_callback, :pre_delete_callback,
+#    :post_create_callback, :post_get_callback, :post_update_callback, :post_delete_callback,
+#    :from_json, :extract_date])
 
   defmacro __using__(options) do
     # Only include implementation for these methods.
-    option_arg = Keyword.get(options, :only, @methods)
-    only = List.foldl(@methods, %{}, fn(method, acc) -> Map.put(acc, method, Enum.member?(option_arg, method)) end)
+    #option_arg = Keyword.get(options, :only, @methods)
+    #only = List.foldl(@methods, %{}, fn(method, acc) -> Map.put(acc, method, Enum.member?(option_arg, method)) end)
 
     # Don't include implementation for these methods.
-    option_arg = Keyword.get(options, :override, [])
-    override = List.foldl(@methods, %{}, fn(method, acc) -> Map.put(acc, method, Enum.member?(option_arg, method)) end)
+    #option_arg = Keyword.get(options, :override, [])
+    #override = List.foldl(@methods, %{}, fn(method, acc) -> Map.put(acc, method, Enum.member?(option_arg, method)) end)
 
     # Final set of methods to provide implementations for.
-    required? = List.foldl(@methods, %{}, fn(method, acc) -> Map.put(acc, method, only[method] && !override[method]) end)
+    #required? = List.foldl(@methods, %{}, fn(method, acc) -> Map.put(acc, method, only[method] && !override[method]) end)
 
     # Implementation for Persistance layer interactions.
     implementation_provider = Keyword.get(options, :implementation_provider,  Noizu.Scaffolding.V1_1.RepoBehaviour.AmnesiaProvider)

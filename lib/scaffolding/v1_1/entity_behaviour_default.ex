@@ -5,7 +5,7 @@
 
 defmodule Noizu.Scaffolding.V1_1.EntityBehaviourDefault do
 
-  defmacro __using__(options) do
+  defmacro __using__(_options) do
     quote do
       #      @__noizu_v1_1__mnesia_table unquote(mnesia_table)
       #      @__noizu_v1_1__sref_prefix unquote(sref_prefix)

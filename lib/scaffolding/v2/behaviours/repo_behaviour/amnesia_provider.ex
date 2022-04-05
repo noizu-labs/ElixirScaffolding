@@ -487,7 +487,7 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour.AmnesiaProvider do
   def post_delete_callback(entity, context, options) do
     module = entity.__struct__.repo()
     ref = entity
-          |> module.entity_module.ref()
+          |> module.entity_module().ref()
 
     cond do
       options[:audit] == false -> :skip

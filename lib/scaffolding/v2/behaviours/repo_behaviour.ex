@@ -18,7 +18,7 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
   @callback audit_level() :: any
   @callback entity_module() :: any
   @callback entity_table() :: any
-  @callback options() :: any
+
   @callback query_strategy() :: any
   @callback sequencer() :: any
   @callback nmid_generator() :: any

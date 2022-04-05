@@ -6,8 +6,9 @@
 defmodule Noizu.Scaffolding.Query.EntityRefFilteringBehaviour do
 
   defmacro __using__(options) do
-    r = Keyword.get(options, :only, [:list, :create, :get, :update, :delete])
+    r = Keyword.get(options, :only, [:match, :list, :create, :get, :update, :delete])
     only = %{
+      match: Enum.member?(r, :match),
       list: Enum.member?(r, :list),
       get: Enum.member?(r, :get),
       update: Enum.member?(r, :update),
@@ -17,6 +18,7 @@ defmodule Noizu.Scaffolding.Query.EntityRefFilteringBehaviour do
 
     r = Keyword.get(options, :override, [])
     override = %{
+      match: Enum.member?(r, :match),
       list: Enum.member?(r, :list),
       get: Enum.member?(r, :get),
       update: Enum.member?(r, :update),

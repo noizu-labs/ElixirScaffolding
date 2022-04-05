@@ -9,7 +9,7 @@ defmodule Noizu.Scaffolding.Mixfile do
   def project do
     [app: :noizu_scaffolding,
      version: "1.2.5",
-     elixir: "~> 1.4",
+     elixir: "~> 1.13",
      package: package(),
      deps: deps(),
      elixirc_paths: elixirc_paths(Mix.env),
@@ -31,20 +31,24 @@ defmodule Noizu.Scaffolding.Mixfile do
   end # end package
 
   def application do
-    [ applications: [:logger] ]
+    [ applications: [:logger],
+      extra_applications: [:mnesia, :amnesia, :noizu_core, :noizu_mnesia_versioning, :plug, :poison, :redix, :fastglobal, :semaphore]
+    ]
   end # end application
 
   defp deps do
     [
       {:amnesia, git: "https://github.com/noizu/amnesia.git", ref: "9266002", optional: true}, # Mnesia Wrapper
-      {:ex_doc, "~> 0.16.2", only: [:dev], optional: true}, # Documentation Provider
+      {:ex_doc, "~> 0.28.3", only: [:dev], optional: true}, # Documentation Provider
       {:markdown, github: "devinus/markdown", only: [:dev], optional: true}, # Markdown processor for ex_doc
-      {:noizu_core, github: "noizu/ElixirCore", tag: "1.0.11"},
+      {:noizu_core, github: "noizu/ElixirCore", tag: "1.0.12"},
+      {:noizu_mnesia_versioning, github: "noizu/MnesiaVersioning", tag: "0.1.10"},
       {:redix, github: "whatyouhide/redix", tag: "v0.7.0", optional: true},
       {:poison, "~> 3.1.0", optional: true},
       {:fastglobal, "~> 1.0"}, # https://github.com/discordapp/fastglobal
       {:semaphore, "~> 1.0"}, # https://github.com/discordapp/semaphore
-      {:plug, "~> 1.0", optional: true}
+      {:plug, "~> 1.0", optional: true},
+      {:elixir_uuid, "~> 1.2", only: :test, optional: true}
     ]
   end # end deps
 
