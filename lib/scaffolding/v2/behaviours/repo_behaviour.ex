@@ -173,25 +173,44 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
       @entity_module @options[:entity_module]
       @query_strategy @options[:query_strategy]
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def audit_engine(), do: @audit_engine
+
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def audit_level(), do: @audit_level
+
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def entity_module(), do: @entity_module
+
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def entity_table(), do: @entity_table
+
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def options(), do: @options
+
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def query_strategy(), do: @query_strategy
+
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def sequencer(), do: @sequencer
+
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def nmid_generator(), do: @nmid_generator
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def implementation(), do: @implementation
 
       # @deprecated
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def entity(), do: @entity_module
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def cache_key(ref, options \\ nil) do
         sref = @entity_module.sref(ref)
         sref && :"e_c:#{sref}"
       end
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def delete_cache(ref, context, options \\ nil) do
         # @todo use noizu cluster and meta to track applicable servers.
         key = cache_key(ref, options)
@@ -209,6 +228,7 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
         end
       end
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def cached(ref, context, options \\ nil)
       def cached(nil, _context, _options), do: nil
       def cached(%{__struct__: @entity_module} = entity, _context, _options), do: entity
@@ -234,6 +254,7 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
         end
       end
 
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def update_cache(ref, context, options \\ nil)
       def update_cache(nil, _context, _options), do: nil
       def update_cache(%{__struct__: @entity_module} = entity, _context, options) do
@@ -249,6 +270,7 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
       #-------------------------------------------------------------------------
       # from_json/2, from_json/3
       #-------------------------------------------------------------------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def from_json(json, context, options \\ %{}), do: from_json_version(:default, json, context, options)
       def from_json_version(version, json, context, options \\ %{}), do: _imp_from_json_version(@module, version, json, context, options)
      def _imp_from_json_version(m, version, json, context, options), do: @implementation.from_json_version(m, version, json, context, options)
@@ -256,17 +278,20 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
       #-------------------------------------------------------------------------
       # extract_date/3
       #-------------------------------------------------------------------------
-     def extract_date(d), do: @implementation.extract_date(d)
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
+      def extract_date(d), do: @implementation.extract_date(d)
 
       #-------------------------------------------------------------------------
       # generate_identifier/1
       #-------------------------------------------------------------------------
-      def generate_identifier(options \\ nil), do: @nmid_generator.generate(sequencer(), options)
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
+      def generate_identifier(options \\ nil), do: apply(@nmid_generator, :generate , [sequencer(), options])
 
       #-------------------------------------------------------------------------
       # generate_identifier!/1
       #-------------------------------------------------------------------------
-      def generate_identifier!(options \\ nil), do: @nmid_generator.generate!(sequencer(), options)
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
+      def generate_identifier!(options \\ nil), do: apply(@nmid_generator, :generate!, [sequencer(), options])
 
       #==============================
       # @match
@@ -275,14 +300,16 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
       #-------------------------------------------------------------------------
       # match/3
       #-------------------------------------------------------------------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def match(match_sel, context, options \\ %{}), do: _imp_match(@module, match_sel, context, options)
-     def _imp_match(module, match_sel, context, options), do: @implementation.match(module, match_sel, context, options)
+      def _imp_match(module, match_sel, context, options), do: @implementation.match(module, match_sel, context, options)
 
       #-------------------------------------------------------------------------
       # match!/3
       #-------------------------------------------------------------------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def match!(match_sel, context, options \\ %{}), do: _imp_match!(@module, match_sel, context, options)
-     def _imp_match!(module, match_sel, context, options), do: @implementation.match!(module, match_sel, context, options)
+      def _imp_match!(module, match_sel, context, options), do: @implementation.match!(module, match_sel, context, options)
 
       #==============================
       # @list
@@ -291,12 +318,14 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
       #-------------------------------------------------------------------------
       # list/2
       #-------------------------------------------------------------------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def list(context, options \\ %{}), do: _imp_list(@module, context, options)
-     def _imp_list(module, context, options), do: @implementation.list(module, context, options)
+      def _imp_list(module, context, options), do: @implementation.list(module, context, options)
 
       #-------------------------------------------------------------------------
       # list!/2
       #-------------------------------------------------------------------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def list!(context, options \\ %{}), do: _imp_list!(@module, context, options)
      def _imp_list!(module, context, options), do: @implementation.list!(module, context, options)
 
@@ -307,23 +336,27 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
       #-------------------------------------------------------------------------
       # inner_get_callback/3
       #-------------------------------------------------------------------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def inner_get_callback(identifier, context, options \\ %{}), do: _imp_inner_get_callback(@module, identifier, context, options)
      def _imp_inner_get_callback(module, identifier, context, options), do: @implementation.inner_get_callback(module, identifier, context, options)
 
       #-------------------------------------------------------------------------
       # post_get_callback/3
       #-------------------------------------------------------------------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def post_get_callback(entity, context, options \\ %{}), do: @implementation.post_get_callback(entity, context, options)
 
       #-------------------------------------------------------------------------
       # get/3
       #-------------------------------------------------------------------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def get(identifier, context, options \\ %{}), do: _imp_get(@module, identifier, context, options)
       def _imp_get(module, identifier, context, options), do: @implementation.get(module, identifier, context, options)
 
       #-------------------------------------------------------------------------
       # get!/3
       #-------------------------------------------------------------------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def get!(identifier, context, options \\ %{}), do: _imp_get!(@module, identifier, context, options)
       def _imp_get!(module, identifier, context, options), do: @implementation.get!(module, identifier, context, options)
 
@@ -334,26 +367,31 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
       #-------------------------------------------------------------------------
       # pre_create_callback/3
       #-------------------------------------------------------------------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
      def pre_create_callback(entity, context, options \\ %{}), do: @implementation.pre_create_callback(entity, context, options)
 
       #-------------------------------------------------------------------------
       # inner_create_callback/3
       #-------------------------------------------------------------------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
      def inner_create_callback(entity, context, options \\ %{}), do: @implementation.inner_create_callback(entity, context, options)
 
       #-------------------------------------------------------------------------
       # post_create_callback/3
       #-------------------------------------------------------------------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
      def post_create_callback(entity, context, options \\ %{}), do: @implementation.post_create_callback(entity, context, options)
 
       #-------------------------------------------------------------------------
       # create/3
       #-------------------------------------------------------------------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
      def create(entity, context, options \\ %{}), do: @implementation.create(entity, context, options)
 
       #-------------------------------------------------------------------------
       # create!/3
       #-------------------------------------------------------------------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
      def create!(entity, context, options \\ %{}), do: @implementation.create!(entity, context, options)
 
 
@@ -364,26 +402,31 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
       #-------------------------------------------------------------------------
       # pre_update_callback/3
       #-------------------------------------------------------------------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
      def pre_update_callback(entity, context, options \\ %{}), do: @implementation.pre_update_callback(entity, context, options)
 
       #-------------------------------------------------------------------------
       # inner_update_callback/3
       #-------------------------------------------------------------------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
      def inner_update_callback(entity, context, options \\ %{}), do: @implementation.inner_update_callback(entity, context, options)
 
       #-------------------------------------------------------------------------
       # post_update_callback/3
       #-------------------------------------------------------------------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
      def post_update_callback(entity, context, options \\ %{}), do: @implementation.post_update_callback(entity, context, options)
 
       #-------------------------------------------------------------------------
       # update/3
       #-------------------------------------------------------------------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
      def update(entity, context, options \\ %{}), do: @implementation.update(entity, context, options)
 
       #-------------------------------------------------------------------------
       # update!/3
       #-------------------------------------------------------------------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
      def update!(entity, context, options \\ %{}), do: @implementation.update!(entity, context, options)
 
       #==============================
@@ -393,26 +436,31 @@ defmodule Noizu.Scaffolding.V2.RepoBehaviour do
       #-------------------------------------------------------------------------
       # pre_delete_callback/3
       #-------------------------------------------------------------------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
      def pre_delete_callback(entity, context, options \\ %{}), do: @implementation.pre_delete_callback(entity, context, options)
 
       #-------------------------------------------------------------------------
       # inner_delete_callback/3
       #-------------------------------------------------------------------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
      def inner_delete_callback(entity, context, options \\ %{}), do: @implementation.inner_delete_callback(entity, context, options)
 
       #-------------------------------------------------------------------------
       # post_delete_callback/3
       #-------------------------------------------------------------------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
      def post_delete_callback(entity, context, options \\ %{}), do: @implementation.post_delete_callback(entity, context, options)
 
       #-------------------------------------------------------------------------
       # delete/3
       #-------------------------------------------------------------------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
      def delete(entity, context, options \\ %{}), do: @implementation.delete(entity, context, options)
 
       #-------------------------------------------------------------------------
       # delete!/3
       #-------------------------------------------------------------------------
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
      def delete!(entity, context, options \\ %{}), do: @implementation.delete!(entity, context, options)
 
       defoverridable [
