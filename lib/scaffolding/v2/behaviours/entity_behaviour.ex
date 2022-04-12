@@ -425,6 +425,30 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviour do
       def has_permission!(ref, permission, context, options \\ %{}), do: has_permission!(@module, ref, permission, context, options)
       def has_permission!(m, ref, permission, context, options), do: @default_implementation.has_permission!(m, ref, permission, context, options)
 
+
+
+      def id_ok(o) do
+        r = ref(o)
+        r && {:ok, r} || {:error, o}
+      end
+      def ref_ok(o) do
+        r = ref(o)
+        r && {:ok, r} || {:error, o}
+      end
+      def sref_ok(o) do
+        r = sref(o)
+        r && {:ok, r} || {:error, o}
+      end
+      def entity_ok(o, options \\ %{}) do
+        r = entity(o, options)
+        r && {:ok, r} || {:error, o}
+      end
+      def entity_ok!(o, options \\ %{}) do
+        r = entity!(o, options)
+        r && {:ok, r} || {:error, o}
+      end
+
+
       defoverridable [
         sref_module: 0,
         sref_prefix: 0,
@@ -499,6 +523,15 @@ defmodule Noizu.Scaffolding.V2.EntityBehaviour do
         has_permission!: 3,
         has_permission!: 4,
         has_permission!: 5,
+
+
+        id_ok: 1,
+        ref_ok: 1,
+        sref_ok: 1,
+        entity_ok: 1,
+        entity_ok: 2,
+        entity_ok!: 1,
+        entity_ok!: 2,
       ]
 
     end # end quote

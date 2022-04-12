@@ -155,6 +155,20 @@ defmodule Noizu.Scaffolding.RepoV1_1Test do
     assert sref == expected_sref
   end
 
+
+
+  @tag :"v1.1"
+  test "Noizu.ERP.sref_ok(ref)" do
+    context = CallingContext.system()
+    entity = %FooV1_1Entity{content: :hello} |> FooV1_1Repo.create!(context)
+    ref = FooV1_1Entity.ref(entity.identifier)
+    {:ok, sref} = Noizu.ERP.sref_ok(ref)
+    expected_sref = "ref.foo-v1p1-test.#{entity.identifier}"
+    assert sref == expected_sref
+  end
+
+
+
   @tag :"v1.1"
   test "Noizu.ERP.sref(entity)" do
     context = CallingContext.system()

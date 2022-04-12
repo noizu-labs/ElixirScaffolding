@@ -31,6 +31,30 @@ defmodule Noizu.Scaffolding.UnsupportedModule do
   def expand(entity, _options), do: entity
   def from_json(json, _options), do: throw "UnsupportedModule #{inspect json}"
   def repo(), do: __MODULE__
+
+
+  def id_ok(o) do
+    r = ref(o)
+    r && {:ok, r} || {:error, o}
+  end
+  def ref_ok(o) do
+    r = ref(o)
+    r && {:ok, r} || {:error, o}
+  end
+  def sref_ok(o) do
+    r = sref(o)
+    r && {:ok, r} || {:error, o}
+  end
+  def entity_ok(o, options \\ %{}) do
+    r = entity(o, options)
+    r && {:ok, r} || {:error, o}
+  end
+  def entity_ok!(o, options \\ %{}) do
+    r = entity!(o, options)
+    r && {:ok, r} || {:error, o}
+  end
+
+
 end
 
 defimpl Noizu.ERP, for: Noizu.Scaffolding.UnsupportedModule do
@@ -41,4 +65,26 @@ defimpl Noizu.ERP, for: Noizu.Scaffolding.UnsupportedModule do
   def entity!(_item, _options \\ nil), do: throw "UnsupportedModule"
   def record(_item, _options \\ nil), do: throw "UnsupportedModule"
   def record!(_item, _options \\ nil), do: throw "UnsupportedModule"
+
+
+  def id_ok(o) do
+    r = ref(o)
+    r && {:ok, r} || {:error, o}
+  end
+  def ref_ok(o) do
+    r = ref(o)
+    r && {:ok, r} || {:error, o}
+  end
+  def sref_ok(o) do
+    r = sref(o)
+    r && {:ok, r} || {:error, o}
+  end
+  def entity_ok(o, options \\ %{}) do
+    r = entity(o, options)
+    r && {:ok, r} || {:error, o}
+  end
+  def entity_ok!(o, options \\ %{}) do
+    r = entity!(o, options)
+    r && {:ok, r} || {:error, o}
+  end
 end

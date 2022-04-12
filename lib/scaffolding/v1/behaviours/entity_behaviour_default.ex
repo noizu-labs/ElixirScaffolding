@@ -167,6 +167,31 @@ defmodule Noizu.Scaffolding.EntityBehaviourDefault do
           def entity!(o, options \\ nil), do: @parent_module.entity!(o, options)
           def record(o, options \\ nil), do: @parent_module.record(o, options)
           def record!(o, options \\ nil), do: @parent_module.record!(o, options)
+
+
+
+          def id_ok(o) do
+            r = ref(o)
+            r && {:ok, r} || {:error, o}
+          end
+          def ref_ok(o) do
+            r = ref(o)
+            r && {:ok, r} || {:error, o}
+          end
+          def sref_ok(o) do
+            r = sref(o)
+            r && {:ok, r} || {:error, o}
+          end
+          def entity_ok(o, options \\ %{}) do
+            r = entity(o, options)
+            r && {:ok, r} || {:error, o}
+          end
+          def entity_ok!(o, options \\ %{}) do
+            r = entity!(o, options)
+            r && {:ok, r} || {:error, o}
+          end
+
+
         end
       end # end quote
     end # end erp_imp

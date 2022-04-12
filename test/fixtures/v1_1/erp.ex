@@ -10,4 +10,27 @@ defimpl Noizu.ERP, for: [FooV1_1Entity, FooV1_1Table] do
  def record!(%{__struct__: m} = ref, options \\ nil), do: m.__erp__().record!(ref, options)
  def entity(%{__struct__: m} = ref, options \\ nil), do: m.__erp__().entity(ref, options)
  def entity!(%{__struct__: m} = ref, options \\ nil), do: m.__erp__().entity!(ref, options)
+
+
+ def id_ok(o) do
+  r = ref(o)
+  r && {:ok, r} || {:error, o}
+ end
+ def ref_ok(o) do
+  r = ref(o)
+  r && {:ok, r} || {:error, o}
+ end
+ def sref_ok(o) do
+  r = sref(o)
+  r && {:ok, r} || {:error, o}
+ end
+ def entity_ok(o, options \\ %{}) do
+  r = entity(o, options)
+  r && {:ok, r} || {:error, o}
+ end
+ def entity_ok!(o, options \\ %{}) do
+  r = entity!(o, options)
+  r && {:ok, r} || {:error, o}
+ end
+
 end

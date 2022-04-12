@@ -63,6 +63,14 @@ defmodule Noizu.Scaffolding.RepoV2Test do
     assert ref == {:ref, FooV2Entity, entity.identifier}
   end
 
+
+  test "Noizu.ERP.ref_ok(entity)" do
+    context = CallingContext.system()
+    entity = %FooV2Entity{content: :hello} |> FooV2Repo.create!(context)
+    {:ok, ref} = Noizu.ERP.ref_ok(entity)
+    assert ref == {:ref, FooV2Entity, entity.identifier}
+  end
+
   test "Noizu.ERP.ref(record)" do
     context = CallingContext.system()
     entity = %FooV2Entity{content: :hello} |> FooV2Repo.create!(context)

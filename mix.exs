@@ -41,7 +41,7 @@ defmodule Noizu.Scaffolding.Mixfile do
       {:amnesia, git: "https://github.com/noizu/amnesia.git", ref: "9266002", optional: true}, # Mnesia Wrapper
       {:ex_doc, "~> 0.28.3", only: [:dev], optional: true}, # Documentation Provider
       {:markdown, github: "devinus/markdown", only: [:dev], optional: true}, # Markdown processor for ex_doc
-      {:noizu_core, github: "noizu/ElixirCore", tag: "1.0.12"},
+      {:noizu_core, github: "noizu/ElixirCore", tag: "1.0.13"},
       {:noizu_mnesia_versioning, github: "noizu/MnesiaVersioning", tag: "0.1.10"},
       {:redix, github: "whatyouhide/redix", tag: "v0.7.0", optional: true},
       {:poison, "~> 3.1.0", optional: true},

@@ -105,6 +105,15 @@ defmodule Noizu.Scaffolding.RepoV1Test do
     assert unboxed_entity == entity
   end
 
+
+  test "FooEntity.entity_ok!(entity)" do
+    # note we can't test Noizu.ERP.ref(sref) directly as implementor must provide.
+    context = CallingContext.system()
+    entity = %FooEntity{content: :hello} |> FooRepo.create!(context)
+    {:ok, unboxed_entity} = Noizu.ERP.entity_ok!(entity)
+    assert unboxed_entity == entity
+  end
+
   test "Noizu.ERP.record!(ref)" do
     context = CallingContext.system()
     entity = %FooEntity{content: :hello} |> FooRepo.create!(context)

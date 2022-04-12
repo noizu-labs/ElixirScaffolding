@@ -252,6 +252,39 @@ defmodule Noizu.Scaffolding.EntityBehaviour do
       @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       if unquote(required?.has_permission!), do: unquote(Macro.expand(default_implementation, __CALLER__).has_permission_txn_implementation())
 
+
+      def id_ok(o) do
+        r = ref(o)
+        r && {:ok, r} || {:error, o}
+      end
+      def ref_ok(o) do
+        r = ref(o)
+        r && {:ok, r} || {:error, o}
+      end
+      def sref_ok(o) do
+        r = sref(o)
+        r && {:ok, r} || {:error, o}
+      end
+      def entity_ok(o, options \\ %{}) do
+        r = entity(o, options)
+        r && {:ok, r} || {:error, o}
+      end
+      def entity_ok!(o, options \\ %{}) do
+        r = entity!(o, options)
+        r && {:ok, r} || {:error, o}
+      end
+
+      defoverridable [
+        id_ok: 1,
+        ref_ok: 1,
+        sref_ok: 1,
+        entity_ok: 1,
+        entity_ok: 2,
+        entity_ok!: 1,
+        entity_ok!: 2,
+      ]
+
+
       #@before_compile unquote(__MODULE__)
     end # end quote
   end #end defmacro __using__(options)
