@@ -3,6 +3,8 @@
 # Copyright (C) 2018 Noizu Labs, Inc. All rights reserved.
 #-------------------------------------------------------------------------------
 
+Application.ensure_all_started(:telemetry_app)
+
 # http://elixir-lang.org/docs/stable/ex_unit/ExUnit.html#start/1
 
 
