@@ -13,7 +13,7 @@ defimpl Noizu.ERP, for: [FooV1_1Entity, FooV1_1Table] do
 
 
  def id_ok(o) do
-  r = ref(o)
+  r = id(o)
   r && {:ok, r} || {:error, o}
  end
  def ref_ok(o) do

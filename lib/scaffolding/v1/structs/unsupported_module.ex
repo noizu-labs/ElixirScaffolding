@@ -34,7 +34,7 @@ defmodule Noizu.Scaffolding.UnsupportedModule do
 
 
   def id_ok(o) do
-    r = ref(o)
+    r = id(o)
     r && {:ok, r} || {:error, o}
   end
   def ref_ok(o) do
@@ -68,7 +68,7 @@ defimpl Noizu.ERP, for: Noizu.Scaffolding.UnsupportedModule do
 
 
   def id_ok(o) do
-    r = ref(o)
+    r = id(o)
     r && {:ok, r} || {:error, o}
   end
   def ref_ok(o) do

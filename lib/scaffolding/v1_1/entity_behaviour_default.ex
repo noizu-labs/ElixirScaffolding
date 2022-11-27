@@ -109,7 +109,7 @@ defmodule Noizu.Scaffolding.V1_1.EntityBehaviourDefault do
 
 
       def id_ok(o) do
-        r = ref(o)
+        r = id(o)
         r && {:ok, r} || {:error, o}
       end
       def ref_ok(o) do
