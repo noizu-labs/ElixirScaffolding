@@ -201,8 +201,8 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
       def emit_telemetry?(type, _, _, options) do
         c = __persistence__(:telemetry)
         cond do
-          options[:emity_telemetry] -> true
-          context.options[:emit_telemetry] -> true
+          options[:emit_telemetry?] -> true
+          context.options[:emit_telemetry?] -> true
           !c[:enabled] -> false
           type in [:create, :update, :delete, :create!, :update!, :delete!] || (type in [:get,:get!]) && c[:reads] ->
             cond do
@@ -242,7 +242,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
 
       defoverridable [
         telemetry_event: 4,
-        emity_telemtry?: 4
+        emit_telemetry?: 4
       ]
       
     end # end quote

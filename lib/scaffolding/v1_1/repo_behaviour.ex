@@ -240,7 +240,7 @@ defmodule Noizu.Scaffolding.V1_1.RepoBehaviour do
 
       defoverridable [
         telemetry_event: 4,
-        emity_telemtry?: 4,
+        emit_telemetry?: 4,
         audit_engine: 0,
         from_json: 2,
 #
