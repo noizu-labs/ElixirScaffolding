@@ -198,11 +198,11 @@ defmodule Noizu.Scaffolding.V1_1.RepoBehaviour do
       # Telemetry
       #=====================================================================
       @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
-      def emit_telemetry?(type, _, _, options) do
+      def emit_telemetry?(type, _, context, options) do
         c = __persistence__(:telemetry)
         cond do
           options[:emity_telemetry] -> true
-          context.options[:emit_telemetry] -> true
+          context && context.options[:emit_telemetry] -> true
           !c[:enabled] -> false
           type in [:create, :update, :delete, :create!, :update!, :delete!] || (type in [:get,:get!]) && c[:reads] ->
             cond do
