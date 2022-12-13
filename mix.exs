@@ -8,7 +8,7 @@ defmodule Noizu.Scaffolding.Mixfile do
 
   def project do
     [app: :noizu_scaffolding,
-     version: "1.2.8",
+     version: "1.2.9",
      elixir: "~> 1.13",
      package: package(),
      deps: deps(),
@@ -49,6 +49,7 @@ defmodule Noizu.Scaffolding.Mixfile do
       {:semaphore, "~> 1.0"}, # https://github.com/discordapp/semaphore
       {:plug, "~> 1.0", optional: true},
       {:elixir_uuid, "~> 1.2", only: :test, optional: true},
+      {:telemetry, "~> 1.1.0", optional: true},
     ]
   end # end deps
 

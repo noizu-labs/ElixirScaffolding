@@ -161,8 +161,73 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
       @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       @behaviour Noizu.Scaffolding.RepoBehaviour
       @implementation (unquote(implementation_provider))
+
+
+      a__nzdo__telemetry = cond do
+                             Module.has_attribute?(__MODULE__, :telemetry) ->
+                               case Module.get_attribute(__MODULE__, :telemetry) do
+                                 true ->
+                                   Application.get_env(:noizu_scaffolding, :default_enabled_telemetry, [enabled: true, sample_rate: 250, reads: false])
+                                 :enabled -> [enabled: true, sample_rate: 250, reads: false]
+                                 :light -> [enabled: true, sample_rate: 50, reads: false]
+                                 :diagnostic -> [enabled: true, sample_rate: 1000, reads: true]
+                                 {:enabled, opts} -> [enabled: true, sample_rate: opts[:sample_rate] || 250, reads: opts[:reads] || false]
+                                 false -> [enabled: false, sample_rate: 0, reads: false]
+                                 _ -> Application.get_env(:noizu_scaffolding, :default_telemetry, [enabled: false, sample_rate: 0, reads: false])
+                               end
+                             v = unquote(options[:telemetry]) ->
+                               case v do
+                                 true ->
+                                   Application.get_env(:noizu_scaffolding, :default_enabled_telemetry, [enabled: true, sample_rate: 250, reads: false])
+                                 :enabled -> [enabled: true, sample_rate: 250, reads: false]
+                                 :light -> [enabled: true, sample_rate: 50, reads: false]
+                                 :diagnostic -> [enabled: true, sample_rate: 1000, reads: true]
+                                 {:enabled, opts} -> [enabled: true, sample_rate: opts[:sample_rate] || 250, reads: opts[:reads] || false]
+                                 false -> [enabled: false, sample_rate: 0, reads: false]
+                                 _ -> Application.get_env(:noizu_scaffolding, :default_telemetry, [enabled: false, sample_rate: 0, reads: false])
+                               end
+                             :else ->
+                               Application.get_env(:noizu_scaffolding, :default_telemetry, [enabled: false, sample_rate: 0, reads: false])
+                           end
+      @__nzdo__telemetry a__nzdo__telemetry
+
+
+      def __persistence__(:telemetry), do: @__nzdo__telemetry
+
+      #=====================================================================
+      # Telemetry
+      #=====================================================================
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
+      def emit_telemetry?(type, _, _, options) do
+        c = __persistence__(:telemetry)
+        cond do
+          options[:emity_telemetry] -> true
+          context.options[:emit_telemetry] -> true
+          !c[:enabled] -> false
+          type in [:create, :update, :delete, :create!, :update!, :delete!] || (type in [:get,:get!]) && c[:reads] ->
+            cond do
+              c[:sample_rate] >= 1000 -> true
+              :rand.uniform(1000) <= c[:sample_rate] -> true
+              :else -> false
+            end
+          :else -> false
+        end
+      end
+
+      @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
+      def telemetry_event(type, _, _, _) do
+        [:persistence, :event, type]
+      end
+      
+      
+      
       use unquote(implementation_provider), unquote(options)
 
+      
+      
+      
+      
+      
       @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def audit_engine, do: unquote(audit_engine)
       #-------------------------------------------------------------------------
@@ -175,6 +240,11 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
         end # end from_json/2
       end
 
+      defoverridable [
+        telemetry_event: 4,
+        emity_telemtry?: 4
+      ]
+      
     end # end quote
   end # end defmacro __using__(options)
 end # end defmodule Noizu.Scaffolding.RepoBehaviour
