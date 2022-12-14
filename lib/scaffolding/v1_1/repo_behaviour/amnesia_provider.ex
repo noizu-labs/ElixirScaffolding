@@ -156,8 +156,14 @@ defmodule Noizu.Scaffolding.V1_1.RepoBehaviour.AmnesiaProvider do
           ts = :os.system_time(:second)
           identifier = @entity_module.id(ref)
           # @todo setup invalidation scheme
+
+          emit = __MODULE__.emit_telemetry?(:cache, ref, context, options)
+          emit && :telemetry.execute(__MODULE__.telemetry_event(:cache, ref, context, options), %{count: emit}, %{mod: __MODULE__})
+
           Noizu.FastGlobal.Cluster.get(cache_key,
             fn() ->
+              emit && :telemetry.execute(__MODULE__.telemetry_event(:cache_miss, ref, context, options), %{count: emit}, %{mod: __MODULE__})
+              
               if Amnesia.Table.wait([@mnesia_table], 500) == :ok do
                 case get!(identifier, context, options) do
                   entity = %{} -> entity
@@ -168,6 +174,7 @@ defmodule Noizu.Scaffolding.V1_1.RepoBehaviour.AmnesiaProvider do
                 {:fast_global, :no_cache, nil}
               end
             end
+            
           )
         end
       end

@@ -34,7 +34,10 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
   #-----------------------------------------------------------------------------
   # Behaviour methods
   #-----------------------------------------------------------------------------
-  def match({_mod, entity_module, mnesia_table, query_strategy, audit_engine, _dirty, _frag, audit_level} = _indicator, match_sel, %CallingContext{} = context, options) do
+  def match({mod, entity_module, mnesia_table, query_strategy, audit_engine, _dirty, _frag, audit_level} = _indicator, match_sel, %CallingContext{} = context, options) do
+    emit = mod.emit_telemetry?(:match, nil, context, options)
+    emit && :telemetry.execute(mod.telemetry_event(:match, nil, context, options), %{count: emit}, %{mod: mod})
+  
     strategy = options[:query_strategy] || query_strategy
     if options[:audit] || Enum.member?([:verbose], audit_level) || (context.options[:audit] == :verbose) do
       audit_engine = context.options[:audit_engine] || options[:audit_engine] || audit_engine
@@ -69,7 +72,10 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
     end # end cond do
   end
 
-  def list({_mod, entity_module, mnesia_table, query_strategy, audit_engine, _dirty, _frag, audit_level} = _indicator, %CallingContext{} = context, options) do
+  def list({mod, entity_module, mnesia_table, query_strategy, audit_engine, _dirty, _frag, audit_level} = _indicator, %CallingContext{} = context, options) do
+    emit = mod.emit_telemetry?(:list, nil, context, options)
+    emit && :telemetry.execute(mod.telemetry_event(:list, nil, context, options), %{count: emit}, %{mod: mod})
+  
     strategy = options[:query_strategy] || query_strategy
     if options[:audit] || Enum.member?([:verbose], audit_level) || (context.options[:audit] == :verbose) do
       audit_engine = context.options[:audit_engine] || options[:audit_engine] || audit_engine
@@ -105,10 +111,6 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
   end
   
   def get({mod, entity_module, mnesia_table, query_strategy, audit_engine, _dirty, _frag, audit_level} = _indicator, identifier, %CallingContext{} = context, options) do
-    emit = mod.emit_telemetry?(:get, identifier, context, options)
-    emit && :telemetry.emit(mod.telemetry_event(:get, identifier, context, options), %{count: 1}, %{mod: mod})
-
-
     strategy = options[:query_strategy] || query_strategy
     record = strategy.get(identifier, mnesia_table, context, options)
 
@@ -121,15 +123,15 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
       audit_engine.audit(:get, :scaffolding, ref, context, options)
     end
 
+    emit = mod.emit_telemetry?(:get, identifier, context, options)
+    emit && :telemetry.execute(mod.telemetry_event(:get, identifier, context, options), %{count: emit}, %{mod: mod, hit: record && true || false})
+    
     entity_module.entity(record, options)
     |> mod.post_get_callback(context, options)
   end # end get/3
   def post_get_callback(_indicator, entity, _context, _options), do: entity
 
   def get!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine, dirty, frag, _audit_level} = _indicator, identifier, %CallingContext{} = context, options) do
-    emit = mod.emit_telemetry?(:get!, identifier, context, options)
-    emit && :telemetry.emit(mod.telemetry_event(:get!, identifier, context, options), %{count: 1}, %{mod: mod})
-    
     options = options || %{}
     dirty = Map.get(options, :dirty, dirty)
     frag = Map.get(options, :frag, frag)
@@ -149,15 +151,16 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
   def pre_update_callback(_indicator, entity, _context, _options), do: entity
   def post_update_callback(_indicator, entity, _context, _options), do: entity
   def update({mod, entity_module, mnesia_table, query_strategy, audit_engine, _dirty, _frag, audit_level} = _indicator, entity, %CallingContext{} = context, options) do
+    emit = mod.emit_telemetry?(:update, entity, context, options)
+    emit && :telemetry.execute(mod.telemetry_event(:update, entity, context, options), %{count: emit}, %{mod: mod})
+    
     strategy = options[:query_strategy] || query_strategy
     if entity.identifier == nil, do: throw "Cannot Update #{inspect entity_module} with out identifier field set."
     entity = mod.pre_update_callback(entity, context, options)
-
     ref = entity
       |> entity_module.record(options)
       |> strategy.update(mnesia_table, context, options)
       |> entity_module.ref()
-
     cond do
       context.options[:audit] ->
         audit_engine = context.options[:audit_engine] || options[:audit_engine] || audit_engine
@@ -170,17 +173,17 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
     end
 
     entity
-      |> mod.post_update_callback(context, options)
+    |> mod.post_update_callback(context, options)
   end # end update/3
 
   def update!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine, dirty, frag, _audit_level} = _indicator, entity, %CallingContext{} = context, options) do
-    emit = mod.emit_telemetry?(:update!, entity, context, options)
-    emit && :telemetry.emit(mod.telemetry_event(:update!, entity, context, options), %{count: 1}, %{mod: mod})
-
     options = options || %{}
     dirty = Map.get(options, :dirty, dirty)
     frag = Map.get(options, :frag, frag)
-    options = options |> Map.delete(:frag) |> Map.delete(:dirty)
+    options = options
+              |> Map.delete(:frag)
+              |> Map.delete(:dirty)
+    # Todo honor the frag param here.
     cond do
       dirty && frag == :sync -> Amnesia.Fragment.sync(fn -> mod.update(entity, context, options) end)
       dirty -> Amnesia.Fragment.async(fn -> mod.update(entity, context, options) end)
@@ -194,12 +197,13 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
   def pre_delete_callback(_indicator, entity, _context, _options), do: entity
   def post_delete_callback(_indicator, entity, _context, _options), do: entity
   def delete({mod, entity_module, mnesia_table, query_strategy, audit_engine, _dirty, _frag, audit_level} = _indicator, entity, %CallingContext{} = context, options) do
+    emit = mod.emit_telemetry?(:delete, entity, context, options)
+    emit && :telemetry.execute(mod.telemetry_event(:delete, entity, context, options), %{count: emit}, %{mod: mod})
+    
     strategy = options[:query_strategy] || query_strategy
     if entity.identifier == nil do
       throw "Cannot Delete #{inspect entity_module} with out identifier field set."
     end
-    emit = mod.emit_telemetry?(:delete, entity, context, options)
-    emit && :telemetry.emit(mod.telemetry_event(:delete, entity, context, options), %{count: 1}, %{mod: mod})
     
     entity = mod.pre_delete_callback(entity, context, options)
 
@@ -223,13 +227,12 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
   end # end delete/3
 
   def delete!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine, dirty, frag, _audit_level} = _indicator, entity, %CallingContext{} = context, options) do
-    emit = mod.emit_telemetry?(:delete!, entity, context, options)
-    emit && :telemetry.emit(mod.telemetry_event(:delete!, entity, context, options), %{count: 1}, %{mod: mod})
-    
     options = options || %{}
     dirty = Map.get(options, :dirty, dirty)
     frag = Map.get(options, :frag, frag)
     options = options |> Map.delete(:frag) |> Map.delete(:dirty)
+    
+    # @todo honor the dirty directive don't drop.
     cond do
       dirty && frag == :sync -> Amnesia.Fragment.sync(fn -> mod.delete(entity, context, options) end)
       dirty -> Amnesia.Fragment.async(fn -> mod.delete(entity, context, options) end)
@@ -257,8 +260,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
     strategy = options[:query_strategy] || query_strategy
 
     emit = mod.emit_telemetry?(:create, entity, context, options)
-    emit && :telemetry.emit(mod.telemetry_event(:create, entity, context, options), %{count: 1}, %{mod: mod})
-    
+    emit && :telemetry.execute(mod.telemetry_event(:create, entity, context, options), %{count: emit}, %{mod: mod})
     
     entity = mod.pre_create_callback(entity, context, options)
     if (entity.identifier == nil) do
@@ -286,9 +288,6 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
   end # end create/3
 
   def create!({mod, _entity_module, _mnesia_table, _query_strategy, _audit_engine, dirty, frag, _audit_level} = _indicator, entity, %CallingContext{} = context, options) do
-    emit = mod.emit_telemetry?(:create!, entity, context, options)
-    emit && :telemetry.emit(mod.telemetry_event(:create!, entity, context, options), %{count: 1}, %{mod: mod})
-    
     options = options || %{}
     dirty = Map.get(options, :dirty, dirty)
     frag = Map.get(options, :frag, frag)
