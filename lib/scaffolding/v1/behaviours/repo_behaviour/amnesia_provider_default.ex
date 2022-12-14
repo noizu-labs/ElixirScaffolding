@@ -124,7 +124,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour.AmnesiaProviderDefault do
     end
 
     emit = mod.emit_telemetry?(:get, identifier, context, options)
-    emit && :telemetry.execute(mod.telemetry_event(:get, identifier, context, options), %{count: emit}, %{mod: mod, hit: record && true || false})
+    emit && :telemetry.execute(mod.telemetry_event(:get, identifier, context, options), %{count: emit}, %{mod: mod, miss: !record || true})
     
     entity_module.entity(record, options)
     |> mod.post_get_callback(context, options)

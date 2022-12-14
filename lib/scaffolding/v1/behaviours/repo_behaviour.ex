@@ -165,7 +165,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
 
 
       @__default_telemetry [enabled: false, sample_rate: 0, events: [get: false, get!: false, cache: false, list: false, list!: false, match: false, match!: false]]
-      @__default_enabled_telemetry [enabled: false, sample_rate: 100, events: [get: 10, get!: 10, cache: 5, list: 10, list!: 10, match: 10, match!: 10]]
+      @__default_enabled_telemetry [enabled: true, sample_rate: 100, events: [get: 10, get!: 10, cache: 5, list: 10, list!: 10, match: 10, match!: 10]]
       @__default_light_telemetry [enabled: true, sample_rate: 50, events: [get: false, get!: false, cache: false, list: false, list!: false, match: false, match!: false]]
       @__default_heavy_telemetry [enabled: false, sample_rate: 250, events: [get: 25, get!: 25, cache: 5, list: 25, list!: 25, match: 25, match!: 25]]
       @__default_diagnostic_telemetry [enabled: true, sample_rate: 1000, events: [get: true, get!: true, cache: true, list: true, list!: true, match: true, match!: true]]
@@ -211,7 +211,7 @@ defmodule Noizu.Scaffolding.RepoBehaviour do
                   false -> false
                   true -> c[:sample_rate]
                   v when is_integer(v) -> v
-                  _ -> false
+                  _ -> c[:sample_rate]
                 end
               :else -> false
             end

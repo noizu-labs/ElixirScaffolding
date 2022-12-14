@@ -207,7 +207,7 @@ defmodule Noizu.Scaffolding.V1_1.RepoBehaviour do
                   false -> false
                   true -> c[:sample_rate]
                   v when is_integer(v) -> v
-                  _ -> false
+                  _ -> c[:sample_rate]
                 end
               :else -> false
             end
