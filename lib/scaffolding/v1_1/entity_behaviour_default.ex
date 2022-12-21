@@ -21,7 +21,7 @@ defmodule Noizu.Scaffolding.V1_1.EntityBehaviourDefault do
       def id(nil), do: nil
       def id({:ref, __MODULE__, identifier} = _ref), do: identifier
       def id(%__MODULE__{} = entity), do: entity.identifier
-      def id(@__noizu_v1_1__sref_prefix <> identifier), do: __MODULE__.ref(identifier) |> __MODULE__.id()
+      def id(@__noizu_v1_1__sref_prefix <> identifier), do: ref(identifier) |> id()
       def id(%{__struct__: @table} = record), do: record.identifier
       def id(_), do: nil
 
@@ -54,31 +54,31 @@ defmodule Noizu.Scaffolding.V1_1.EntityBehaviourDefault do
       def entity(item, options \\ nil)
       def entity(nil, _options), do: nil
       def entity(%__MODULE__{} = this, options), do: this
-      def entity(%{__struct__: @table} = record, options), do: __MODULE__.expand(record.entity, options[:compression] || %{})
+      def entity(%{__struct__: @table} = record, options), do: expand(record.entity, options[:compression] || %{})
       def entity(identifier, options) do
-        @repo.get(__MODULE__.id(identifier), Noizu.ElixirCore.CallingContext.internal(), options) || __MODULE__.miss_cb(identifier, options)
+        @repo.get(id(identifier), Noizu.ElixirCore.CallingContext.internal(), options) || miss_cb(identifier, options)
       end
 
       @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def entity!(item, options \\ nil)
       def entity!(nil, _options), do: nil
       def entity!(%__MODULE__{} = this, options), do: this
-      def entity!(%{__struct__: @table} = record, options), do: __MODULE__.expand(record.entity, options[:compression] || %{})
-      def entity!(identifier, options), do: @repo.get!(__MODULE__.ref(identifier) |> __MODULE__.id(), Noizu.ElixirCore.CallingContext.internal(), options) || __MODULE__.miss_cb(identifier, options)
+      def entity!(%{__struct__: @table} = record, options), do: expand(record.entity, options[:compression] || %{})
+      def entity!(identifier, options), do: @repo.get!(ref(identifier) |> id(), Noizu.ElixirCore.CallingContext.internal(), options) || miss_cb(identifier, options)
 
       @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def record(item, options \\ nil)
       def record(nil, _options), do: nil
-      def record(%__MODULE__{} = this, options), do: __MODULE__.as_record(this, options)
+      def record(%__MODULE__{} = this, options), do: as_record(this, options)
       def record(%{__struct__: @table} = record, options), do: record
-      def record(identifier, options), do: @repo.get(__MODULE__.ref(identifier) |> __MODULE__.id(), Noizu.ElixirCore.CallingContext.internal(), options) |> __MODULE__.as_record(options)
+      def record(identifier, options), do: @repo.get(ref(identifier) |> id(), Noizu.ElixirCore.CallingContext.internal(), options) |> as_record(options)
 
       @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
       def record!(item, options \\ nil)
       def record!(nil, _options), do: nil
-      def record!(%__MODULE__{} = this, options), do: __MODULE__.as_record(this, options)
+      def record!(%__MODULE__{} = this, options), do: as_record(this, options)
       def record!(%{__struct__: @table} = record, options), do: record
-      def record!(identifier, options), do: @repo.get!(__MODULE__.ref(identifier) |> __MODULE__.id(), Noizu.ElixirCore.CallingContext.internal(), options) |> __MODULE__.as_record(options)
+      def record!(identifier, options), do: @repo.get!(ref(identifier) |> id(), Noizu.ElixirCore.CallingContext.internal(), options) |> as_record(options)
 
 
       @file unquote(__ENV__.file) <> ":#{unquote(__ENV__.line)}" <> "(via #{__ENV__.file}:#{__ENV__.line})"
@@ -94,7 +94,7 @@ defmodule Noizu.Scaffolding.V1_1.EntityBehaviourDefault do
       def as_record(entity, options \\ %{})
       def as_record(nil, _options), do: nil
       def as_record(this, options) do
-        base = @table.__struct__([identifier: this.identifier, entity: __MODULE__.compress(this, options[:compression] || %{})])
+        base = @table.__struct__([identifier: this.identifier, entity: compress(this, options[:compression] || %{})])
         List.foldl(@__noizu_v1_1__as_record_options[:additional_fields] || [], base,
           fn(field, acc) ->
             case Map.get(this, field, :erp_imp_field_not_found) do
